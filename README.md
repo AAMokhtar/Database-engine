@@ -28,7 +28,7 @@ grasp of the inner workings of databases.
         6. Clone
 2. Import the repository folder into your IDE of choice :)
       
-### Important notes (remove this when project is done)
+## Important notes (remove this when project is done)
 * Feel free to edit this file.
 * Variables and paramaters are named according to the Hungarian notation.
 refer to: https://www.cse.iitk.ac.in/users/dsrkg/cs245/html/Guide.htm
