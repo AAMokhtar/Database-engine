@@ -23,7 +23,7 @@ grasp of the inner workings of databases.
         1. Download and install **github desktop** (https://desktop.github.com)
         2. Sign in using your github account
         3. Click "clone a repository from the internet"
-        4. Select the "URL tab
+        4. Select the "URL" tab
         5. Type in the repo link (https://github.com/AhmedAshrafMokhtar/Database-engine.git) and the desired directory
         6. Clone
 2. Import the repository folder into your IDE of choice :)
