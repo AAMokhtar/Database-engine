@@ -1,0 +1,6 @@
+Table Name,Column Name,Column Type,Key,Indexed
+ESTUDIANT,gpa,java.lang.Double,False,False
+ESTUDIANT,ID,java.lang.Integer,False,False
+ESTUDIANT,isAdult,java.lang.Boolean,False,False
+ESTUDIANT,name,java.lang.String,True,True
+ESTUDIANT,deathdate,java.util.Date,False,False
