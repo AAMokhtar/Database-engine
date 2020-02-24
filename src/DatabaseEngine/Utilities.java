@@ -145,14 +145,22 @@ public class Utilities {
 		
 		try {
 			String line = "";
-			
+			boolean flag = false;
 			
 			BufferedReader read = new BufferedReader(new FileReader("data//metadata.csv"));
 			
 			while ((line = read.readLine()) != null) {
+				if(!flag) {
+					flag = true;
+					continue;
+				}
+				
+				else {
 				String[] data = line.split(","); 
 				if(data[0].equals(tablename)) {
 					return false;
+				}
+	
 				}
 				
 		    }

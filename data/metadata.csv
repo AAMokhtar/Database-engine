@@ -9,3 +9,8 @@ ESTUDIANTE,ID,java.lang.Integer,False,False
 ESTUDIANTE,isAdult,java.lang.Boolean,False,False
 ESTUDIANTE,name,java.lang.String,True,True
 ESTUDIANTE,deathdate,java.util.Date,False,False
+Table Name,gpa,java.lang.Double,False,False
+Table Name,ID,java.lang.Integer,False,False
+Table Name,isAdult,java.lang.Boolean,False,False
+Table Name,name,java.lang.String,True,True
+Table Name,deathdate,java.util.Date,False,False
