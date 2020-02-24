@@ -4,3 +4,8 @@ ESTUDIANT,ID,java.lang.Integer,False,False
 ESTUDIANT,isAdult,java.lang.Boolean,False,False
 ESTUDIANT,name,java.lang.String,True,True
 ESTUDIANT,deathdate,java.util.Date,False,False
+ESTUDIANTE,gpa,java.lang.Double,False,False
+ESTUDIANTE,ID,java.lang.Integer,False,False
+ESTUDIANTE,isAdult,java.lang.Boolean,False,False
+ESTUDIANTE,name,java.lang.String,True,True
+ESTUDIANTE,deathdate,java.util.Date,False,False

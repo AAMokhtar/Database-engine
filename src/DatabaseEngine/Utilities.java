@@ -21,7 +21,7 @@ public class Utilities {
 	 * this class has useful operations for metadata and for page storing (Serializing) and loading (deserializing)
 	 * This class was fully tested.
 	 */
-	private static File met = new File("metadata.csv");
+	private static File met = new File("data//metadata.csv");
 	 
 	//purpose: used to obtain all possible column domains
 	public static Vector<String> getPossibleTypes() {
@@ -120,7 +120,7 @@ public class Utilities {
 			String line = "";
 			
 			
-			BufferedReader read = new BufferedReader(new FileReader("metadata.csv"));
+			BufferedReader read = new BufferedReader(new FileReader("data//metadata.csv"));
 			while ((line = read.readLine()) != null) {
 				String[] data = line.split(","); 
 				tableMetaData+=(Arrays.toString(data)+"\n");
@@ -147,7 +147,7 @@ public class Utilities {
 			String line = "";
 			
 			
-			BufferedReader read = new BufferedReader(new FileReader("metadata.csv"));
+			BufferedReader read = new BufferedReader(new FileReader("data//metadata.csv"));
 			while ((line = read.readLine()) != null) {
 				String[] data = line.split(","); 
 				if(data[0].equals(tablename)) {

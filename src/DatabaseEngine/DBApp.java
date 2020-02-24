@@ -19,21 +19,21 @@ public class DBApp {
 	public static void main(String args[]) {
 		//CREATE TABLE TEST PASSED!
 		
-//		Hashtable t = new Hashtable<String, String>();
-//		t.put("ID","java.lang.Integer");
-//		t.put("name","java.lang.String");
-//		t.put("isAdult","java.lang.Boolean");
-//		t.put("deathdate","java.util.Date");
-//		t.put("gpa","java.lang.Double");
-//		
-//		DBApp d = new DBApp();
+		Hashtable t = new Hashtable<String, String>();
+		t.put("ID","java.lang.Integer");
+		t.put("name","java.lang.String");
+		t.put("isAdult","java.lang.Boolean");
+		t.put("deathdate","java.util.Date");
+		t.put("gpa","java.lang.Double");
+		
+		DBApp d = new DBApp();
 
-     //  d.init();
-//		try {
-//			d.createTable("ESTUDIANT", "name", t);
-//		} catch (DBAppException e) {
-//			System.out.println(e.getMessage());
-//			e.printStackTrace();	}
+//       d.init();
+		try {
+			d.createTable("ESTUDIANTE", "name", t);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();	}
 	}
     
 		
