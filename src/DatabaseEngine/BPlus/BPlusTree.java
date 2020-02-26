@@ -35,19 +35,31 @@ public class BPlusTree<T extends Comparable<T>> implements Serializable {
             root.getValues().add(value);
             return;
         }
+        //-----------------------------------------
+        ArrayList<T> values = cur.getValues(); //node keys
 
+        if (cur instanceof BPTInternal){
+                ArrayList<BPTNode<T>> pointers = ((BPTInternal<T>) cur).getPointers(); //node pointers
+
+        }
+
+
+        //-----------------------------------------
         if (cur instanceof BPTExternal ) { //insert in a leaf
 
             if (cur.getSize() < maxNodes) { //CASE1: a vacant space
                 cur.incSize();
 
-                ArrayList<T> values = cur.getValues(); //node keys
                 ArrayList<pointer> pointers =  ((BPTExternal<T>) cur).getPointers(); //node pointers
 
-                int insertAt = Utilities.binarySearchLeastGreaterEq(values, value); //binary search for the correct place
+                int insertAt = Utilities.binarySearchLeastGreaterEq(values, value, ">="); //binary search for the correct place
                 values.add(insertAt, value); //insert and shift
 
     //TODO      pointers.add(insertAt,new pointer(-1,-1)); //fix pointer
+
+            }
+            else { //CASE2: full node
+
 
             }
         }

@@ -278,23 +278,71 @@ public class Utilities {
 
 	//Btrees
 
-	public static <T extends Comparable<T>> int  binarySearchLeastGreaterEq(ArrayList<T> list, T value ){
+	//binary search
+	public static <T extends Comparable<T>> int  binarySearchLeastGreaterEq(ArrayList<T> list, T value,String mode){
 		int lo = 0;
 		int hi = list.size() - 1;
 		int mid;
+		int index = -1;
 
-		while (hi < lo ){
-			mid = (hi + lo) / 2;
+		if (mode.equals(">=")) { //smallest index greater than or equal value
 
-			if (list.get(mid).compareTo(value) >= 0){ //value less or equal
-				hi = mid;
+			while (lo <= hi) {
+				mid = (hi + lo) / 2;
+
+				if (list.get(mid).compareTo(value) >= 0) { //value less or equal
+					hi = mid - 1;
+					index = mid;
+				} else { //value greater
+					lo = mid + 1;
+				}
 			}
-			else { //value greater
-				lo = mid;
+
+		}
+
+		if (mode.equals("<=")) { //greatest index smaller than or equal value
+
+			while (lo <= hi) {
+				mid = (hi + lo) / 2;
+
+				if (list.get(mid).compareTo(value) > 0) { //value <
+					hi = mid - 1;
+				} else { //value greater
+					lo = mid + 1;
+					index = mid;
+				}
 			}
 		}
 
-		return lo;
+		if (mode.equals("<")) { //greatest index smaller than value
+
+			while (lo <= hi) {
+				mid = (hi + lo) / 2;
+
+				if (list.get(mid).compareTo(value) >= 0) { //value less or equal
+					hi = mid - 1;
+				} else { //value greater
+					lo = mid + 1;
+					index = mid;
+				}
+			}
+		}
+
+		if (mode.equals(">")) { //smallest index greater than value
+
+			while (lo <= hi) {
+				mid = (hi + lo) / 2;
+
+				if (list.get(mid).compareTo(value) > 0) { //value <
+					hi = mid - 1;
+					index = mid;
+				} else { //value greater
+					lo = mid + 1;
+				}
+			}
+		}
+
+		return index;
 	}
 
 }
