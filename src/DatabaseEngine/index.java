@@ -1,8 +1,13 @@
 package DatabaseEngine;
 
-public interface index {
+import DatabaseEngine.BPlus.pointer;
 
-    public void insert(Object key);
-    public void delete(Object key);
-    public void search(Object key);
+import java.util.ArrayList;
+
+public interface index<T> { // B+, R
+
+    //required methods:
+    public void insert(T value, pointer recordPointer) throws DBAppException;
+    public void delete(T key);
+    public ArrayList<pointer> search(T key);
 }

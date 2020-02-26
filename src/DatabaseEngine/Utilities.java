@@ -94,8 +94,37 @@ public class Utilities {
 	   }
 	
 	}
-	
-	
+	//initialize properties
+	public static void initializeProperties(){
+		Properties p=new Properties();
+		p.setProperty("MaximumRowsCountinPage","200");
+		p.setProperty("NodeSize","15");
+
+		try {
+			p.store(new FileWriter("config//DBApp.properties"),"Database engine properties");
+		}
+		catch (Exception e) {
+			System.out.println("Failed to write file!");
+		}
+
+	}
+
+	//read properties
+	public static Properties readProperties(String path){
+
+		try {
+			FileReader reader =new FileReader(path);
+			Properties p = new Properties();
+			p.load(reader);
+
+			return p;
+		}
+		catch (Exception e){
+			System.out.println("File not found!");
+		}
+
+		return null;
+	}
 	
 	//TODO: FOR ALI: edit this code such that you get back data for a specific table 
 	//TODO: this, when executed, prints metadata content. 
@@ -279,7 +308,7 @@ public class Utilities {
 	//Btrees
 
 	//binary search
-	public static <T extends Comparable<T>> int  binarySearchLeastGreaterEq(ArrayList<T> list, T value,String mode){
+	public static <T extends Comparable<T>> int selectiveBinarySearch(ArrayList<T> list, T value, String mode){
 		int lo = 0;
 		int hi = list.size() - 1;
 		int mid;

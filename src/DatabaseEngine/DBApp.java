@@ -7,6 +7,7 @@ public class DBApp {
 
 	public void init() throws DBAppException {
 		Utilities.initializeMetaData();
+		Utilities.initializeProperties();
 //		indices = Utilities.loadIndices(); (M2 code)
 
 		//TODO: add any other "initializing code" here!
