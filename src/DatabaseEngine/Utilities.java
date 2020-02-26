@@ -1,19 +1,8 @@
 package DatabaseEngine;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Hashtable;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 
 public class Utilities {
 	
@@ -255,4 +244,57 @@ public class Utilities {
 		       }
 		       return null;
 	}
+
+	//indices
+
+	//loads all indices from memory and associates columns with their index
+	public static Hashtable<String, Hashtable<String, index>> loadIndices() throws DBAppException {
+		BufferedReader meta = new BufferedReader(new StringReader(readMetaData()));
+		Hashtable<String, Hashtable<String, index>> ret = new Hashtable<>();
+
+		try {
+			meta.readLine();
+
+			while (meta.ready()){
+				String[] info = meta.readLine().split(", ");
+				//Table Name [0], Column Name [1], Column Type [2], ClusteringKey [3], Indexed [4]
+
+				if (!ret.contains(info[0])) {
+					ret.put(info[0], new Hashtable<>());
+				}
+
+				if (info[4].charAt(0) == 'T'){
+//TODO				ret.get(info[0]).put(info[1], /* tree here */ );
+				}
+
+			}
+		}
+		catch (Exception e){
+			throw new DBAppException("failed to load indices");
+		}
+
+		return ret;
+	}
+
+	//Btrees
+
+	public static <T extends Comparable<T>> int  binarySearchLeastGreaterEq(ArrayList<T> list, T value ){
+		int lo = 0;
+		int hi = list.size() - 1;
+		int mid;
+
+		while (hi < lo ){
+			mid = (hi + lo) / 2;
+
+			if (list.get(mid).compareTo(value) >= 0){ //value less or equal
+				hi = mid;
+			}
+			else { //value greater
+				lo = mid;
+			}
+		}
+
+		return lo;
+	}
+
 }

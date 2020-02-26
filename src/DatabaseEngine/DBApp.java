@@ -3,9 +3,12 @@ package DatabaseEngine; //change to team name before submitting
 import java.util.Hashtable;
 
 public class DBApp {
+//	private Hashtable<String, Hashtable<String, index>> indices; // table name -> column name -> tree (M2 code)
 
-	public void init() {
+	public void init() throws DBAppException {
 		Utilities.initializeMetaData();
+//		indices = Utilities.loadIndices(); (M2 code)
+
 		//TODO: add any other "initializing code" here!
 	}
 	
