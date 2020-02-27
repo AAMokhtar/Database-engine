@@ -1,8 +1,9 @@
 package DatabaseEngine.BPlus;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public abstract class BPTNode<T extends Comparable<T>>{ //B+ tree node
+public abstract class BPTNode<T extends Comparable<T>> implements Serializable {  //B+ tree node
     private int size; //number of keys in the node
     private int maxPerNode; //max number of keys the node can hold
     private int minPerNodes; //min number of keys the node can hold
@@ -16,39 +17,40 @@ public abstract class BPTNode<T extends Comparable<T>>{ //B+ tree node
     }
 
     // getters/setters:
-    public int getMaxPerNode(){
+
+    public int getMaxPerNode(){ // get the maximum number of keys the node can hold
         return maxPerNode;
-    } // get the maximum number of keys the node can hold
+    }
 
-    public int getMinPerNodes(){
+    public int getMinPerNodes(){ // get the minimum number of keys the node can hold
         return minPerNodes;
-    } // get the minimum number of keys the node can hold
+    }
 
-    public int getSize(){
+    public int getSize(){ //return size
         return size;
-    } //return size
+    }
 
-    public ArrayList<T> getValues() {
+    public ArrayList<T> getValues() { //get key array
         return values;
-    } //get key array
+    }
 
     public void setSize(int size){ //change size
         this.size = size;
     }
 
-    public void setValues(ArrayList<T> values) {
+    public void setValues(ArrayList<T> values) { //set key array
         this.values = values;
-    } //set key array
+    }
 
     //------------------------METHODS-------------------------------
 
-    public void incSize(){
+    public void incSize(){ //increase size
         size ++;
-    } //increase size
+    }
 
-    public void decSize(){
+    public void decSize(){ //decrease size
         size --;
-    }  //decrease size
+    }
 
     public abstract BPTNode<T> split(); //split node
 

@@ -16,12 +16,12 @@ public class BPTInternal<T extends Comparable<T>> extends BPTNode<T> { // non le
     public ArrayList<BPTNode<T>> getPointers(){
         return pointers;
     }
-
     public void setPointers(ArrayList<BPTNode<T>> pointers){
         this.pointers = pointers;
     }
 
     //------------------------METHODS-------------------------------
+
     public void insert(T value, BPTNode<T> newPointer) {
         incSize();
 
