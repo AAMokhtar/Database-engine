@@ -5,11 +5,11 @@ import DatabaseEngine.Utilities;
 import DatabaseEngine.index;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 public class BPlusTree<T extends Comparable<T>> implements Serializable,index<T> {
 
     private  String name; // tree filename (tablename + column name)
     private int maxPerNode; //max elements per node
+    private int treeSize;
     private int minPerNode; // min elements per node
     private BPTNode<T> root; //root node
     private ArrayList<pointer> pointerList; //all record pointers in tree sorted by page#, index#
@@ -31,11 +31,19 @@ public class BPlusTree<T extends Comparable<T>> implements Serializable,index<T>
         return maxPerNode;
     }
 
+    public int getTreeSize(){
+        return treeSize;
+    }
+
     public int getMinPerNode(){
         return minPerNode;
     }
 
     public ArrayList<pointer> getPointerList(){ return pointerList;}
+
+    public void setTreeSize(int size){
+        treeSize = size;
+    }
 
 //------------------------METHODS-------------------------------
 
@@ -43,18 +51,169 @@ public class BPlusTree<T extends Comparable<T>> implements Serializable,index<T>
 
     //Insert
     public void insert(T value, pointer recordPointer) throws DBAppException {
-        shiftPointersAt(recordPointer.getPage(), recordPointer.getOffset(), 1); //shift old pointers
-        getPointerList().add(recordPointer); //insert new pointer
-        Collections.sort(pointerList); //sort
+        shiftPointersAt(recordPointer.getPage(), recordPointer.getOffset(), 1); //change old pointers
+        int pointerPlace = Utilities.selectiveBinarySearch(getPointerList(), recordPointer, ">="); //correct position
+        if(pointerPlace == -1) pointerPlace = getPointerList().size(); //insert at the end
+
+        getPointerList().add(pointerPlace,recordPointer); //insert pointer
 
         insertHelp(value, recordPointer, root); //current node needed for recursion
+        setTreeSize(getTreeSize() + 1); // increase size
     }
 
     //Search
-    public ArrayList<pointer> search(T key){
+    public ArrayList<pointer> search(T value, String operator){
 
-        //TODO: i am almost dead
-        return null;
+        ArrayList<pointer> ret = new ArrayList<>(); //output array
+        BPTExternal<T> curNode;
+        int index;
+
+        switch (operator){
+
+            case "=":
+                curNode = Utilities.findLeaf(root, value, false); //find node of value
+                index = Utilities.selectiveBinarySearch(curNode.getValues(), value, "="); //find first index with value
+
+                while (curNode != null && index != -1){ // find all records = value
+
+                    if (index == curNode.getValues().size()){ //next node
+                        curNode = curNode.getNext();
+                        index = 0;
+
+                    }
+
+                    else if (curNode.getValues().get(index) != value){ // record > value
+                        break;
+                    }
+
+                    else {
+                       ret.add(curNode.getPointers().get(index++)); //add pointer to output
+                    }
+                }
+
+                break;
+
+            //-----------------NEXT CASE--------------------
+
+            case "!=":
+
+                curNode = Utilities.findLeaf(root, value, true); //first node
+                index = 0;
+
+                while (curNode != null){ // find all records != value
+
+                    if (index == curNode.getValues().size()){ //next node
+                        curNode = curNode.getNext();
+                        index = 0;
+
+                    }
+
+                    else if (curNode.getValues().get(index) != value){
+                        ret.add(curNode.getPointers().get(index++)); // add to output
+                    }
+                }
+
+                break;
+
+            //-----------------NEXT CASE--------------------
+
+            case ">=":
+
+                curNode = Utilities.findLeaf(root, value, false); //find node
+                index = Utilities.selectiveBinarySearch(curNode.getValues(), value, "<") + 1; //filter <
+
+                while (curNode != null){ // find all records >= value
+
+                    if (index == curNode.getValues().size()){ //next node
+                        curNode = curNode.getNext();
+                        index = 0;
+
+                    }
+                    else {
+                        ret.add(curNode.getPointers().get(index++)); //add pointer to output
+                    }
+                }
+
+                break;
+
+            //-----------------NEXT CASE--------------------
+
+            case ">":
+
+                curNode = Utilities.findLeaf(root, value, false); //get node that contains value
+                index = Utilities.selectiveBinarySearch(curNode.getValues(), value, "<=") + 1; //filter <=
+
+                while (curNode != null){ // find all records < value
+
+                    if (index == curNode.getValues().size()){ //next node
+                        curNode = curNode.getNext();
+                        index = 0;
+
+                    }
+                    else {
+                        ret.add(curNode.getPointers().get(index++)); //add pointer to output
+                    }
+                }
+
+                break;
+
+            //-----------------NEXT CASE--------------------
+
+            case "<=":
+
+                curNode = Utilities.findLeaf(root, value, true); //first node
+                index = 0;
+
+                while (curNode != null){ // find all records <= value
+
+                    if (index == curNode.getValues().size()){ //next node
+                        curNode = curNode.getNext();
+                        index = 0;
+
+                    }
+
+                    else if (curNode.getValues().get(index).compareTo(value) > 0){ //record greater than value
+                        break;
+                    }
+
+                    else {
+                        ret.add(curNode.getPointers().get(index++)); //add pointer to output
+                    }
+                }
+
+                break;
+
+            //-----------------NEXT CASE--------------------
+
+            case "<":
+
+                curNode = Utilities.findLeaf(root, value, true); //first element
+                index = 0;
+
+                while (curNode != null){ // find all records < value
+
+                    if (index == curNode.getValues().size()){ //next mode
+                        curNode = curNode.getNext();
+                        index = 0;
+
+                    }
+
+                    else if (curNode.getValues().get(index).compareTo(value) >= 0){ // record > value
+                        break;
+                    }
+                    else {
+                        ret.add(curNode.getPointers().get(index++)); //add to output
+                    }
+                }
+
+                break;
+
+            //-----------------NEXT CASE--------------------
+
+            default: break;
+        }
+
+        return ret;
     }
 
 

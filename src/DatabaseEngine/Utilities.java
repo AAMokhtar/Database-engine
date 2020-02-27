@@ -1,5 +1,9 @@
 package DatabaseEngine;
 
+import DatabaseEngine.BPlus.BPTExternal;
+import DatabaseEngine.BPlus.BPTInternal;
+import DatabaseEngine.BPlus.BPTNode;
+
 import java.io.*;
 import java.lang.reflect.Array;
 import java.util.*;
@@ -371,7 +375,37 @@ public class Utilities {
 			}
 		}
 
+		if (mode.equals("=")) { //earliest index equal to value
+
+			while (lo <= hi) {
+				mid = (hi + lo) / 2;
+
+				if (list.get(mid).compareTo(value) > 0) { //value <
+					hi = mid - 1;
+				}
+				else if (list.get(mid).compareTo(value) == 0) { //value found
+					hi = mid - 1;
+					index = mid;
+				}
+				else { //value greater
+					lo = mid + 1;
+				}
+			}
+		}
+
 		return index;
+	}
+
+	//get leaf inside B+ tree (takes a value, returns the leaf node of that value)
+	public static <T extends Comparable<T>> BPTExternal<T> findLeaf(BPTNode<T> cur, T value, boolean firstNode){
+
+		if (cur instanceof BPTInternal){
+			int key = selectiveBinarySearch(cur.getValues(), value, "<="); //find place in array
+			if (firstNode) key = -1;
+			return findLeaf(((BPTInternal<T>) cur).getPointers().get(key + 1),value, firstNode); //down the tree
+		}
+
+		return (BPTExternal<T>) cur;
 	}
 
 }
