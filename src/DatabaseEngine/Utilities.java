@@ -7,6 +7,7 @@ import DatabaseEngine.BPlus.BPTNode;
 import java.io.*;
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.Set;
 
 public class Utilities {
 	
@@ -130,10 +131,68 @@ public class Utilities {
 		return null;
 	}
 	
-	//TODO: FOR ALI: edit this code such that you get back data for a specific table 
-	//TODO: this, when executed, prints metadata content. 
-	//TODO: you can copy this method and edit it to read only specific parts of the metadata file
-	//TODO: BUT KEEP THIS METHOD INTACT THX
+	//TODO: FOR ALI: edit this code such that you get back data for a specific table
+
+	//Used in insert to get meta data for specific table
+	//METHOD WORKS. IT HAS BEEN REVIEWED
+	public static ArrayList<String[]> readMetaDataForSpecificTable(String strTableName) {
+
+		String tableMetaData = "";
+
+		try {
+			String line = "";
+			ArrayList<String[]> metaDataForSpecificTable= new ArrayList<String[]>();
+
+			BufferedReader read = new BufferedReader(new FileReader("data//metadata.csv"));
+			while ((line = read.readLine()) != null) {
+				String[] data = line.split(",");
+				if(data[0].equals(strTableName))
+				{
+					metaDataForSpecificTable.add(data);
+				}
+			}
+
+
+			read.close();
+			return metaDataForSpecificTable;
+		}
+
+		catch(Exception E) {
+			System.out.println("Failed to read from metadata.csv!");
+			return null;
+		}
+	}
+
+	//method takes metaData of a specific table as input and output hashtable containing column names and types
+	//METHOD WORKS. IT HAS BEEN REVIEWED
+	public static Hashtable<String, String> extractNameAndTypeFromMeta(ArrayList<String[]> metaDataForSpecificTable)
+	{
+		Hashtable<String,String> columnNameColumnType=new Hashtable<String,String>();
+		for(String[] column: metaDataForSpecificTable)
+		{
+			String columnName=column[1];
+			String columnType=column[2];
+			columnNameColumnType.put(columnName, columnType);
+		}
+		return columnNameColumnType;
+	}
+
+	//method determines the clustering key of a table and it's order in the vector of value
+	//METHOD WORKS. IT HAS BEEN REVIEWED
+	public static String[] determineValueAndIndexOfClusteringKey(ArrayList<String[]> metaDataForSpecificTable)
+	{
+		String[] indexAndValue= new String[2];
+		for (int i = 0; i < metaDataForSpecificTable.size(); i++) {
+			String[] array= metaDataForSpecificTable.get(i);
+			if(array[3].equals("True"))
+			{
+				indexAndValue[0]=array[1];
+				indexAndValue[1]=i+"";
+			}
+		}
+		return indexAndValue;
+	}
+
 	public static String readMetaData() {
 		
 		String tableMetaData = "";
@@ -199,17 +258,8 @@ public class Utilities {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	//seriaize page
-	
 	public static void serializePage(Page P) {
 		  //store into file (serialize)
 				

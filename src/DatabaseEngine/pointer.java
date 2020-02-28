@@ -1,4 +1,4 @@
-package DatabaseEngine.BPlus;
+package DatabaseEngine;
 
 public class pointer implements Comparable<pointer>{
     private int page; //puge num
@@ -9,7 +9,8 @@ public class pointer implements Comparable<pointer>{
     public int getOffset(){return offset;}
     public void setPage(int page){this.page = page;}
     public void setOffset(int offset){this.offset = offset;}
-    pointer(int page, int offset){
+
+    public pointer(int page, int offset){
         this.page = page;
         this.offset = offset;
     }

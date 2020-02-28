@@ -1,8 +1,7 @@
 package DatabaseEngine.BPlus;
 
-import DatabaseEngine.DBAppException;
-import DatabaseEngine.Utilities;
-import DatabaseEngine.index;
+import DatabaseEngine.*;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 public class BPlusTree<T extends Comparable<T>> implements Serializable,index<T> {
@@ -15,7 +14,7 @@ public class BPlusTree<T extends Comparable<T>> implements Serializable,index<T>
     private ArrayList<pointer> pointerList; //all record pointers in tree sorted by page#, index#
 
 
-    BPlusTree(String name, int N) throws DBAppException {
+    public BPlusTree(String name, int N) throws DBAppException {
         this.name = name;
         maxPerNode = N;
         minPerNode = N/2;
@@ -62,9 +61,9 @@ public class BPlusTree<T extends Comparable<T>> implements Serializable,index<T>
     }
 
     //Search
-    public ArrayList<pointer> search(T value, String operator){
+    public Set<pointer> search(T value, String operator){
 
-        ArrayList<pointer> ret = new ArrayList<>(); //output array
+        Set<pointer> ret = new Set<>(); //output array
         BPTExternal<T> curNode;
         int index;
 
