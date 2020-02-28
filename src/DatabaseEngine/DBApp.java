@@ -62,7 +62,9 @@ public class DBApp {
 //Saeed's part:
 
     public void deleteFromTable(String strTableName, Hashtable<String,Object> htblColNameValue) throws DBAppException{
-
+   		Table t = Utilities.deserializeTable(strTableName);
+    	t.delete(htblColNameValue);
+    	
     }
 
 //----------------------------------M2------------------------------------------
