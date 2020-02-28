@@ -79,6 +79,36 @@ public class Page implements Serializable {
 	 * the page array in TABLE class (if having to delete the page)
 	 * the vector pageElements (due to deleted tuple)
 	 */
+	public void deleteByValue(Hashtable<Integer,Object> keyValue) {
+		
+		Set<Integer> indexedKeys= keyValue.keySet();
+		
+		for (int i = 0 ; i<PageElements.size();i++) {
+			boolean match = true;
+			Vector<Object> v = PageElements.get(i);
+			for(int key: indexedKeys) {
+				if(!(v.get(key).equals(keyValue.get(key)))){
+				match = false;
+				}
+			}
+			if(match) {
+				PageElements.removeElementAt(i);
+				i--;
+				count--;
+			}
+			}
+		}
+	
+	
+	
+//removes an element from the page by index
+	public void deleteByIndex(int index) {
+		PageElements.removeElementAt(index);
+	}
+
+
+
+
 
 	//TODO for ALI AND SAEED: shifting and sorting
 
