@@ -130,8 +130,6 @@ public class Utilities {
 
 		return null;
 	}
-	
-	//TODO: FOR ALI: edit this code such that you get back data for a specific table
 
 	//Used in insert to get meta data for specific table
 	//METHOD WORKS. IT HAS BEEN REVIEWED

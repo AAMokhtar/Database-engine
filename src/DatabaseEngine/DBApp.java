@@ -3,10 +3,7 @@ package DatabaseEngine; //change to team name before submitting
 import DatabaseEngine.BPlus.BPlusTree;
 
 import javax.swing.plaf.synth.ColorType;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.Iterator;
+import java.util.*;
 
 public class DBApp {
 	private Hashtable<String, Hashtable<String, index>> indices; // table name -> column name -> tree (M2 code)
@@ -182,7 +179,12 @@ public class DBApp {
 			}
 
 			else { //linear search in records
-				//TODO: linear search
+				for(int pageId : cur_table.getPages()){
+					Vector<Vector> page = Utilities.deserializePage(pageId).getPageElements();
+					for(Vector tuple : page){
+
+					}
+				}
 			}
 
 			if (queryResult == null) throw new DBAppException("Query failed!"); //could not perform query

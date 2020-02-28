@@ -56,8 +56,11 @@ public class Page implements Serializable {
 	
 	//get number of elements in page
 	public int getElementsCount() {
-		return this. count;
+		return this.count;
 	}
+
+	//get page elements
+	public Vector<Vector> getPageElements(){return PageElements;}
 	
 	//TO SERIALIZE AND DESERIALIZE: check out utilities class.
 	
