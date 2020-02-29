@@ -106,18 +106,22 @@ public class Table implements Serializable{
 		}
 
 		// Looping on all the pages to check for the elements to be deleted
-		Vector<Page> temp = new Vector<Page>();
-
 		// Deleting all the matching elements
+		// Checking if the page is empty, if it is, deleting the page
 		for (int i = 0; i < pagesGroup.size(); i++) {
 			Page p = Utilities.deserializePage(pagesGroup.get(i));
 			p.deleteByValue(keyValue);
-			temp.add(p);
+			if (p.getElementsCount() == 0) {
+				deletePage(p);
+			} else {
+				Utilities.serializePage(p);
+			}
+	
 		}
 
 		// populating pages with empty rows
 
-		for (int i = 0; i + 1 < pagesGroup.size(); i++) {
+/*		for (int i = 0; i + 1 < pagesGroup.size(); i++) {
 			Page p1 = temp.get(i);
 			int freeRows = p1.getN() - p1.getElementsCount();
 			for (int j = 0; j < freeRows; j++) {
@@ -126,9 +130,8 @@ public class Table implements Serializable{
 				p2.deleteByIndex(0);
 			}
 		}
-
-		// deleting all the empty pages and serializing the others
-
+*/		// deleting all the empty pages and serializing the others
+/*
 		for (int i = 0; i + 1 < pagesGroup.size(); i++) {
 			Page p = temp.get(i);
 			if (p.getElementsCount() == 0) {
@@ -137,7 +140,7 @@ public class Table implements Serializable{
 			} else {
 				Utilities.serializePage(p);
 			}
-		}
+		}*/
 	}
 
 	// Deleting the page completely
