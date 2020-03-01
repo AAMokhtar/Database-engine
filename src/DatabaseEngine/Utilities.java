@@ -3,6 +3,7 @@ package DatabaseEngine;
 import DatabaseEngine.BPlus.BPTExternal;
 import DatabaseEngine.BPlus.BPTInternal;
 import DatabaseEngine.BPlus.BPTNode;
+import DatabaseEngine.BPlus.BPlusTree;
 
 import java.io.*;
 import java.lang.reflect.Array;
@@ -357,7 +358,7 @@ public class Utilities {
 		return ret;
 	}
 
-	//Btrees
+	//B+ trees
 
 	//binary search
 	public static <T extends Comparable<T>> int selectiveBinarySearch(ArrayList<T> list, T value, String mode){
@@ -454,6 +455,48 @@ public class Utilities {
 		}
 
 		return (BPTExternal<T>) cur;
+	}
+
+	//select
+	public static boolean condition(Object a, Object b,Class type , String condition){
+
+		switch (type.getName()){ //perform query
+			case "java.lang.Integer":
+				return conditionHelp((Integer) a,(Integer) b,condition);
+			case "java.lang.Double":
+				return conditionHelp((Double) a,(Double) b,condition);
+
+			case "java.lang.String":
+				return conditionHelp((String) a,(String) b,condition);
+
+			case "java.util.Date":
+				return conditionHelp((Date) a,(Date) b,condition);
+
+			case "java.lang.Boolean":
+				return conditionHelp((Boolean) a,(Boolean) b,condition);
+
+			default:break;
+		}
+		return false;
+	}
+
+	private static <T extends Comparable<T>> boolean conditionHelp(T a, T b, String condition){
+
+		switch (condition){
+			case ">":
+				return a.compareTo(b) > 0;
+			case ">=":
+				return a.compareTo(b) >= 0;
+			case "<":
+				return a.compareTo(b) < 0;
+			case "<=":
+				return a.compareTo(b) <= 0;
+			case "=":
+				return a.compareTo(b) == 0;
+			default: break;
+		}
+
+		return false;
 	}
 
 }

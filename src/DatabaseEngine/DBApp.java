@@ -4,6 +4,7 @@ import DatabaseEngine.BPlus.BPlusTree;
 
 import javax.swing.plaf.synth.ColorType;
 import java.util.*;
+import java.util.concurrent.locks.Condition;
 
 public class DBApp {
 	private Hashtable<String, Hashtable<String, index>> indices; // table name -> column name -> tree (M2 code)
@@ -69,8 +70,7 @@ public class DBApp {
 
 //----------------------------------M2------------------------------------------
 	public Iterator selectFromTable(SQLTerm[] arrSQLTerms, String[] strarrOperators) throws DBAppException{
-		Set<pointer> resultPointers = null;
-
+		Set<Object> resultPointers = null;
 		//----=not enough operators=-----
 		if (strarrOperators.length != arrSQLTerms.length - 1)
 			throw new DBAppException("Operator missing!");
@@ -96,10 +96,13 @@ public class DBApp {
 
 			//-------column exists-------
 			String[] colInfo = null;
-
+			int colnum = 0;
 			for(String[] col : metaData){
-				if (col[1].equals(cur._strColumnName))
+				if (col[1].equals(cur._strColumnName)){
 					colInfo = col;
+					break;
+				}
+				colnum++; //query column
 			}
 
 			if (colInfo == null) throw new DBAppException("Attribute not found!");
@@ -140,7 +143,7 @@ public class DBApp {
 
 
 		//------------------------------------Execution------------------------------------
-			Set<pointer> queryResult = null;
+			Set<Object> queryResult = null;
 
 			if (Indexed){ //binary search in tree
 
@@ -181,15 +184,32 @@ public class DBApp {
 			}
 
 			else { //linear search in records
-				for(int pageId : cur_table.getPages()){
-					Vector<Vector> page = Utilities.deserializePage(pageId).getPageElements();
-					for(Vector tuple : page){
 
-					}
+				if (colInfo[4].charAt(0) == 'T'){ //clustering key
+					//TODO binary search
 				}
+				else{ //non clustering key
+
+					for(int pageId : cur_table.getPages()){
+						Vector<Vector> page = Utilities.deserializePage(pageId).getPageElements();
+						for(Vector tuple : page){
+
+							if (tuple.size() <= colnum ) //somehow the tuple size is smaller than the column number
+								throw new DBAppException("could not reach column in tuple");
+
+							if (Utilities.condition(cur._objValue,tuple.get(colnum), colType, cur._strOperator))
+								queryResult.add(tuple); //if condition is true
+
+						}
+					}
+
+				}
+
 			}
 
-			if (queryResult == null) throw new DBAppException("Query failed!"); //could not perform query
+			if (queryResult == null)
+				throw new DBAppException("Query failed!"); //could not perform query
+
 			//-----------perform set operation-----------
 
 			if (resultPointers == null) resultPointers = queryResult; //first query
@@ -203,9 +223,31 @@ public class DBApp {
 				}
 			}
 		}
-		
-		//TODO get records from pointers
-		return null;
+
+		//----------------------------Getting Tuples----------------------------
+
+		Vector<Vector> result = new Vector<>(); //final array of tuples
+
+		if(!resultPointers.isEmpty()){ //we have results
+			Iterator ret = resultPointers.iterator(); //get set iterator
+
+			while (ret.hasNext()){
+				Object cur = ret.next();
+
+				if (cur instanceof pointer){ //if element is a pointer
+					pointer curPointer = (pointer) cur; //cast to pointer
+
+					Page curPage = Utilities.deserializePage(curPointer.getPage()); //get page
+
+					result.add(curPage.getPageElements().get(curPointer.getOffset())); //get tuple
+				}
+				else { // if element is a tuple
+					result.add((Vector) cur);
+				}
+			}
+		}
+
+		return result.iterator();
 	}
 
 	public void createBTreeIndex(String strTableName, String strColName) throws DBAppException{
