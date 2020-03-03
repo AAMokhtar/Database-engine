@@ -18,18 +18,12 @@ import DatabaseEngine.BPlus.BPTInternal;
 import DatabaseEngine.BPlus.BPTNode;
 
 import java.io.*;
-
-import java.lang.reflect.Array;
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.*;
-import java.util.Set;
-
-import javax.swing.plaf.synth.SynthSpinnerUI;
-
 import javafx.util.Pair;
 
 public class Utilities {
@@ -54,8 +48,7 @@ public class Utilities {
 	
 	
 	//setup metadata header: to be done in init ONLY.
-	public static void initializeMetaData() {
-		try {
+	public static void initializeMetaData() throws IOException {
         
 	    PrintWriter write = new PrintWriter(new FileWriter(met, true));
 		write.append("Table Name");
@@ -69,19 +62,16 @@ public class Utilities {
 		write.append("Indexed");
 		write.append("\n");
 		 write.flush();
-		   write.close();}
+		   write.close();
 		
-		catch(Exception E) {
-			System.out.println("Failed to initialize metadata.csv!");
-		}
+
 	}
 	
 	
 	//used everytime a table is created to define its structure.
-	public static void writeHeaderIntoMetaData(Hashtable<String, String> colNameType, String tableName, String keyAndIndex) {
+	public static void writeHeaderIntoMetaData(Hashtable<String, String> colNameType, String tableName, String keyAndIndex) throws IOException {
 		Set<String> colName = colNameType.keySet();
 		
-		try {
 			//FileWriter write = new FileWriter("metadata.csv");
 			PrintWriter write = new PrintWriter(new FileWriter(met, true));
 		   for (String n : colName) {
@@ -114,53 +104,34 @@ public class Utilities {
 		
 		   write.flush();
 		   write.close();
-	   }
-
-	   catch(Exception E) {
-		   System.out.println("Failed to update metadata.csv!");
-		   E.printStackTrace();
-	   }
-
 	}
 	//initialize properties
-	public static void initializeProperties(){
+	public static void initializeProperties() throws IOException {
 		Properties p=new Properties();
 		p.setProperty("MaximumRowsCountinPage","200");
 		p.setProperty("NodeSize","15");
 
-		try {
-			p.store(new FileWriter("config//DBApp.properties"),"Database engine properties");
-		}
-		catch (Exception e) {
-			System.out.println("Failed to write file!");
-		}
+		p.store(new FileWriter("config//DBApp.properties"),"Database engine properties");
+
 
 	}
 
 	//read properties
-	public static Properties readProperties(String path){
+	public static Properties readProperties(String path) throws IOException {
 
-		try {
 			FileReader reader =new FileReader(path);
 			Properties p = new Properties();
 			p.load(reader);
 
 			return p;
-		}
-		catch (Exception e){
-			System.out.println("File not found!");
-		}
-
-		return null;
 	}
 
 	//Used in insert to get meta data for specific table
 	//METHOD WORKS. IT HAS BEEN REVIEWED
-	public static ArrayList<String[]> readMetaDataForSpecificTable(String strTableName) {
+	public static ArrayList<String[]> readMetaDataForSpecificTable(String strTableName) throws IOException {
 
 		String tableMetaData = "";
 
-		try {
 			String line = "";
 			ArrayList<String[]> metaDataForSpecificTable= new ArrayList<String[]>();
 
@@ -176,12 +147,6 @@ public class Utilities {
 
 			read.close();
 			return metaDataForSpecificTable;
-		}
-
-		catch(Exception E) {
-			System.out.println("Failed to read from metadata.csv!");
-			return null;
-		}
 	}
 
 	//method takes metaData of a specific table as input and output hashtable containing column names and types
@@ -214,11 +179,10 @@ public class Utilities {
 		return indexAndValue;
 	}
 
-	public static String readMetaData() {
+	public static String readMetaData() throws IOException {
 		
 		String tableMetaData = "";
 		
-		try {
 			String line = "";
 			
 			
@@ -232,20 +196,13 @@ public class Utilities {
 		
 			read.close();	
 			return tableMetaData;
-		}
-
-		catch(Exception E) {
-			System.out.println("Failed to read from metadata.csv!");
-			return "";
-		}
 	}
 	
 	
 	
-    	public static boolean isTableUnique(String tablename) {
+    	public static boolean isTableUnique(String tablename) throws IOException {
 		
 
-		try {
 			String line = "";
 			boolean flag = false;
 			
@@ -269,82 +226,53 @@ public class Utilities {
 
 			read.close();	
 		    return true;
-		}
-
-		catch(Exception E) {
-			System.out.println("Failed to read from metadata.csv!");
-			return false;
-		}
 	}
 	
 	
 	
-	public static void serializePage(Page P) {
+	public static void serializePage(Page P) throws IOException {
 		  //store into file (serialize)
 
-				try {
 					File file = new File("data//" + "page_" + P.getID() + ".class"); //TODO: fix up path (first item) once directory is set
 					FileOutputStream fileAccess;
 					fileAccess = new FileOutputStream(file);
 					ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
 					objectAccess.writeObject(P);
-				} catch (Exception e) {
-					e.printStackTrace();
-					System.out.println("Failed to serialize page.");
-				}
+
 	}
 	
 	
 	//serialize Table
-	public static void serializeTable(Table T) {
+	public static void serializeTable(Table T) throws IOException {
 		  //store into file (serialize)
 
-				try {
 					File file = new File("data//" + "table_" + T.getName() + ".class"); //TODO: fix up path (first item) once directory is set
 					FileOutputStream fileAccess;
 					fileAccess = new FileOutputStream(file);
 					ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
 					objectAccess.writeObject(T);
-				} catch (Exception e) {
-					e.printStackTrace();
-					System.out.println("Failed to serialize table.");
-				}
+
 	}
 	
 	
 	
 	//deserialize page: we pass the id of the page (obtained from the table) and we receive the page object.
-	public static Page deserializePage(int pageID) {
+	public static Page deserializePage(int pageID) throws IOException, ClassNotFoundException {
 		//read from file (deserialize)
-		       try {
 				FileInputStream readFromFile = new FileInputStream("data//" + "page_" + pageID + ".class");
 				ObjectInputStream readObject = new ObjectInputStream(readFromFile);
 				Page k = (Page)readObject.readObject();
 				return k;
-
-		       }
-
-		       catch(Exception E) {
-		    	   System.out.println("Failed to deserialize page. Return value: NULL");
-		       }
-		       return null;
 	}
 	
 	
-	public static Table deserializeTable(String tableName) {
+	public static Table deserializeTable(String tableName) throws IOException, ClassNotFoundException {
 		//read from file (deserialize)
-		       try {
 				FileInputStream readFromFile = new FileInputStream("data//" + "table_" + tableName + ".class");
 				ObjectInputStream readObject = new ObjectInputStream(readFromFile);
 				Table k = (Table)readObject.readObject();
 				return k;
-				
-		       }
-		       
-		       catch(Exception E) {
-		    	   System.out.println("Failed to deserialize page. Return value: NULL");
-		       }
-		       return null;
+
 	}
 
 	
@@ -353,9 +281,7 @@ public class Utilities {
 	
 	
 	//reads a table name and column name and returns its index
-  	public static int returnIndex(String table, String column)
-  	{
-  		try {
+  	public static int returnIndex(String table, String column) throws IOException {
   			BufferedReader br = new BufferedReader(new FileReader("data//metadata.csv"));
   			String line = br.readLine();
   			if(line==null)
@@ -412,11 +338,6 @@ public class Utilities {
   				return -1;
   			}
   			else return index;
-  		} catch (Exception e) {
-  			e.printStackTrace();
-  			return -1;
-  		}
-  		
   	}
   	
   	//reads a column name and returns an index
@@ -425,9 +346,7 @@ public class Utilities {
   	//TODO: should table entries follow each other in metadata?
   	//if not no need for finito
   	
-  	public static boolean updateChecker(String tableName, Hashtable<String,Object> value)
-  	{
-  		try {
+  	public static boolean updateChecker(String tableName, Hashtable<String,Object> value) throws ClassNotFoundException, IOException {
   			BufferedReader br = new BufferedReader(new FileReader("data//metadata.csv"));
   			String line = br.readLine(); //should contain the first line that contains how the csv file is separated
   			if(line == null)
@@ -501,23 +420,16 @@ public class Utilities {
   			
   			//else if table exists, columns of input HT exist in the metadata
   			//and the input data matches with the column data type
-  			//kda kda meya meya awi
+  			//kda kda meya meya awi awi
   			return true;
-  			
-  		} catch (Exception e) {
-  			e.printStackTrace();
-  			return false;
-  		}
   	}
   	
   	
   	//returns the column name and type of the clustering key, respectively
   	//note: I don't check if the metadata is empty or table name is nonexistent as these were checked by updateChecker()
   	//and I only call this method if updateChecker() gave an okay
-  	public static Pair<String,String> returnClustering(String tableName)
-  	{
+  	public static Pair<String,String> returnClustering(String tableName) throws IOException {
   		Pair<String,String> type = new Pair<String,String>("","");
-  		try {
   			BufferedReader br = new BufferedReader(new FileReader("data//metadata.csv"));
   			br.readLine(); //should read the first line containing how the csv file is ordered
   			
@@ -536,10 +448,7 @@ public class Utilities {
   			
   			System.out.println("Clustering column not found");
   			return new Pair<String,String>("","");
-  		} catch (Exception e) {
-  			e.printStackTrace();
-  			return new Pair<String,String>("",""); //return empty column name and type
-  		}
+
   		
   	}
   	
@@ -664,8 +573,16 @@ public class Utilities {
   				//for each key value pair in the HT which contains the values to be updated 
   				newVal.forEach((key,value) ->
   				{
-  					int i = returnIndex(table, key);
-  					records.get(mid).set(i, value); //ignore the warning, updateChecker already checked the types in the HT matches with metadata
+					int i = 0;
+
+					//TODO: I can only catch
+					try {
+						i = returnIndex(table, key);
+					}
+					catch (IOException e) {
+						e.printStackTrace();
+					}
+					records.get(mid).set(i, value); //ignore the warning, updateChecker already checked the types in the HT matches with metadata
   					//TODO: is the TouchDate the last index?
   					records.get(mid).set(records.get(mid).size()-1, LocalDateTime.now()); //updates the TouchDate to current time
   				});
@@ -688,11 +605,10 @@ public class Utilities {
 	//indices
 
 	//loads all indices from memory and associates columns with their index
-	public static Hashtable<String, Hashtable<String, index>> loadIndices() throws DBAppException {
+	public static Hashtable<String, Hashtable<String, index>> loadIndices() throws DBAppException, IOException {
 		BufferedReader meta = new BufferedReader(new StringReader(readMetaData()));
 		Hashtable<String, Hashtable<String, index>> ret = new Hashtable<>();
 
-		try {
 			meta.readLine();
 
 			while (meta.ready()){
@@ -708,10 +624,8 @@ public class Utilities {
 				}
 
 			}
-		}
-		catch (Exception e){
-			throw new DBAppException("failed to load indices");
-		}
+
+
 
 		return ret;
 	}

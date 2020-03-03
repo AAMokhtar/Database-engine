@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Polygon;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -22,7 +23,7 @@ import java.util.concurrent.locks.Condition;
 public class DBApp {
 	private Hashtable<String, Hashtable<String, index>> indices; // table name -> column name -> tree (M2 code)
 
-	public void init() throws DBAppException {
+	public void init() throws DBAppException, IOException {
 		Utilities.initializeMetaData();
 		Utilities.initializeProperties();
 //		indices = Utilities.loadIndices(); (M2 code)
@@ -30,7 +31,7 @@ public class DBApp {
 		//TODO: add any other "initializing code" here!
 	}
 
-	public void createTable(String strTableName, String strClusteringKeyColumn, Hashtable<String,String> htblColNameType ) throws DBAppException {
+	public void createTable(String strTableName, String strClusteringKeyColumn, Hashtable<String,String> htblColNameType ) throws DBAppException, IOException {
 
 		Table t = new Table(strTableName,strClusteringKeyColumn,htblColNameType);
 		//now the programmer may initialize a page to insert into it.
@@ -64,7 +65,7 @@ public class DBApp {
     
 //Ali's part:
 
-	public void insertIntoTable(String strTableName, Hashtable<String,Object> htblColNameValue) throws DBAppException {
+	public void insertIntoTable(String strTableName, Hashtable<String,Object> htblColNameValue) throws DBAppException, IOException, ClassNotFoundException {
 		//Step 0: Load table object
 		Table tableToInsertIn=Utilities.deserializeTable(strTableName);
 		if(tableToInsertIn!=null)
@@ -114,8 +115,7 @@ public class DBApp {
   	//If only one at a time, simplify updateChecker (inc. Hashtable implementation)
   	
   	public void updateTable(String strTableName, String strClusteringKey, 
-  			                       Hashtable<String,Object> htblColNameValue ) throws DBAppException
-  	{
+  			                       Hashtable<String,Object> htblColNameValue ) throws DBAppException, IOException, ClassNotFoundException {
   		//check if table exists, all columns exits and if they do check if the type of object matches
   		boolean valid = Utilities.updateChecker(strTableName, htblColNameValue);
   		
@@ -203,14 +203,14 @@ public class DBApp {
 
 //Saeed's part:
 
-    public void deleteFromTable(String strTableName, Hashtable<String,Object> htblColNameValue) throws DBAppException{
+    public void deleteFromTable(String strTableName, Hashtable<String,Object> htblColNameValue) throws DBAppException, IOException, ClassNotFoundException {
    		Table t = Utilities.deserializeTable(strTableName);
     	t.delete(htblColNameValue);
     	
     }
 
 //----------------------------------M2------------------------------------------
-	public Iterator selectFromTable(SQLTerm[] arrSQLTerms, String[] strarrOperators) throws DBAppException{
+	public Iterator selectFromTable(SQLTerm[] arrSQLTerms, String[] strarrOperators) throws DBAppException, ClassNotFoundException, IOException {
 		BSet<Object> resultPointers = null;
 		//----=not enough operators=-----
 		if (strarrOperators.length != arrSQLTerms.length - 1)
@@ -251,12 +251,8 @@ public class DBApp {
 			//-------correct type--------
 			Class colType = null;
 
-			try {
 				colType = Class.forName(colInfo[2]);
-			}
-			catch (Exception e){
-				throw new DBAppException("Column type does not exist!");
-			}z
+
 			if (!colType.isInstance(cur._objValue)){
 				throw new DBAppException("term value is incompatible with column type!");
 			}
@@ -289,7 +285,7 @@ public class DBApp {
 			if (Indexed){ //binary search in tree
 
 				Class polygon = null;
-				try { polygon = Class.forName("java.awt.Polygon"); } catch (Exception e){}; //get polygpn class
+				polygon = Class.forName("java.awt.Polygon"); //get polygpn class
 				if (polygon == null) throw new DBAppException("a problem occurred!"); //somehow polygon class is not found
 
 				if (polygon.isAssignableFrom(colType)){ //use R tree
