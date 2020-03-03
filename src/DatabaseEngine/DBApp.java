@@ -29,12 +29,13 @@ public class DBApp {
 
 		//TODO: add any other "initializing code" here!
 	}
-	
+
 	public void createTable(String strTableName, String strClusteringKeyColumn, Hashtable<String,String> htblColNameType ) throws DBAppException {
-		
+
 		Table t = new Table(strTableName,strClusteringKeyColumn,htblColNameType);
 		//now the programmer may initialize a page to insert into it.
 		//insert into it using Tuples object
+		Utilities.serializeTable(t);
 	}
 
 //	public static void main(String args[]) {
@@ -63,10 +64,42 @@ public class DBApp {
     
 //Ali's part:
 
-    public void insertIntoTable(String strTableName, Hashtable<String,Object> htblColNameValue) throws DBAppException{
-
-
-    }
+	public void insertIntoTable(String strTableName, Hashtable<String,Object> htblColNameValue) throws DBAppException {
+		//Step 0: Load table object
+		Table tableToInsertIn=Utilities.deserializeTable(strTableName);
+		if(tableToInsertIn!=null)
+		{
+			//Step 1: load meta data for specific table
+			ArrayList<String[]> metaDataForSpecificTable= Utilities.readMetaDataForSpecificTable(strTableName);
+			//Step 2: store column names and corresponding types of metaDataForSpecificTable in hash table to make life simpler
+			Hashtable<String,String> columnNameColumnType= Utilities.extractNameAndTypeFromMeta(metaDataForSpecificTable);
+			//Step 3: Determine clustering of table and its index in the tuple vector
+			String[] tempArray=null;
+				tempArray = Utilities.determineValueAndIndexOfClusteringKey(metaDataForSpecificTable);
+				String clusteringKey=tempArray[0];
+				int indexClusteringKey=Integer.parseInt(tempArray[1]);
+				//step 4: Verify that tuple is valid before attempting to insert it
+					Page.verifyTuple(strTableName, htblColNameValue,columnNameColumnType);
+					//step 5:  use the value in the hash table called htblColNameValue to create a new tuple. This tuple will be inserted in step 8 or 9
+					Vector newTuple=Page.createNewTuple(metaDataForSpecificTable, htblColNameValue);
+					//step 6: Determine the page in which I should  do the insert and retrieve it
+					String[] clusteringKeyInfo=metaDataForSpecificTable.get(indexClusteringKey);
+					String clusteringKeyType=clusteringKeyInfo[2];
+					Page toInsertIn=tableToInsertIn.determinePageNeededForInsert(indexClusteringKey, htblColNameValue.get(clusteringKey), clusteringKeyType,newTuple);
+					//Step 7: *SPECIAL CASE OF INSERT* if it was determined in step 6 that the tuple to be inserted is the last in the ENTIRE table
+					if(toInsertIn==null)
+					{
+						tableToInsertIn.insertSpecialCase(newTuple);
+					}
+					//Step 8: *REGULAR CASE OF INSERT*
+					else if(toInsertIn.getElementsCount()!=0)
+					{
+						tableToInsertIn.insertRegularCase(newTuple, toInsertIn, indexClusteringKey, htblColNameValue.get(clusteringKey), clusteringKeyType);
+					}
+		}
+		//Step 9:serialize page again
+		Utilities.serializeTable(tableToInsertIn);
+	}
     //Mayar's part:
     //---------------------------------------------------------------------UPDATE METHOD--------------------------------------------------------------------
 	
@@ -223,7 +256,7 @@ public class DBApp {
 			}
 			catch (Exception e){
 				throw new DBAppException("Column type does not exist!");
-			}
+			}z
 			if (!colType.isInstance(cur._objValue)){
 				throw new DBAppException("term value is incompatible with column type!");
 			}
@@ -366,3 +399,5 @@ public class DBApp {
 		//TODO
 	}
 }
+
+

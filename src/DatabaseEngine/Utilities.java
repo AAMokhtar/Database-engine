@@ -115,12 +115,12 @@ public class Utilities {
 		   write.flush();
 		   write.close();
 	   }
-		
+
 	   catch(Exception E) {
 		   System.out.println("Failed to update metadata.csv!");
 		   E.printStackTrace();
 	   }
-	
+
 	}
 	//initialize properties
 	public static void initializeProperties(){
@@ -233,7 +233,7 @@ public class Utilities {
 			read.close();	
 			return tableMetaData;
 		}
-		
+
 		catch(Exception E) {
 			System.out.println("Failed to read from metadata.csv!");
 			return "";
@@ -244,7 +244,7 @@ public class Utilities {
 	
     	public static boolean isTableUnique(String tablename) {
 		
-		
+
 		try {
 			String line = "";
 			boolean flag = false;
@@ -270,7 +270,7 @@ public class Utilities {
 			read.close();	
 		    return true;
 		}
-		
+
 		catch(Exception E) {
 			System.out.println("Failed to read from metadata.csv!");
 			return false;
@@ -281,7 +281,7 @@ public class Utilities {
 	
 	public static void serializePage(Page P) {
 		  //store into file (serialize)
-				
+
 				try {
 					File file = new File("data//" + "page_" + P.getID() + ".class"); //TODO: fix up path (first item) once directory is set
 					FileOutputStream fileAccess;
@@ -298,7 +298,7 @@ public class Utilities {
 	//serialize Table
 	public static void serializeTable(Table T) {
 		  //store into file (serialize)
-				
+
 				try {
 					File file = new File("data//" + "table_" + T.getName() + ".class"); //TODO: fix up path (first item) once directory is set
 					FileOutputStream fileAccess;
@@ -321,9 +321,9 @@ public class Utilities {
 				ObjectInputStream readObject = new ObjectInputStream(readFromFile);
 				Page k = (Page)readObject.readObject();
 				return k;
-				
+
 		       }
-		       
+
 		       catch(Exception E) {
 		    	   System.out.println("Failed to deserialize page. Return value: NULL");
 		       }
@@ -857,5 +857,4 @@ public class Utilities {
 
 		return false;
 	}
-
 }

@@ -13,7 +13,7 @@ public class BSet<T> extends HashSet<T>{
                 result.add(key);
         }
 
-        return result;
+        return result;z
     }
 
     public BSet<T> OR(BSet<T> set){
