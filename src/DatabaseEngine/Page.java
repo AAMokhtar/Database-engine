@@ -59,6 +59,12 @@ public class Page implements Serializable {
 		return this. count;
 	}
 	
+	//get the vector of records
+	public Vector<Vector> getPageElements()
+	{
+		return this.PageElements;
+	}
+	
 	//TO SERIALIZE AND DESERIALIZE: check out utilities class.
 	
 	
