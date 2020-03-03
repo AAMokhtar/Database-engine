@@ -1,32 +1,20 @@
 package DatabaseEngine; //change to team name before submitting
 
-import java.awt.Dimension;
-import java.awt.Polygon;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Date;
-import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Set;
 import java.util.Vector;
 
 import javafx.util.Pair;
-import DatabaseEngine.BPlus.BPlusTree;
 
-import javax.swing.plaf.synth.ColorType;
 import java.util.*;
-import java.util.concurrent.locks.Condition;
 
 
 public class DBApp {
-	private Hashtable<String, Hashtable<String, index>> indices; // table name -> column name -> tree (M2 code)
 
 	public void init() throws DBAppException, IOException {
 		Utilities.initializeMetaData();
 		Utilities.initializeProperties();
-//		indices = Utilities.loadIndices(); (M2 code)
 
 		//TODO: add any other "initializing code" here!
 	}
@@ -208,192 +196,6 @@ public class DBApp {
     	t.delete(htblColNameValue);
     	
     }
-
-//----------------------------------M2------------------------------------------
-	public Iterator selectFromTable(SQLTerm[] arrSQLTerms, String[] strarrOperators) throws DBAppException, ClassNotFoundException, IOException {
-		BSet<Object> resultPointers = null;
-		//----=not enough operators=-----
-		if (strarrOperators.length != arrSQLTerms.length - 1)
-			throw new DBAppException("Operator missing!");
-
-		int i = 0; //operator index
-		for(SQLTerm cur: arrSQLTerms){ //for each SQLTerm
-
-		//------------------------------------Integrity checks------------------------------------
-
-			//--current term is complete-
-			if (cur._strTableName == null || cur._strColumnName == null
-					|| cur._strOperator == null || cur._objValue == null){
-				throw new DBAppException("Incomplete SQLTerm!");
-			}
-
-			//--------table exists-------
-			Table cur_table = Utilities.deserializeTable(cur._strTableName);
-			if (cur_table == null) throw new DBAppException("Table not found!");
-
-			//---extract table metadata--
-			ArrayList<String[]> metaData = Utilities.readMetaDataForSpecificTable(cur._strTableName);
-			if (metaData == null) throw new DBAppException("Cannot fetch metadata!");
-
-			//-------column exists-------
-			String[] colInfo = null;
-			int colnum = 0;
-			for(String[] col : metaData){
-				if (col[1].equals(cur._strColumnName)){
-					colInfo = col;
-					break;
-				}
-				colnum++; //query column
-			}
-
-			if (colInfo == null) throw new DBAppException("Attribute not found!");
-
-			//-------correct type--------
-			Class colType = null;
-
-				colType = Class.forName(colInfo[2]);
-
-			if (!colType.isInstance(cur._objValue)){
-				throw new DBAppException("term value is incompatible with column type!");
-			}
-
-			//------correct operator-----
-			switch (cur._strOperator){
-				case ">":
-				case ">=":
-				case "<":
-				case "<=":
-				case "=":break;
-				default: throw new DBAppException("Unrecognized operator!");
-			}
-
-			//------indexed column?------
-			Boolean Indexed = colInfo[4].charAt(0) == 'T';
-
-			//-------retrieve Index------
-			index tree = null;
-			if (indices.get(cur._strTableName).contains(cur._strColumnName))
-				tree = indices.get(cur._strTableName).get(cur._strColumnName);
-
-			if (Indexed && tree == null)
-				throw new DBAppException("Could not find index!");
-
-
-		//------------------------------------Execution------------------------------------
-			BSet<Object> queryResult = null;
-
-			if (Indexed){ //binary search in tree
-
-				Class polygon = null;
-				polygon = Class.forName("java.awt.Polygon"); //get polygpn class
-				if (polygon == null) throw new DBAppException("a problem occurred!"); //somehow polygon class is not found
-
-				if (polygon.isAssignableFrom(colType)){ //use R tree
-				//TODO: R tree query
-				}
-
-				else { //use B+ trees
-
-					switch (colType.getName()){ //perform query
-						case "java.lang.Integer":
-							queryResult = ((BPlusTree) tree).search((Integer) cur._objValue, cur._strOperator);
-							break;
-
-						case "java.lang.Double":
-							queryResult = ((BPlusTree) tree).search((Double) cur._objValue, cur._strOperator);
-							break;
-
-						case "java.lang.String":
-							queryResult = ((BPlusTree) tree).search((String) cur._objValue, cur._strOperator);
-							break;
-
-						case "java.util.Date":
-							queryResult = ((BPlusTree) tree).search((Date) cur._objValue, cur._strOperator);
-							break;
-
-						case "java.lang.Boolean":
-							queryResult = ((BPlusTree) tree).search((Boolean) cur._objValue, cur._strOperator);
-							break;
-
-						default:break;
-					}
-				}
-			}
-
-			else { //linear search in records
-
-				if (colInfo[4].charAt(0) == 'T'){ //clustering key
-					//TODO binary search
-				}
-				else{ //non clustering key
-
-					for(int pageId : cur_table.getPages()){
-						Vector<Vector> page = Utilities.deserializePage(pageId).getPageElements();
-						for(Vector tuple : page){
-
-							if (tuple.size() <= colnum ) //somehow the tuple size is smaller than the column number
-								throw new DBAppException("could not reach column in tuple");
-
-							if (Utilities.condition(cur._objValue,tuple.get(colnum), colType, cur._strOperator))
-								queryResult.add(tuple); //if condition is true
-
-						}
-					}
-
-				}
-
-			}
-
-			if (queryResult == null)
-				throw new DBAppException("Query failed!"); //could not perform query
-
-			//-----------perform set operation-----------
-
-			if (resultPointers == null) resultPointers = queryResult; //first query
-
-			else { // not first
-				switch (strarrOperators[i++].toUpperCase()){
-					case "AND": resultPointers = resultPointers.AND(queryResult);break;
-					case "OR": resultPointers = resultPointers.OR(queryResult);break;
-					case "XOR": resultPointers = resultPointers.XOR(queryResult);break;
-					default: throw new DBAppException("invalid set operation!");
-				}
-			}
-		}
-
-		//----------------------------Getting Tuples----------------------------
-
-		Vector<Vector> result = new Vector<>(); //final array of tuples
-
-		if(!resultPointers.isEmpty()){ //we have results
-			Iterator ret = resultPointers.iterator(); //get set iterator
-
-			while (ret.hasNext()){
-				Object cur = ret.next();
-
-				if (cur instanceof pointer){ //if element is a pointer
-					pointer curPointer = (pointer) cur; //cast to pointer
-
-					Page curPage = Utilities.deserializePage(curPointer.getPage()); //get page
-
-					result.add(curPage.getPageElements().get(curPointer.getOffset())); //get tuple
-				}
-				else { // if element is a tuple
-					result.add((Vector) cur);
-				}
-			}
-		}
-
-		return result.iterator();
-	}
-
-	public void createBTreeIndex(String strTableName, String strColName) throws DBAppException{
-		//TODO
-	}
-
-	public void createRTreeIndex(String strTableName, String strColName) throws DBAppException{
-		//TODO
-	}
 }
 
 
