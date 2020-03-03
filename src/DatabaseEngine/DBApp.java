@@ -1,6 +1,5 @@
 package DatabaseEngine; //change to team name before submitting
 
-<<<<<<< HEAD
 import java.awt.Dimension;
 import java.awt.Polygon;
 import java.io.BufferedReader;
@@ -13,13 +12,12 @@ import java.util.Set;
 import java.util.Vector;
 
 import javafx.util.Pair;
-=======
 import DatabaseEngine.BPlus.BPlusTree;
 
 import javax.swing.plaf.synth.ColorType;
 import java.util.*;
 import java.util.concurrent.locks.Condition;
->>>>>>> branch 'master' of https://github.com/AhmedAshrafMokhtar/Database-engine.git
+
 
 public class DBApp {
 	private Hashtable<String, Hashtable<String, index>> indices; // table name -> column name -> tree (M2 code)
@@ -180,7 +178,7 @@ public class DBApp {
 
 //----------------------------------M2------------------------------------------
 	public Iterator selectFromTable(SQLTerm[] arrSQLTerms, String[] strarrOperators) throws DBAppException{
-		Set<Object> resultPointers = null;
+		BSet<Object> resultPointers = null;
 		//----=not enough operators=-----
 		if (strarrOperators.length != arrSQLTerms.length - 1)
 			throw new DBAppException("Operator missing!");
@@ -253,7 +251,7 @@ public class DBApp {
 
 
 		//------------------------------------Execution------------------------------------
-			Set<Object> queryResult = null;
+			BSet<Object> queryResult = null;
 
 			if (Indexed){ //binary search in tree
 

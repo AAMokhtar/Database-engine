@@ -2,11 +2,11 @@ package DatabaseEngine;
 
 import java.util.HashSet;
 
-public class Set<T> extends HashSet<T>{
-    public Set(){ super(); }
+public class BSet<T> extends HashSet<T>{
+    public BSet(){ super(); }
 
-    public Set<T> AND(Set<T> set){
-        Set<T> result = new Set<>();
+    public BSet<T> AND(BSet<T> set){
+        BSet<T> result = new BSet<>();
 
         for(T key : this){
             if (set.contains(key))
@@ -16,8 +16,8 @@ public class Set<T> extends HashSet<T>{
         return result;
     }
 
-    public Set<T> OR(Set<T> set){
-        Set<T> result = new Set<>();
+    public BSet<T> OR(BSet<T> set){
+        BSet<T> result = new BSet<>();
 
         result.addAll(this);
 
@@ -29,8 +29,8 @@ public class Set<T> extends HashSet<T>{
         return result;
     }
 
-    public Set<T> XOR(Set<T> set){
-        Set<T> result = new Set<>();
+    public BSet<T> XOR(BSet<T> set){
+        BSet<T> result = new BSet<>();
 
         for(T key : this){
             if (!set.contains(key))
@@ -45,8 +45,8 @@ public class Set<T> extends HashSet<T>{
         return result;
     }
 
-    public Set<T> EXCEPT(Set<T> set){
-        Set<T> result = new Set<>();
+    public BSet<T> EXCEPT(BSet<T> set){
+        BSet<T> result = new BSet<>();
 
         for(T key : this){
             if (!set.contains(key))

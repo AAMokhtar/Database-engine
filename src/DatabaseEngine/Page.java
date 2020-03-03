@@ -60,9 +60,6 @@ public class Page implements Serializable {
 	public int getElementsCount() {
 		return this.count;
 	}
-
-	//get page elements
-	public Vector<Vector> getPageElements(){return PageElements;}
 	
 	//get the vector of records
 	public Vector<Vector> getPageElements()

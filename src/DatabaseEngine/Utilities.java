@@ -1,6 +1,6 @@
 package DatabaseEngine;
 
-<<<<<<< HEAD
+
 import java.awt.Dimension;
 import java.awt.Polygon;
 import java.io.BufferedReader;
@@ -13,24 +13,20 @@ import java.io.FileWriter;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
-=======
 import DatabaseEngine.BPlus.BPTExternal;
 import DatabaseEngine.BPlus.BPTInternal;
 import DatabaseEngine.BPlus.BPTNode;
 import DatabaseEngine.BPlus.BPlusTree;
 
 import java.io.*;
->>>>>>> branch 'master' of https://github.com/AhmedAshrafMokhtar/Database-engine.git
+
 import java.lang.reflect.Array;
-<<<<<<< HEAD
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Hashtable;
-=======
 import java.util.*;
->>>>>>> branch 'master' of https://github.com/AhmedAshrafMokhtar/Database-engine.git
 import java.util.Set;
 
 import javax.swing.plaf.synth.SynthSpinnerUI;
@@ -284,22 +280,6 @@ public class Utilities {
 	
 	
 	
-<<<<<<< HEAD
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	//serialize page
-	
-=======
-
-	//seriaize page
->>>>>>> branch 'master' of https://github.com/AhmedAshrafMokhtar/Database-engine.git
 	public static void serializePage(Page P) {
 		  //store into file (serialize)
 				
@@ -367,7 +347,7 @@ public class Utilities {
 		       }
 		       return null;
 	}
-<<<<<<< HEAD
+
 	
 	
 	//-----------------------------------------------------------------UPDATE HELPERS------------------------------------------------------------------------------------------
@@ -704,74 +684,7 @@ public class Utilities {
   		else return;
   	}
   	
-	
-	//TODO: remove this after testing
-	
-//	public static void main(String[] args) 
-//	{
-//		Hashtable<String,Object> htblColNameValue = new Hashtable<String,Object>();
-//		htblColNameValue.put("id", 2343432);
-//		htblColNameValue.put("name", "Ahmed Noor");
-//		htblColNameValue.put("gpa", 0.95); 
-//		
-//		//testing how to figure out if the data is the right type according to the string in the metadata 
-//		int x = 5;
-//		try {
-//			System.out.println(Class.forName("java.lang.Integer").isInstance(x));
-//		} catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 
-		
-//		//testing the vector helper
-//		System.out.println(returnIndex("ESTUDIANT", "gpa"));	
-		
-//		//testing out the updateChecker()
-//		Hashtable<String, Object> record = new Hashtable<String,Object>();
-//		record.put("gpa", 0.9);
-//		record.put("ID", 12);
-//		System.out.println(updateChecker("ESTUDIANT", record));	//should give true as column names and types match
-//		record.put("ffff", 0); //no such column exist
-//		System.out.println(updateChecker("ESTUDIANT", record)); //should say column does not exist
-//		System.out.println(updateChecker("dsafdasf", record)); //no such table name exits
-		
-		//test out the getPoints() fn
-//		int[] x = {1,2,1,2};
-//		int[] y = {1,2,2,1};
-//		Polygon p = new Polygon(x,y,4);
-//		//System.out.println(toString(p));
-//		for(int c: p.xpoints)
-//			System.out.println(c);
-//		String c = "(10,20),(30,30),(40,40),(50,60)";
-//		System.out.println(c.split(","));
-//		
-
-		//testing sets of pairs
-//		Pair<Integer,Integer> pair = new Pair<Integer,Integer>(2,3);
-//		Pair<Integer,Integer> pair1 = new Pair<Integer,Integer>(3,3);
-//		HashSet<Pair<Integer,Integer>> setPoints = new HashSet<Pair<Integer,Integer>>();
-//		
-//		setPoints.add(pair);
-//		System.out.println(setPoints);
-//		setPoints.add(pair1);
-//		System.out.println(setPoints);
-//		
-//		Pair<Integer,Integer> pair2 = new Pair<Integer,Integer>(2,3);
-//		Pair<Integer,Integer> pair3 = new Pair<Integer,Integer>(3,3);
-//		HashSet<Pair<Integer,Integer>> setPoints1 = new HashSet<Pair<Integer,Integer>>();
-//		
-//		setPoints1.add(pair3);
-//		System.out.println(setPoints1);
-//		setPoints1.add(pair2);
-//		System.out.println(setPoints1);
-//		
-//		System.out.println(setPoints.equals(setPoints1));			
-//	}
-	
-	
-}
-=======
 
 	//indices
 
@@ -904,6 +817,7 @@ public class Utilities {
 	}
 
 	//select
+	//TODO: explain your code!!!!!! pls!!!!!!!!!!! aboos reglek eshra7
 	public static boolean condition(Object a, Object b,Class type , String condition){
 
 		switch (type.getName()){ //perform query
@@ -946,4 +860,3 @@ public class Utilities {
 	}
 
 }
->>>>>>> branch 'master' of https://github.com/AhmedAshrafMokhtar/Database-engine.git

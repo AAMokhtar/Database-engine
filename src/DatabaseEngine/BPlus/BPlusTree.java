@@ -61,9 +61,9 @@ public class BPlusTree<T extends Comparable<T>> implements Serializable,index<T>
     }
 
     //Search
-    public Set<pointer> search(T value, String operator){
+    public BSet<pointer> search(T value, String operator){
 
-        Set<pointer> ret = new Set<>(); //output array
+        BSet<pointer> ret = new BSet<>(); //output array
         BPTExternal<T> curNode;
         int index;
 
