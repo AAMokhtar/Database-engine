@@ -1074,7 +1074,7 @@
     <children xmi:id="_bOD4XlTdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.contexts.dialog" contributorURI="platform:/plugin/org.eclipse.platform" name="In Dialogs" description="A dialog is open"/>
   </rootContext>
   <rootContext xmi:id="_bOsxgFTdEeqNxKfBF5RUUQ" elementId="org.eclipse.wst.xsd.ui.editor.designView" name="XSD Editor Design View" description="XSD Editor Design View"/>
-  <rootContext xmi:id="_bOsxg1TdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.contexts.actionSet" name="Action Set" description="Parent context for action sets"/>
+  <rootContext xmi:id="_bOsxg1TdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.contexts.actionSet" name="Action DatabaseEngine.Set" description="Parent context for action sets"/>
   <rootContext xmi:id="_bOsxhlTdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.contexts.workbenchMenu" name="Workbench Menu" description="When no Workbench windows are active"/>
   <rootContext xmi:id="_bOsxjlTdEeqNxKfBF5RUUQ" elementId="org.eclipse.jdt.ui.breadcrumbEditorScope" name="Editor Breadcrumb Navigation" description="Editor Breadcrumb Navigation Context"/>
   <rootContext xmi:id="_bOsxnlTdEeqNxKfBF5RUUQ" elementId="org.eclipse.wst.xsd.ui.editor.sourceView" name="XSD Editor Source View" description="XSD Editor Source View"/>
@@ -1523,7 +1523,7 @@
   </commands>
   <commands xmi:id="_bOjAmVTdEeqNxKfBF5RUUQ" elementId="org.eclipse.m2e.sourcelookup.ui.openSourceLookupInfoDialog" commandName="Source Lookup Info" category="_bOhycVTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOjAmlTdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.edit.text.delimiter.unix" commandName="Convert Line Delimiters to Unix (LF, \n, 0A, &#xb6;)" description="Converts the line delimiters to Unix (LF, \n, 0A, &#xb6;)" category="_bOhyYFTdEeqNxKfBF5RUUQ"/>
-  <commands xmi:id="_bOjAm1TdEeqNxKfBF5RUUQ" elementId="org.eclipse.jdt.ui.edit.text.java.search.read.access.in.working.set" commandName="Read Access in Working Set" description="Search for read references to the selected element in a working set" category="_bOhyZlTdEeqNxKfBF5RUUQ"/>
+  <commands xmi:id="_bOjAm1TdEeqNxKfBF5RUUQ" elementId="org.eclipse.jdt.ui.edit.text.java.search.read.access.in.working.set" commandName="Read Access in Working DatabaseEngine.Set" description="Search for read references to the selected element in a working set" category="_bOhyZlTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOjAnFTdEeqNxKfBF5RUUQ" elementId="org.eclipse.egit.ui.commit.Squash" commandName="Squash Commits" category="_bOhycVTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOjAnVTdEeqNxKfBF5RUUQ" elementId="org.eclipse.egit.ui.history.Edit" commandName="Edit Commit" category="_bOhycVTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOjAnlTdEeqNxKfBF5RUUQ" elementId="org.eclipse.epp.mpc.ui.command.showMarketplaceWizard" commandName="Eclipse Marketplace" description="Show the Eclipse Marketplace wizard" category="_bOhycVTdEeqNxKfBF5RUUQ">
@@ -1534,7 +1534,7 @@
   <commands xmi:id="_bOjnkVTdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.edit.revertToSaved" commandName="Revert to Saved" description="Revert to the last saved state" category="_bOhLUlTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOjnklTdEeqNxKfBF5RUUQ" elementId="org.eclipse.ant.ui.toggleMarkOccurrences" commandName="Toggle Ant Mark Occurrences" description="Toggles mark occurrences in Ant editors" category="_bOhyblTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOjnk1TdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.views.properties.NewPropertySheetCommand" commandName="Properties" category="_bOhycVTdEeqNxKfBF5RUUQ"/>
-  <commands xmi:id="_bOjnlFTdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.navigate.addToWorkingSet" commandName="Add to Working Set" description="Adds the selected object to a working set." category="_bOhLUlTdEeqNxKfBF5RUUQ"/>
+  <commands xmi:id="_bOjnlFTdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.navigate.addToWorkingSet" commandName="Add to Working DatabaseEngine.Set" description="Adds the selected object to a working set." category="_bOhLUlTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOjnlVTdEeqNxKfBF5RUUQ" elementId="org.eclipse.debug.ui.commands.RunToLine" commandName="Run to Line" description="Resume and break when execution reaches the current line" category="_bOhyZ1TdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOjnllTdEeqNxKfBF5RUUQ" elementId="org.eclipse.egit.ui.team.Revert" commandName="Revert Commit" category="_bOhyalTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOjnl1TdEeqNxKfBF5RUUQ" elementId="org.eclipse.jdt.junit.junitShortcut.debug" commandName="Debug JUnit Test" description="Debug JUnit Test" category="_bOhyZ1TdEeqNxKfBF5RUUQ"/>
@@ -1591,7 +1591,7 @@
   <commands xmi:id="_bOjnyVTdEeqNxKfBF5RUUQ" elementId="org.eclipse.jdt.ui.edit.text.java.open.super.implementation" commandName="Open Super Implementation" description="Open the Implementation in the Super Type" category="_bOhLXFTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOjnylTdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.window.resetPerspective" commandName="Reset Perspective" description="Reset the current perspective to its default state" category="_bOhyYlTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOkOoFTdEeqNxKfBF5RUUQ" elementId="org.eclipse.mylyn.wikitext.ui.quickOutlineCommand" commandName="Quick Outline" description="Open a popup dialog with a quick outline of the current document" category="_bOhLXFTdEeqNxKfBF5RUUQ"/>
-  <commands xmi:id="_bOkOoVTdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.project.buildLast" commandName="Repeat Working Set Build" description="Repeat the last working set build" category="_bOhyZVTdEeqNxKfBF5RUUQ"/>
+  <commands xmi:id="_bOkOoVTdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.project.buildLast" commandName="Repeat Working DatabaseEngine.Set Build" description="Repeat the last working set build" category="_bOhyZVTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOkOolTdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.project.buildProject" commandName="Build Project" description="Build the selected project" category="_bOhyZVTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOkOo1TdEeqNxKfBF5RUUQ" elementId="org.eclipse.egit.ui.team.CompareIndexWithHead" commandName="Compare File in Index with HEAD Revision" category="_bOhyalTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOkOpFTdEeqNxKfBF5RUUQ" elementId="org.eclipse.jdt.ui.edit.text.java.override.methods" commandName="Override/Implement Methods" description="Override or implement methods from super types" category="_bOhyblTdEeqNxKfBF5RUUQ"/>
@@ -1747,7 +1747,7 @@
   <commands xmi:id="_bOlc2lTdEeqNxKfBF5RUUQ" elementId="org.eclipse.search.ui.performTextSearchWorkspace" commandName="Find Text in Workspace" description="Searches the files in the workspace for specific text." category="_bOhyZlTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOlc21TdEeqNxKfBF5RUUQ" elementId="org.eclipse.egit.ui.team.RenameBranch" commandName="Rename Branch..." category="_bOhyalTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOlc3FTdEeqNxKfBF5RUUQ" elementId="org.eclipse.egit.ui.team.Synchronize" commandName="Synchronize" category="_bOhyalTdEeqNxKfBF5RUUQ"/>
-  <commands xmi:id="_bOlc3VTdEeqNxKfBF5RUUQ" elementId="org.eclipse.jdt.ui.edit.text.java.search.declarations.in.working.set" commandName="Declaration in Working Set" description="Search for declarations of the selected element in a working set" category="_bOhyZlTdEeqNxKfBF5RUUQ"/>
+  <commands xmi:id="_bOlc3VTdEeqNxKfBF5RUUQ" elementId="org.eclipse.jdt.ui.edit.text.java.search.declarations.in.working.set" commandName="Declaration in Working DatabaseEngine.Set" description="Search for declarations of the selected element in a working set" category="_bOhyZlTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOlc3lTdEeqNxKfBF5RUUQ" elementId="org.eclipse.wst.sse.ui.remove.block.comment" commandName="Remove Block Comment" description="Remove Block Comment" category="_bOhLUlTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOlc31TdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.edit.findPrevious" commandName="Find Previous" description="Find previous item" category="_bOhLUlTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOlc4FTdEeqNxKfBF5RUUQ" elementId="org.eclipse.debug.ui.commands.ToggleBreakpoint" commandName="Toggle Breakpoint" description="Creates or removes a breakpoint" category="_bOhyZ1TdEeqNxKfBF5RUUQ"/>
@@ -1760,7 +1760,7 @@
   <commands xmi:id="_bOlc51TdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.edit.text.scroll.lineUp" commandName="Scroll Line Up" description="Scroll up one line of text" category="_bOhLWVTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOlc6FTdEeqNxKfBF5RUUQ" elementId="org.eclipse.jdt.ui.edit.text.java.select.last" commandName="Restore Last Selection" description="Restore last selection" category="_bOhLUlTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOlc6VTdEeqNxKfBF5RUUQ" elementId="org.eclipse.mylyn.java.ui.editor.folding.auto" commandName="Toggle Active Folding" description="Toggle Active Folding" category="_bOhLXVTdEeqNxKfBF5RUUQ"/>
-  <commands xmi:id="_bOlc6lTdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.edit.text.set.mark" commandName="Set Mark" description="Set the mark" category="_bOhLWVTdEeqNxKfBF5RUUQ"/>
+  <commands xmi:id="_bOlc6lTdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.edit.text.set.mark" commandName="DatabaseEngine.Set Mark" description="DatabaseEngine.Set the mark" category="_bOhLWVTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOlc61TdEeqNxKfBF5RUUQ" elementId="org.eclipse.mylyn.tasks.ui.command.goToPreviousUnread" commandName="Go To Previous Unread Task" category="_bOhLXFTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOlc7FTdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.edit.text.folding.toggle" commandName="Toggle Folding" description="Toggles folding in the current editor" category="_bOhLWVTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOlc7VTdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.edit.text.toggleShowWhitespaceCharacters" commandName="Show Whitespace Characters" description="Shows whitespace characters in current text editor" category="_bOhLWVTdEeqNxKfBF5RUUQ"/>
@@ -1851,7 +1851,7 @@
   <commands xmi:id="_bOmq5FTdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.edit.text.goto.columnNext" commandName="Next Column" description="Go to the next column" category="_bOhLWVTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOmq5VTdEeqNxKfBF5RUUQ" elementId="org.eclipse.egit.ui.history.Squash" commandName="Squash Commits" category="_bOhycVTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOmq5lTdEeqNxKfBF5RUUQ" elementId="org.eclipse.wst.sse.ui.structure.select.last" commandName="Restore Last Selection" description="Restore last selection" category="_bOhLUlTdEeqNxKfBF5RUUQ"/>
-  <commands xmi:id="_bOmq51TdEeqNxKfBF5RUUQ" elementId="org.eclipse.search.ui.performTextSearchWorkingSet" commandName="Find Text in Working Set" description="Searches the files in the working set for specific text." category="_bOhyZlTdEeqNxKfBF5RUUQ"/>
+  <commands xmi:id="_bOmq51TdEeqNxKfBF5RUUQ" elementId="org.eclipse.search.ui.performTextSearchWorkingSet" commandName="Find Text in Working DatabaseEngine.Set" description="Searches the files in the working set for specific text." category="_bOhyZlTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOmq6FTdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.edit.text.goto.wordNext" commandName="Next Word" description="Go to the next word" category="_bOhLWVTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOmq6VTdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.edit.text.cut.line" commandName="Cut Line" description="Cut a line of text, or multiple lines when invoked again without interruption" category="_bOhLWVTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOmq6lTdEeqNxKfBF5RUUQ" elementId="org.eclipse.mylyn.builds.ui.command.NewTaskFromBuild" commandName="New Task From Build" category="_bOhLVlTdEeqNxKfBF5RUUQ"/>
@@ -1900,7 +1900,7 @@
   <commands xmi:id="_bOmrFFTdEeqNxKfBF5RUUQ" elementId="org.eclipse.buildship.ui.commands.openrunconfiguration" commandName="Open Gradle Run Configuration" description="Opens the Run Configuration for the selected Gradle tasks" category="_bOhyZ1TdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOmrFVTdEeqNxKfBF5RUUQ" elementId="org.eclipse.egit.ui.history.DeleteTag" commandName="&amp;Delete Tag" category="_bOhycVTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOmrFlTdEeqNxKfBF5RUUQ" elementId="org.eclipse.jdt.ui.edit.text.remove.occurrence.annotations" commandName="Remove Occurrence Annotations" description="Removes the occurrence annotations from the current editor" category="_bOhyblTdEeqNxKfBF5RUUQ"/>
-  <commands xmi:id="_bOmrF1TdEeqNxKfBF5RUUQ" elementId="org.eclipse.jdt.ui.edit.text.java.search.write.access.in.working.set" commandName="Write Access in Working Set" description="Search for write references to the selected element in a working set" category="_bOhyZlTdEeqNxKfBF5RUUQ"/>
+  <commands xmi:id="_bOmrF1TdEeqNxKfBF5RUUQ" elementId="org.eclipse.jdt.ui.edit.text.java.search.write.access.in.working.set" commandName="Write Access in Working DatabaseEngine.Set" description="Search for write references to the selected element in a working set" category="_bOhyZlTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOmrGFTdEeqNxKfBF5RUUQ" elementId="org.eclipse.egit.ui.history.ShowVersions" commandName="Open this Version" category="_bOhycVTdEeqNxKfBF5RUUQ">
     <parameters xmi:id="_bOmrGVTdEeqNxKfBF5RUUQ" elementId="org.eclipse.egit.ui.history.CompareMode" name="Compare mode"/>
   </commands>
@@ -1916,7 +1916,7 @@
   <commands xmi:id="_bOmrI1TdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.edit.text.goto.columnPrevious" commandName="Previous Column" description="Go to the previous column" category="_bOhLWVTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOmrJFTdEeqNxKfBF5RUUQ" elementId="org.eclipse.debug.ui.commands.toggleMemoryMonitorsPane" commandName="Toggle Memory Monitors Pane" description="Toggle visibility of the Memory Monitors Pane" category="_bOhyZ1TdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOmrJVTdEeqNxKfBF5RUUQ" elementId="org.eclipse.egit.ui.ConfigureUpstreamFetch" commandName="Configure Upstream Fetch" category="_bOhycVTdEeqNxKfBF5RUUQ"/>
-  <commands xmi:id="_bOnR8FTdEeqNxKfBF5RUUQ" elementId="org.eclipse.jdt.ui.edit.text.java.search.implementors.in.working.set" commandName="Implementors in Working Set" description="Search for implementors of the selected interface in a working set" category="_bOhyZlTdEeqNxKfBF5RUUQ"/>
+  <commands xmi:id="_bOnR8FTdEeqNxKfBF5RUUQ" elementId="org.eclipse.jdt.ui.edit.text.java.search.implementors.in.working.set" commandName="Implementors in Working DatabaseEngine.Set" description="Search for implementors of the selected interface in a working set" category="_bOhyZlTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOnR8VTdEeqNxKfBF5RUUQ" elementId="org.eclipse.egit.ui.team.Discard" commandName="Replace with File in Index" category="_bOhyalTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOnR8lTdEeqNxKfBF5RUUQ" elementId="org.eclipse.compare.selectNextChange" commandName="Select Next Change" description="Select Next Change" category="_bOhyYVTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOnR81TdEeqNxKfBF5RUUQ" elementId="org.eclipse.wst.xml.ui.generate.xml" commandName="XML File..." description="Generate a XML file from the selected DTD or Schema" category="_bOhycVTdEeqNxKfBF5RUUQ"/>
@@ -1969,7 +1969,7 @@
   <commands xmi:id="_bOnSIFTdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.navigate.up" commandName="Up" description="Navigate up one level" category="_bOhLXFTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOnSIVTdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.window.activateEditor" commandName="Activate Editor" description="Activate the editor" category="_bOhyYlTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOnSIlTdEeqNxKfBF5RUUQ" elementId="org.eclipse.m2e.core.ui.command.addPlugin" commandName="Add Maven Plugin" description="Add Maven plugin" category="_bOhLUlTdEeqNxKfBF5RUUQ"/>
-  <commands xmi:id="_bOnSI1TdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.navigate.removeFromWorkingSet" commandName="Remove From Working Set" description="Removes the selected object from a working set." category="_bOhLUlTdEeqNxKfBF5RUUQ"/>
+  <commands xmi:id="_bOnSI1TdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.navigate.removeFromWorkingSet" commandName="Remove From Working DatabaseEngine.Set" description="Removes the selected object from a working set." category="_bOhLUlTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOnSJFTdEeqNxKfBF5RUUQ" elementId="sed.tabletree.expandAll" commandName="Expand All" category="_bOhycVTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOnSJVTdEeqNxKfBF5RUUQ" elementId="org.eclipse.jdt.ui.edit.text.java.modify.method.parameters" commandName="Change Method Signature" description="Change method signature includes parameter names and parameter order" category="_bOhyY1TdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOnSJlTdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.edit.text.delete.line.to.end" commandName="Delete to End of Line" description="Delete to the end of a line of text" category="_bOhLWVTdEeqNxKfBF5RUUQ"/>
@@ -2005,7 +2005,7 @@
   <commands xmi:id="_bOn5BVTdEeqNxKfBF5RUUQ" elementId="org.eclipse.egit.ui.SkipRebase" commandName="Skip commit and continue" category="_bOhyalTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOn5BlTdEeqNxKfBF5RUUQ" elementId="org.eclipse.jdt.ui.edit.text.java.replace.invocations" commandName="Replace Invocations" description="Replace invocations of the selected method" category="_bOhyY1TdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOn5B1TdEeqNxKfBF5RUUQ" elementId="org.eclipse.jdt.ui.edit.text.java.search.declarations.in.hierarchy" commandName="Declaration in Hierarchy" description="Search for declarations of the selected element in its hierarchy" category="_bOhyZlTdEeqNxKfBF5RUUQ"/>
-  <commands xmi:id="_bOn5CFTdEeqNxKfBF5RUUQ" elementId="org.eclipse.egit.ui.history.SetQuickdiffBaseline" commandName="Set quickdiff baseline" category="_bOhycVTdEeqNxKfBF5RUUQ"/>
+  <commands xmi:id="_bOn5CFTdEeqNxKfBF5RUUQ" elementId="org.eclipse.egit.ui.history.SetQuickdiffBaseline" commandName="DatabaseEngine.Set quickdiff baseline" category="_bOhycVTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOn5CVTdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.edit.undo" commandName="Undo" description="Undo the last operation" category="_bOhLUlTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOn5ClTdEeqNxKfBF5RUUQ" elementId="org.eclipse.egit.ui.team.submodule.add" commandName="Add Submodule" category="_bOhyalTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOn5C1TdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.edit.text.cut.line.to.end" commandName="Cut to End of Line" description="Cut to the end of a line of text" category="_bOhLWVTdEeqNxKfBF5RUUQ"/>
@@ -2055,7 +2055,7 @@
   <commands xmi:id="_bOn5NVTdEeqNxKfBF5RUUQ" elementId="org.eclipse.wst.sse.ui.format.active.elements" commandName="Format Active Elements" description="Format active elements" category="_bOhLUlTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOn5NlTdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.edit.text.showRulerContextMenu" commandName="Show Ruler Context Menu" description="Show the context menu for the ruler" category="_bOhyYlTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOn5N1TdEeqNxKfBF5RUUQ" elementId="org.eclipse.jdt.ui.edit.text.java.indent" commandName="Correct Indentation" description="Corrects the indentation of the selected lines" category="_bOhyblTdEeqNxKfBF5RUUQ"/>
-  <commands xmi:id="_bOn5OFTdEeqNxKfBF5RUUQ" elementId="org.eclipse.jdt.ui.edit.text.java.search.references.in.working.set" commandName="References in Working Set" description="Search for references to the selected element in a working set" category="_bOhyZlTdEeqNxKfBF5RUUQ"/>
+  <commands xmi:id="_bOn5OFTdEeqNxKfBF5RUUQ" elementId="org.eclipse.jdt.ui.edit.text.java.search.references.in.working.set" commandName="References in Working DatabaseEngine.Set" description="Search for references to the selected element in a working set" category="_bOhyZlTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOn5OVTdEeqNxKfBF5RUUQ" elementId="org.eclipse.mylyn.tasks.ui.command.task.clearOutgoing" commandName="Clear Outgoing Changes" category="_bOhLW1TdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOn5OlTdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.ide.copyConfigCommand" commandName="Copy Configuration Data To Clipboard" description="Copies the configuration data (system properties, installed bundles, etc) to the clipboard." category="_bOhLUlTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_bOn5O1TdEeqNxKfBF5RUUQ" elementId="org.eclipse.ui.edit.text.folding.collapse" commandName="Collapse" description="Collapses the folded region at the current selection" category="_bOhLWVTdEeqNxKfBF5RUUQ"/>
@@ -2408,8 +2408,8 @@
   <commands xmi:id="_biTC8VTdEeqNxKfBF5RUUQ" elementId="AUTOGEN:::org.eclipse.debug.ui.breakpointsview.toolbar/org.eclipse.debug.ui.breakpointsView.toolbar.removeAll" commandName="Remove All" description="Remove All Breakpoints" category="_bOhycVTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_biTqAFTdEeqNxKfBF5RUUQ" elementId="AUTOGEN:::org.eclipse.debug.ui.breakpointsview.toolbar/org.eclipse.debug.ui.breakpointsView.toolbar.linkWithDebugView" commandName="Link with Debug View" description="Link with Debug View" category="_bOhycVTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_biTqAVTdEeqNxKfBF5RUUQ" elementId="AUTOGEN:::org.eclipse.debug.ui.breakpointsview.toolbar/org.eclipse.debug.ui.breakpointsView.toolbar.workingSets" commandName="Working Sets..." description="Manage Working Sets" category="_bOhycVTdEeqNxKfBF5RUUQ"/>
-  <commands xmi:id="_biTqAlTdEeqNxKfBF5RUUQ" elementId="AUTOGEN:::org.eclipse.debug.ui.breakpointsview.toolbar/org.eclipse.debug.ui.breakpointsView.toolbar.clearDefaultBreakpointGroup" commandName="Deselect Default Working Set" description="Deselect Default Working Set" category="_bOhycVTdEeqNxKfBF5RUUQ"/>
-  <commands xmi:id="_biUREFTdEeqNxKfBF5RUUQ" elementId="AUTOGEN:::org.eclipse.debug.ui.breakpointsview.toolbar/org.eclipse.debug.ui.breakpointsView.toolbar.setDefaultBreakpointGroup" commandName="Select Default Working Set..." description="Select Default Working Set" category="_bOhycVTdEeqNxKfBF5RUUQ"/>
+  <commands xmi:id="_biTqAlTdEeqNxKfBF5RUUQ" elementId="AUTOGEN:::org.eclipse.debug.ui.breakpointsview.toolbar/org.eclipse.debug.ui.breakpointsView.toolbar.clearDefaultBreakpointGroup" commandName="Deselect Default Working DatabaseEngine.Set" description="Deselect Default Working DatabaseEngine.Set" category="_bOhycVTdEeqNxKfBF5RUUQ"/>
+  <commands xmi:id="_biUREFTdEeqNxKfBF5RUUQ" elementId="AUTOGEN:::org.eclipse.debug.ui.breakpointsview.toolbar/org.eclipse.debug.ui.breakpointsView.toolbar.setDefaultBreakpointGroup" commandName="Select Default Working DatabaseEngine.Set..." description="Select Default Working DatabaseEngine.Set" category="_bOhycVTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_biUREVTdEeqNxKfBF5RUUQ" elementId="AUTOGEN:::org.eclipse.debug.ui.breakpointsview.toolbar/org.eclipse.debug.ui.breakpointsView.toolbar.sortByAction" commandName="Sort By" description="Sort By" category="_bOhycVTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_biURElTdEeqNxKfBF5RUUQ" elementId="AUTOGEN:::org.eclipse.debug.ui.breakpointsview.toolbar/org.eclipse.debug.ui.breakpointsView.toolbar.groupByAction" commandName="Group By" description="Show" category="_bOhycVTdEeqNxKfBF5RUUQ"/>
   <commands xmi:id="_biURE1TdEeqNxKfBF5RUUQ" elementId="AUTOGEN:::org.eclipse.debug.ui.expressionsView.toolbar/org.eclipse.debug.ui.expresssionsView.toolbar.removeAll" commandName="Remove All" description="Remove All Expressions" category="_bOhycVTdEeqNxKfBF5RUUQ"/>

@@ -1,9 +1,7 @@
 package DatabaseEngine;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Set;
 import java.util.Vector;
@@ -23,7 +21,7 @@ public class Table implements Serializable{
 		t.put("2", "Two");
 		System.out.println(t);
 		
-		Set<String> e = t.keySet();
+		DatabaseEngine.Set<String> e = t.keySet();
 		for(String i : e) {
 			System.out.println(i + " : " + (t.get(i)));
 		}*/
@@ -84,15 +82,76 @@ public class Table implements Serializable{
 		return false;
 	}
 	
+
 	
-	//TODO: for Saeed: you might find this useful.
+	public void delete(Hashtable<String, Object> htblColNameValue) {
+		// checking if the entered hashtable has columns matching the table and
+		// populating Hashtable with integers for keys for later usage
+		// and checking if all requested columns for delete are valid
+		ArrayList<String[]> data = Utilities.readMetaDataForSpecificTable(tableName);
+		Hashtable<Integer, Object> keyValue = new Hashtable<Integer, Object>();
+		Set<String> keys = htblColNameValue.keySet();
+		for (String key : keys) {
+			for (int i = 0; i < data.size(); i++) {
+				if (data.get(i)[1].equals(key)) {
+					keyValue.put(i, htblColNameValue.get(key));
+				}
+			}
+		}
+		if (keyValue.size() != htblColNameValue.size()) {
+			System.out.println("Failed to delete!");
+			return;
+		}
+
+		// Looping on all the pages to check for the elements to be deleted
+		// Deleting all the matching elements
+		// Checking if the page is empty, if it is, deleting the page
+		for (int i = 0; i < pagesGroup.size(); i++) {
+			Page p = Utilities.deserializePage(pagesGroup.get(i));
+			p.deleteByValue(keyValue);
+			if (p.getElementsCount() == 0) {
+				deletePage(p);
+			} else {
+				Utilities.serializePage(p);
+			}
+	
+		}
+
+		// populating pages with empty rows
+
+/*		for (int i = 0; i + 1 < pagesGroup.size(); i++) {
+			Page p1 = temp.get(i);
+			int freeRows = p1.getN() - p1.getElementsCount();
+			for (int j = 0; j < freeRows; j++) {
+				Page p2 = temp.get(i + 1);
+				p1.insertIntoPage(p2.getTupleFromPage(0));
+				p2.deleteByIndex(0);
+			}
+		}
+*/		// deleting all the empty pages and serializing the others
+/*
+		for (int i = 0; i + 1 < pagesGroup.size(); i++) {
+			Page p = temp.get(i);
+			if (p.getElementsCount() == 0) {
+				temp.removeElementAt(i);
+				deletePage(p);
+			} else {
+				Utilities.serializePage(p);
+			}
+		}*/
+	}
+
+	// Deleting the page completely
 	public void deletePage(Page P) {
-		if (P.getElementsCount() ==0) {
-			pagesGroup.remove(P.getID());
-			//TODO: but check how are you gonna free it from memory: either you do tombstone, or you shift up. Check with Dr. Wael
+		int pageID = P.getID();
+		try {
+			File f = new File("data//" + "page_" + pageID + ".class");
+			f.delete();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
-	
+
 	
 	public String getName() {
 		return tableName;

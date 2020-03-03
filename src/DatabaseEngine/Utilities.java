@@ -1,5 +1,6 @@
 package DatabaseEngine;
 
+<<<<<<< HEAD
 import java.awt.Dimension;
 import java.awt.Polygon;
 import java.io.BufferedReader;
@@ -12,14 +13,25 @@ import java.io.FileWriter;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+=======
+import DatabaseEngine.BPlus.BPTExternal;
+import DatabaseEngine.BPlus.BPTInternal;
+import DatabaseEngine.BPlus.BPTNode;
+import DatabaseEngine.BPlus.BPlusTree;
+
+import java.io.*;
+>>>>>>> branch 'master' of https://github.com/AhmedAshrafMokhtar/Database-engine.git
 import java.lang.reflect.Array;
+<<<<<<< HEAD
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Hashtable;
+=======
+import java.util.*;
+>>>>>>> branch 'master' of https://github.com/AhmedAshrafMokhtar/Database-engine.git
 import java.util.Set;
-import java.util.Vector;
 
 import javax.swing.plaf.synth.SynthSpinnerUI;
 
@@ -115,13 +127,98 @@ public class Utilities {
 	   }
 	
 	}
-	
-	
-	
-	//TODO: FOR ALI: edit this code such that you get back data for a specific table 
-	//TODO: this, when executed, prints metadata content. 
-	//TODO: you can copy this method and edit it to read only specific parts of the metadata file
-	//TODO: BUT KEEP THIS METHOD INTACT THX
+	//initialize properties
+	public static void initializeProperties(){
+		Properties p=new Properties();
+		p.setProperty("MaximumRowsCountinPage","200");
+		p.setProperty("NodeSize","15");
+
+		try {
+			p.store(new FileWriter("config//DBApp.properties"),"Database engine properties");
+		}
+		catch (Exception e) {
+			System.out.println("Failed to write file!");
+		}
+
+	}
+
+	//read properties
+	public static Properties readProperties(String path){
+
+		try {
+			FileReader reader =new FileReader(path);
+			Properties p = new Properties();
+			p.load(reader);
+
+			return p;
+		}
+		catch (Exception e){
+			System.out.println("File not found!");
+		}
+
+		return null;
+	}
+
+	//Used in insert to get meta data for specific table
+	//METHOD WORKS. IT HAS BEEN REVIEWED
+	public static ArrayList<String[]> readMetaDataForSpecificTable(String strTableName) {
+
+		String tableMetaData = "";
+
+		try {
+			String line = "";
+			ArrayList<String[]> metaDataForSpecificTable= new ArrayList<String[]>();
+
+			BufferedReader read = new BufferedReader(new FileReader("data//metadata.csv"));
+			while ((line = read.readLine()) != null) {
+				String[] data = line.split(",");
+				if(data[0].equals(strTableName))
+				{
+					metaDataForSpecificTable.add(data);
+				}
+			}
+
+
+			read.close();
+			return metaDataForSpecificTable;
+		}
+
+		catch(Exception E) {
+			System.out.println("Failed to read from metadata.csv!");
+			return null;
+		}
+	}
+
+	//method takes metaData of a specific table as input and output hashtable containing column names and types
+	//METHOD WORKS. IT HAS BEEN REVIEWED
+	public static Hashtable<String, String> extractNameAndTypeFromMeta(ArrayList<String[]> metaDataForSpecificTable)
+	{
+		Hashtable<String,String> columnNameColumnType=new Hashtable<String,String>();
+		for(String[] column: metaDataForSpecificTable)
+		{
+			String columnName=column[1];
+			String columnType=column[2];
+			columnNameColumnType.put(columnName, columnType);
+		}
+		return columnNameColumnType;
+	}
+
+	//method determines the clustering key of a table and it's order in the vector of value
+	//METHOD WORKS. IT HAS BEEN REVIEWED
+	public static String[] determineValueAndIndexOfClusteringKey(ArrayList<String[]> metaDataForSpecificTable)
+	{
+		String[] indexAndValue= new String[2];
+		for (int i = 0; i < metaDataForSpecificTable.size(); i++) {
+			String[] array= metaDataForSpecificTable.get(i);
+			if(array[3].equals("True"))
+			{
+				indexAndValue[0]=array[1];
+				indexAndValue[1]=i+"";
+			}
+		}
+		return indexAndValue;
+	}
+
 	public static String readMetaData() {
 		
 		String tableMetaData = "";
@@ -187,6 +284,7 @@ public class Utilities {
 	
 	
 	
+<<<<<<< HEAD
 	
 	
 	
@@ -198,6 +296,10 @@ public class Utilities {
 	
 	//serialize page
 	
+=======
+
+	//seriaize page
+>>>>>>> branch 'master' of https://github.com/AhmedAshrafMokhtar/Database-engine.git
 	public static void serializePage(Page P) {
 		  //store into file (serialize)
 				
@@ -265,6 +367,7 @@ public class Utilities {
 		       }
 		       return null;
 	}
+<<<<<<< HEAD
 	
 	
 	//-----------------------------------------------------------------UPDATE HELPERS------------------------------------------------------------------------------------------
@@ -668,3 +771,179 @@ public class Utilities {
 	
 	
 }
+=======
+
+	//indices
+
+	//loads all indices from memory and associates columns with their index
+	public static Hashtable<String, Hashtable<String, index>> loadIndices() throws DBAppException {
+		BufferedReader meta = new BufferedReader(new StringReader(readMetaData()));
+		Hashtable<String, Hashtable<String, index>> ret = new Hashtable<>();
+
+		try {
+			meta.readLine();
+
+			while (meta.ready()){
+				String[] info = meta.readLine().split(", ");
+				//Table Name [0], Column Name [1], Column Type [2], ClusteringKey [3], Indexed [4]
+
+				if (!ret.contains(info[0])) {
+					ret.put(info[0], new Hashtable<>());
+				}
+
+				if (info[4].charAt(0) == 'T'){
+//TODO				ret.get(info[0]).put(info[1], /* tree here */ );
+				}
+
+			}
+		}
+		catch (Exception e){
+			throw new DBAppException("failed to load indices");
+		}
+
+		return ret;
+	}
+
+	//B+ trees
+
+	//binary search
+	public static <T extends Comparable<T>> int selectiveBinarySearch(ArrayList<T> list, T value, String mode){
+		int lo = 0;
+		int hi = list.size() - 1;
+		int mid;
+		int index = -1;
+
+		if (mode.equals(">=")) { //smallest index greater than or equal value
+
+			while (lo <= hi) {
+				mid = (hi + lo) / 2;
+
+				if (list.get(mid).compareTo(value) >= 0) { //value less or equal
+					hi = mid - 1;
+					index = mid;
+				} else { //value greater
+					lo = mid + 1;
+				}
+			}
+
+		}
+
+		if (mode.equals("<=")) { //greatest index smaller than or equal value
+
+			while (lo <= hi) {
+				mid = (hi + lo) / 2;
+
+				if (list.get(mid).compareTo(value) > 0) { //value <
+					hi = mid - 1;
+				} else { //value greater
+					lo = mid + 1;
+					index = mid;
+				}
+			}
+		}
+
+		if (mode.equals("<")) { //greatest index smaller than value
+
+			while (lo <= hi) {
+				mid = (hi + lo) / 2;
+
+				if (list.get(mid).compareTo(value) >= 0) { //value less or equal
+					hi = mid - 1;
+				} else { //value greater
+					lo = mid + 1;
+					index = mid;
+				}
+			}
+		}
+
+		if (mode.equals(">")) { //smallest index greater than value
+
+			while (lo <= hi) {
+				mid = (hi + lo) / 2;
+
+				if (list.get(mid).compareTo(value) > 0) { //value <
+					hi = mid - 1;
+					index = mid;
+				} else { //value greater
+					lo = mid + 1;
+				}
+			}
+		}
+
+		if (mode.equals("=")) { //earliest index equal to value
+
+			while (lo <= hi) {
+				mid = (hi + lo) / 2;
+
+				if (list.get(mid).compareTo(value) > 0) { //value <
+					hi = mid - 1;
+				}
+				else if (list.get(mid).compareTo(value) == 0) { //value found
+					hi = mid - 1;
+					index = mid;
+				}
+				else { //value greater
+					lo = mid + 1;
+				}
+			}
+		}
+
+		return index;
+	}
+
+	//get leaf inside B+ tree (takes a value, returns the leaf node of that value)
+	public static <T extends Comparable<T>> BPTExternal<T> findLeaf(BPTNode<T> cur, T value, boolean firstNode){
+
+		if (cur instanceof BPTInternal){
+			int key = selectiveBinarySearch(cur.getValues(), value, "<="); //find place in array
+			if (firstNode) key = -1;
+			return findLeaf(((BPTInternal<T>) cur).getPointers().get(key + 1),value, firstNode); //down the tree
+		}
+
+		return (BPTExternal<T>) cur;
+	}
+
+	//select
+	public static boolean condition(Object a, Object b,Class type , String condition){
+
+		switch (type.getName()){ //perform query
+			case "java.lang.Integer":
+				return conditionHelp((Integer) a,(Integer) b,condition);
+			case "java.lang.Double":
+				return conditionHelp((Double) a,(Double) b,condition);
+
+			case "java.lang.String":
+				return conditionHelp((String) a,(String) b,condition);
+
+			case "java.util.Date":
+				return conditionHelp((Date) a,(Date) b,condition);
+
+			case "java.lang.Boolean":
+				return conditionHelp((Boolean) a,(Boolean) b,condition);
+
+			default:break;
+		}
+		return false;
+	}
+
+	private static <T extends Comparable<T>> boolean conditionHelp(T a, T b, String condition){
+
+		switch (condition){
+			case ">":
+				return a.compareTo(b) > 0;
+			case ">=":
+				return a.compareTo(b) >= 0;
+			case "<":
+				return a.compareTo(b) < 0;
+			case "<=":
+				return a.compareTo(b) <= 0;
+			case "=":
+				return a.compareTo(b) == 0;
+			default: break;
+		}
+
+		return false;
+	}
+
+}
+>>>>>>> branch 'master' of https://github.com/AhmedAshrafMokhtar/Database-engine.git
