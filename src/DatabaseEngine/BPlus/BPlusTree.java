@@ -309,7 +309,7 @@ public class BPlusTree<T extends Comparable<T>> implements Serializable,index<T>
     }
 
     //shift pointers left or right
-    public void shiftPointersAt(int pageNum, int vecIndex, int ammount){
+    public void shiftPointersAt(int pageNum, int vecIndex, int amount){
         pointer temp = new pointer(pageNum,vecIndex); //to compare with other pointers
 
         //get max entries per page
@@ -320,10 +320,10 @@ public class BPlusTree<T extends Comparable<T>> implements Serializable,index<T>
 
         for (int i = start; i < pointerList.size(); i++) {
             int offset = pointerList.get(i).getOffset(); //get index
-            int page = pointerList.get(i).getPage(); //get page number
+            int page = pointerList.get(i).getPage(); //get page numberf
 
 
-            offset = ((offset + ammount) % (maxTuplesPerPage + 1)); //index in new page
+            offset = ((offset + amount) % (maxTuplesPerPage + 1)); //index in new page
             pointerList.get(i).setOffset(offset); //set new index
             pointerList.get(i).setPage(page + (offset / maxTuplesPerPage)); //new page number
 
