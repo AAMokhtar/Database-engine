@@ -128,8 +128,7 @@ public class DBApp {
   			else if(clusterType.equals("java.awt.Polygon"))
   				clusterKey = myPolygon.parsePolygon(strClusteringKey);
 			else if (clusterType.equals("java.lang.Boolean")) {
-				System.out.println("Boolean clustering data type detected in updateTable() method");
-				return;
+				clusterKey = Boolean.parseBoolean(strClusteringKey);
 			} else {
 				System.out.println("Invalid cluster data type detected in updateTable() method. \n"
 						+ "Make sure " + strTableName + " table's metadata for the clustering column is inputted correctly");
