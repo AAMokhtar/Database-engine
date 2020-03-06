@@ -361,7 +361,47 @@ public class Page implements Serializable {
 				count--;
 			}
 		}
+<<<<<<< HEAD
 	}
+=======
+	
+	
+	
+//removes an element from the page by index
+	public void deleteByIndex(int index) {
+		PageElements.removeElementAt(index);
+	}
+
+
+	//TODO for ALI AND SAEED: shifting and sorting
+
+		
+	//TODO: MAYAR AND ALI: any changes, update the timestamp!!
+		public void updateTime() {
+			//hint: LocalDateTime.now() gives current DateTime;	
+		}
+		
+		
+		
+		//TODO: FOR ALI: verify tuple
+		public boolean verifyTuple() {
+			//according to metadata
+			return false;
+		}
+
+	public static void main(String args[]) {
+		try {
+
+		}
+
+		catch(Exception E) {
+			System.out.println("for debugging, check main of PAGE class.");
+		}
+
+	}
+
+
+>>>>>>> parent of de7d5f9... the whole mess (without exception handling)
 }
 
 
