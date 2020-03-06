@@ -230,12 +230,13 @@ public class Utilities {
 	public static void serializePage(Page P) throws IOException {
 		//store into file (serialize)
 
-		File file = new File("data//" + "page_" + P.getID() + ".class"); //TODO: fix up path (first item) once directory is set
-		FileOutputStream fileAccess;
-		fileAccess = new FileOutputStream(file);
-		ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
-		objectAccess.writeObject(P);
-
+					File file = new File("data//" + "page_" + P.getID() + ".class"); //TODO: fix up path (first item) once directory is set
+					FileOutputStream fileAccess;
+					fileAccess = new FileOutputStream(file);
+					ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
+					objectAccess.writeObject(P);
+					objectAccess.close();
+					fileAccess.close();
 	}
 
 
@@ -243,12 +244,13 @@ public class Utilities {
 	public static void serializeTable(Table T) throws IOException {
 		//store into file (serialize)
 
-		File file = new File("data//" + "table_" + T.getName() + ".class"); //TODO: fix up path (first item) once directory is set
-		FileOutputStream fileAccess;
-		fileAccess = new FileOutputStream(file);
-		ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
-		objectAccess.writeObject(T);
-
+					File file = new File("data//" + "table_" + T.getName() + ".class"); //TODO: fix up path (first item) once directory is set
+					FileOutputStream fileAccess;
+					fileAccess = new FileOutputStream(file);
+					ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
+					objectAccess.writeObject(T);
+					objectAccess.close();
+					fileAccess.close();
 	}
 
 
@@ -256,19 +258,23 @@ public class Utilities {
 	//deserialize page: we pass the id of the page (obtained from the table) and we receive the page object.
 	public static Page deserializePage(int pageID) throws IOException, ClassNotFoundException {
 		//read from file (deserialize)
-		FileInputStream readFromFile = new FileInputStream("data//" + "page_" + pageID + ".class");
-		ObjectInputStream readObject = new ObjectInputStream(readFromFile);
-		Page k = (Page)readObject.readObject();
-		return k;
+				FileInputStream readFromFile = new FileInputStream("data//" + "page_" + pageID + ".class");
+				ObjectInputStream readObject = new ObjectInputStream(readFromFile);
+				Page k = (Page)readObject.readObject();
+				readObject.close();
+				readFromFile.close();
+				return k;
 	}
-
-
+	
 	public static Table deserializeTable(String tableName) throws IOException, ClassNotFoundException {
 		//read from file (deserialize)
-		FileInputStream readFromFile = new FileInputStream("data//" + "table_" + tableName + ".class");
-		ObjectInputStream readObject = new ObjectInputStream(readFromFile);
-		Table k = (Table)readObject.readObject();
-		return k;
+				FileInputStream readFromFile = new FileInputStream("data//" + "table_" + tableName + ".class");
+				ObjectInputStream readObject = new ObjectInputStream(readFromFile);
+				Table k = (Table)readObject.readObject();
+				readObject.close();
+				readFromFile.close();
+				
+				return k;
 
 	}
 
