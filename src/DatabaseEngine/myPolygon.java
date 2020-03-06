@@ -123,6 +123,12 @@ public class myPolygon extends Polygon implements Comparable<myPolygon>{
   		return pts1.equals(pts2);
 
   	}
+	
+	public boolean equals(myPolygon p2){
+
+		return myPolygon.isEqual(this,p2);
+	
+	}
   	
 //  	public static void main(String[] args) {
 //		int[] x = {1,3,1,3};
