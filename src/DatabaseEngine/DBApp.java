@@ -26,25 +26,26 @@ public class DBApp {
 		Utilities.serializeTable(t);
 	}
 
-//	public static void main(String args[]) {
-//		//CREATE TABLE TEST PASSED!
-//
-//		Hashtable t = new Hashtable<String, String>();
-//		t.put("ID","java.lang.Integer");
-//		t.put("name","java.lang.String");
-//		t.put("isAdult","java.lang.Boolean");
-//		t.put("deathdate","java.util.Date");
-//		t.put("gpa","java.lang.Double");
-//
-//		DBApp d = new DBApp();
-//
-////       d.init();
-//		try {
-//			d.createTable("Table Name", "name", t);
-//		} catch (DBAppException e) {
-//			System.out.println(e.getMessage());
-//			e.printStackTrace();	}
-//	}
+	public static void main(String args[]) {
+		//CREATE TABLE TEST PASSED!
+
+		Hashtable t = new Hashtable<String, String>();
+		t.put("ID","java.lang.Integer");
+		t.put("name","java.lang.String");
+		t.put("isAdult","java.lang.Boolean");
+		t.put("deathdate","java.util.Date");
+		t.put("gpa","java.lang.Double");
+
+		DBApp d = new DBApp();
+
+      
+	try {
+		 d.init();
+			d.createTable("dfawa", "name", t);
+	} catch (DBAppException e) {
+				System.out.println(e.getMessage());
+			e.printStackTrace();	}
+	}
 
 	//TODO: FOR ALL Y'ALL: PLEASE KEEP TESTS IN COMMENTS!!
 
@@ -124,10 +125,8 @@ public class DBApp {
 				clusterKey = Date.valueOf(strClusteringKey);
 			else if (clusterType.equals("java.lang.String"))
 				clusterKey = strClusteringKey;
-				//TODO: uncomment this part when updating the code
-//  			else if(clusterType.equals("java.awt.Polygon"))
-//  				clusterKey = polygonParse(strClusteringKey);
-				//TODO: are we sure bools cannot be clusters?
+  			//else if(clusterType.equals("java.awt.Polygon"))
+  				//clusterKey = polygonParse(strClusteringKey);
 			else if (clusterType.equals("java.lang.Boolean")) {
 				System.out.println("Boolean clustering data type detected in updateTable() method");
 				return;

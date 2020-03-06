@@ -9,7 +9,7 @@ public class Table implements Serializable{
 	private Vector<Integer> pagesGroup;
 	private String tableName;
 
-	public Table(String strTableName, String strClusteringKeyColumn, Hashtable<String,String> htblColNameType){
+	public Table(String strTableName, String strClusteringKeyColumn, Hashtable<String,String> htblColNameType) throws DBAppException{
 
 
 		/*hashtable demo!
@@ -24,7 +24,7 @@ public class Table implements Serializable{
 		}*/
 
 		//step 0: check if table already exists
-		try {
+		
 
 			if(Utilities.isTableUnique(strTableName)) {
 
@@ -51,12 +51,8 @@ public class Table implements Serializable{
 
 			else {
 				System.out.println("Table already exists and an exception was thrown.");
-			}}
+			}
 
-		catch(Exception E) {
-			E.printStackTrace();
-			System.out.println("problem with writing to metadata file");
-		}
 	}
 
 

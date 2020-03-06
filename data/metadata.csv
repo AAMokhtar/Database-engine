@@ -14,3 +14,13 @@ Table Name,ID,java.lang.Integer,False,False
 Table Name,isAdult,java.lang.Boolean,False,False
 Table Name,name,java.lang.String,True,True
 Table Name,deathdate,java.util.Date,False,False
+HSFRUJKAN,gpa,java.lang.Double,False,False
+HSFRUJKAN,ID,java.lang.Integer,False,False
+HSFRUJKAN,isAdult,java.lang.Boolean,False,False
+HSFRUJKAN,name,java.lang.String,True,True
+HSFRUJKAN,deathdate,java.util.Date,False,False
+kjhrskj,gpa,java.lang.Double,False,False
+kjhrskj,ID,java.lang.Integer,False,False
+kjhrskj,isAdult,java.lang.Boolean,False,False
+kjhrskj,name,java.lang.String,True,True
+kjhrskj,deathdate,java.util.Date,False,False
