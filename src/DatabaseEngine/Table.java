@@ -5,8 +5,8 @@ import java.io.*;
 import java.util.*;
 
 public class Table implements Serializable{
-	
-	private Vector<Integer> pagesGroup; 
+
+	private Vector<Integer> pagesGroup;
 	private String tableName;
 
 
@@ -47,8 +47,8 @@ public class Table implements Serializable{
 			System.out.println("Table already exists.");
 		}
 	}
-	
-	
+
+
 	/*
 	 * TODO: FOR ALI: use this to create new pages if insert warrants so.
 	 */
@@ -63,15 +63,15 @@ public class Table implements Serializable{
 		pagesGroup.add(p.getID());
 		return p;
 	}
-	
-	
+
+
 	//return the array of ids of pages involved in this table
 	public Vector<Integer> getPages(){
 		return pagesGroup;
 	}
-	
-	
-	
+
+
+
 	//verify column type correctness. USED FOR METADATA FILE.
 	//a helper getPossibleTypes is used.
 	public static boolean checkApplicable(String s) {
@@ -81,7 +81,7 @@ public class Table implements Serializable{
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -141,7 +141,7 @@ public class Table implements Serializable{
 				}
 				else if(clusteringKeyType.equals("java.util.Date"))
 				{
-					Date dateObj=(Date)nextPage.getTupleFromPage(0).get(indexClusteringKey);;
+					Date dateObj=(Date)nextPage.getTupleFromPage(0).get(indexClusteringKey);
 					Date mydateObj=(Date) clusteringKey;
 					if(mydateObj.compareTo(dateObj)<=0)
 					{
@@ -155,6 +155,17 @@ public class Table implements Serializable{
 					myPolygon polyObj=new myPolygon((Polygon)nextPage.getTupleFromPage(0).get(indexClusteringKey));
 					myPolygon myPolyObj= new myPolygon((Polygon)clusteringKey);
 					if(myPolyObj.compareTo(polyObj)<=0)
+					{
+						currentPageInMemory.insertIntoPage(newTuple);
+						Utilities.serializePage(currentPageInMemory);
+						return new Page();
+					}
+				}
+				else if(clusteringKeyType.equals("java.lang.Boolean"))
+				{
+					Boolean boolObj=(Boolean)nextPage.getTupleFromPage(0).get(indexClusteringKey);
+					Boolean myBoolObj= ((Boolean)clusteringKey);
+					if(Boolean.compare(myBoolObj,boolObj)<=0)
 					{
 						currentPageInMemory.insertIntoPage(newTuple);
 						Utilities.serializePage(currentPageInMemory);
@@ -249,7 +260,7 @@ public class Table implements Serializable{
 		}
 
 	}
-	
+
 	public void delete(Hashtable<String, Object> htblColNameValue) throws IOException, ClassNotFoundException {
 		// checking if the entered hashtable has columns matching the table and
 		// populating Hashtable with integers for keys for later usage
@@ -280,7 +291,7 @@ public class Table implements Serializable{
 			} else {
 				Utilities.serializePage(p);
 			}
-	
+
 		}
 
 		// populating pages with empty rows
@@ -310,18 +321,18 @@ public class Table implements Serializable{
 	// Deleting the page completely
 	public void deletePage(Page P) {
 		int pageID = P.getID();
-			File f = new File("data//" + "page_" + pageID + ".class");
-			f.delete();
+		File f = new File("data//" + "page_" + pageID + ".class");
+		f.delete();
 	}
 
-	
+
 	public String getName() {
 		return tableName;
 	}
-	
+
 	//FOR TESTING PURPOSES
 	public static void main(String args[])  {
-		
+
 		Hashtable<String, String> t = new Hashtable<String, String>();
 		t.put("1","One");
 		t.put("2", "Two");

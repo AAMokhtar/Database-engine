@@ -13,32 +13,32 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 
-public class Page implements Serializable { 
+public class Page implements Serializable {
 	/*
-	 * this class takes care of all of the affairs of a page. 
+	 * this class takes care of all of the affairs of a page.
 	 * THIS CLASS WAS TESTED.
 	 */
-	
+
 	//fixed page characteristics
 	private final int N = 5;
 	private static int IDUpperBound = 0;
-	
+
 	//page important metadata
 	private int count; //how many items in the page?
 	private int pageID;
 	//the actual page is a serialized vector of vectors (objects)
 	private Vector<Vector> PageElements;
 
-	
+
 	//PURPOSE: CREATE A NEW PAGE
 	public Page() {
 		count = 0;
 		pageID = ++IDUpperBound;
 		PageElements = new Vector<Vector>();
 	}
-	
 
-	
+
+
 	//to be used for testing purposes only. DO NOT USE IN PROJECT IMPLEMNTATION!
 	public void resetIDUpperBound() {
 		IDUpperBound = 0;
@@ -55,8 +55,8 @@ public class Page implements Serializable {
 	public int getN() {
 		return N;
 	}
-	
-	
+
+
 	//get the unique page identifier. useful for deseralizing (because which page do u want boi)
 	public int getID() {
 		return pageID;
@@ -69,19 +69,19 @@ public class Page implements Serializable {
 
 	//get number of elements in page
 	public int getElementsCount() {
-		return this.count;
+		return this.PageElements.size();
 	}
-	
+
 	//get the vector of records
 	public Vector<Vector> getPageElements()
 	{
 		return this.PageElements;
 	}
 
-	
+
 	/*
 	 * TODO: FOR ALI: insert into page!
-	 MUST UPDATE: 
+	 MUST UPDATE:
 	 * count of the items in this page in this class
 	 * the page array in TABLE class (if having to create new page)
 	 * the vector pageElements (due to new created tuple)
@@ -165,6 +165,15 @@ public class Page implements Serializable {
 				return false;
 			}
 		}
+		else if(clusteringKeyType.equals("java.lang.Boolean"))
+		{
+			Boolean boolObj=(Boolean)clusteringKeyLasttRow;
+			Boolean myBoolObj=(Boolean) clusteringKeyValue;
+			if(myBoolObj.compareTo(boolObj)>0)
+			{
+				return false;
+			}
+		}
 		return true;
 	}
 
@@ -234,6 +243,19 @@ public class Page implements Serializable {
 				myPolygon polyObj1= new myPolygon((Polygon)temp);
 				myPolygon mypolyObj=new myPolygon((Polygon) clusteringKeyValue);
 				if(mypolyObj.compareTo(polyObj1)<0)
+				{
+					last=mid;
+				}
+				else
+				{
+					first=mid+1;
+				}
+			}
+			else if(clusteringKeyType.equals("java.lang.Boolean"))
+			{
+				Boolean boolObj1= (Boolean) temp;
+				Boolean myBoolObj=(Boolean) clusteringKeyValue;
+				if(myBoolObj.compareTo(boolObj1)<0)
 				{
 					last=mid;
 				}
@@ -322,15 +344,15 @@ public class Page implements Serializable {
 	 */
 
 	public void deleteByValue(Hashtable<Integer,Object> keyValue) {
-		
+
 		Set<Integer> indexedKeys= keyValue.keySet();
-		
+
 		for (int i = 0 ; i<PageElements.size();i++) {
 			boolean match = true;
 			Vector<Object> v = PageElements.get(i);
 			for(int key: indexedKeys) {
 				if(!(v.get(key).equals(keyValue.get(key)))){
-				match = false;
+					match = false;
 				}
 			}
 			if(match) {
@@ -338,8 +360,8 @@ public class Page implements Serializable {
 				i--;
 				count--;
 			}
-			}
 		}
+	}
 }
 
 
