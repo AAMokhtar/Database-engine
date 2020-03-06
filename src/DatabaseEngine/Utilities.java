@@ -235,7 +235,8 @@ public class Utilities {
 					fileAccess = new FileOutputStream(file);
 					ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
 					objectAccess.writeObject(P);
-
+					objectAccess.close();
+					fileAccess.close();
 	}
 	
 	
@@ -248,7 +249,8 @@ public class Utilities {
 					fileAccess = new FileOutputStream(file);
 					ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
 					objectAccess.writeObject(T);
-
+					objectAccess.close();
+					fileAccess.close();
 	}
 	
 	
@@ -259,15 +261,19 @@ public class Utilities {
 				FileInputStream readFromFile = new FileInputStream("data//" + "page_" + pageID + ".class");
 				ObjectInputStream readObject = new ObjectInputStream(readFromFile);
 				Page k = (Page)readObject.readObject();
+				readObject.close();
+				readFromFile.close();
 				return k;
 	}
-	
 	
 	public static Table deserializeTable(String tableName) throws IOException, ClassNotFoundException {
 		//read from file (deserialize)
 				FileInputStream readFromFile = new FileInputStream("data//" + "table_" + tableName + ".class");
 				ObjectInputStream readObject = new ObjectInputStream(readFromFile);
 				Table k = (Table)readObject.readObject();
+				readObject.close();
+				readFromFile.close();
+				
 				return k;
 
 	}
