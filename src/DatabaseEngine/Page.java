@@ -161,7 +161,7 @@ public class Page implements Serializable {
 		}
 		else if(clusteringKeyType.equals("java.awt.Polygon"))
 		{
-			myPolygon polyObj=new myPolygon((Polygon)clusteringKeyLasttRow);
+			myPolygon polyObj=(myPolygon)clusteringKeyLasttRow;
 			myPolygon myPolyObj= new myPolygon((Polygon)clusteringKeyValue);
 			if(myPolyObj.compareTo(polyObj)>0)
 			{
@@ -243,7 +243,7 @@ public class Page implements Serializable {
 			}
 			else if(clusteringKeyType.equals("java.awt.Polygon"))
 			{
-				myPolygon polyObj1= new myPolygon((Polygon)temp);
+				myPolygon polyObj1= (myPolygon)temp;
 				myPolygon mypolyObj=new myPolygon((Polygon) clusteringKeyValue);
 				if(mypolyObj.compareTo(polyObj1)<0)
 				{
@@ -328,7 +328,14 @@ public class Page implements Serializable {
 	{
 		Vector<Object> newTuple= new Vector<Object>();
 		for(String[] column:metaDataForSpecificTable) {
-			newTuple.add(htblColNameValue.get(column[1]));
+			if(column[2].equals("java.awt.Polygon"))
+			{
+				newTuple.add(new myPolygon((Polygon)htblColNameValue.get(column[1])));
+			}
+			else
+			{
+				newTuple.add(htblColNameValue.get(column[1]));
+			}
 		}
 		return initializeTime(newTuple);
 	}

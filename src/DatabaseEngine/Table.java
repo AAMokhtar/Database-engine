@@ -159,7 +159,7 @@ public class Table implements Serializable{
 				}
 				else if(clusteringKeyType.equals("java.awt.Polygon"))
 				{
-					myPolygon polyObj=new myPolygon((Polygon)nextPage.getTupleFromPage(0).get(indexClusteringKey));
+					myPolygon polyObj=(myPolygon)nextPage.getTupleFromPage(0).get(indexClusteringKey);
 					myPolygon myPolyObj= new myPolygon((Polygon)clusteringKey);
 					if(myPolyObj.compareTo(polyObj)<=0)
 					{
