@@ -1,13 +1,8 @@
 package DatabaseEngine;
 
 import java.awt.*;
-import java.io.File;
+import java.io.*;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -20,7 +15,7 @@ public class Page implements Serializable {
 	 */
 
 	//fixed page characteristics
-	private final int N = 5;
+	private int N = 5;
 	private static int IDUpperBound = 0;
 
 	//page important metadata
@@ -31,10 +26,18 @@ public class Page implements Serializable {
 
 
 	//PURPOSE: CREATE A NEW PAGE
+
 	public Page() {
 		count = 0;
 		pageID = ++IDUpperBound;
 		PageElements = new Vector<Vector>();
+		try {
+			N = Utilities.readPageSize("config//DBApp.properties");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("Properties file not found");
+			e.printStackTrace();
+		}
 	}
 
 
@@ -337,7 +340,7 @@ public class Page implements Serializable {
 
 	/*
 	 * TODO: FOR SAEED: delete from a page!
-     MUST UPDATE: 
+     MUST UPDATE:
 	 * count of the items in this page in this class
 	 * the page array in TABLE class (if having to delete the page)
 	 * the vector pageElements (due to deleted tuple)

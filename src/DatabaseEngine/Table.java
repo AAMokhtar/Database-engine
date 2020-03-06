@@ -9,42 +9,53 @@ public class Table implements Serializable{
 	private Vector<Integer> pagesGroup;
 	private String tableName;
 
+	public Table(String strTableName, String strClusteringKeyColumn, Hashtable<String,String> htblColNameType){
 
-	public Table(String strTableName, String strClusteringKeyColumn, Hashtable<String,String> htblColNameType) throws DBAppException, IOException {
-		
-		
+
 		/*hashtable demo!
 		Hashtable<String, String> t = new Hashtable<String, String>();
 		t.put("1","One");
 		t.put("2", "Two");
 		System.out.println(t);
-		
+
 		Set<String> e = t.keySet();
 		for(String i : e) {
 			System.out.println(i + " : " + (t.get(i)));
 		}*/
 
 		//step 0: check if table already exists
-		if(Utilities.isTableUnique(strTableName)) {
+		try {
+
+			if(Utilities.isTableUnique(strTableName)) {
 
 
-			tableName =strTableName;
-			//step one: check if all the column types are acceptable.
-			Set<String> colName = htblColNameType.keySet();
+				tableName =strTableName;
+				//step one: check if all the column types are acceptable.
+				Set<String> colName = htblColNameType.keySet();
 
-			for (String n : colName) {
-				if(checkApplicable(htblColNameType.get(n))==false) {
-					throw new DBAppException("Inapplicable column type.");
+				for (String n : colName) {
+					if(checkApplicable(htblColNameType.get(n))==false) {
+						throw new DBAppException("Inapplicable column type.");
+					}
 				}
+
+				//step two: start writing into metadata file.
+
+
+				Utilities.writeHeaderIntoMetaData(htblColNameType, strTableName, strClusteringKeyColumn);
+
+				pagesGroup =  new Vector<Integer>();
+
+				Utilities.serializeTable(this);
 			}
 
-			//step two: start writing into metadata file.
-			Utilities.writeHeaderIntoMetaData(htblColNameType, strTableName, strClusteringKeyColumn);
+			else {
+				System.out.println("Table already exists and an exception was thrown.");
+			}}
 
-			pagesGroup =  new Vector<Integer>();}
-
-		else {
-			System.out.println("Table already exists.");
+		catch(Exception E) {
+			E.printStackTrace();
+			System.out.println("problem with writing to metadata file");
 		}
 	}
 
@@ -52,7 +63,7 @@ public class Table implements Serializable{
 	/*
 	 * TODO: FOR ALI: use this to create new pages if insert warrants so.
 	 */
-	public Page createNewPage() throws IOException {
+	public Page createNewPage() {
 		//ONLY through a table I can create a page.
 		Page p = new Page();
 		if(pagesGroup.size()!=0 && p.getID()!=pagesGroup.get(pagesGroup.size()-1)+1)
@@ -87,7 +98,7 @@ public class Table implements Serializable{
 
 	//method used to determine which in which of the table pages should I insert in
 	//METHOD WORKS. IT HAS BEEN REVIEWED
-	public Page determinePageNeededForInsert(int indexClusteringKey,Object clusteringKey, String clusteringKeyType, Vector<Object> newTuple) throws IOException, ClassNotFoundException {
+	public Page determinePageNeededForInsert(int indexClusteringKey,Object clusteringKey, String clusteringKeyType, Vector<Object> newTuple){
 		for (int i = 0; i < pagesGroup.size(); i++) {
 			//deserialize page needed
 			int pageID=pagesGroup.get(i);
@@ -179,7 +190,7 @@ public class Table implements Serializable{
 
 	//special case of insert, where tuple to be inserted is last one in entire table or table is still empty
 	////METHOD WORKS. IT HAS BEEN REVIEWED
-	public void insertSpecialCase(Vector<Object> newTuple) throws IOException, ClassNotFoundException {
+	public void insertSpecialCase(Vector<Object> newTuple){
 		if(pagesGroup.size()==0)
 		{
 			//table is still empty
@@ -220,7 +231,7 @@ public class Table implements Serializable{
 
 	//in insertion I create new pages, insert tuple in them and delete old pages
 	//METHOD WORKS. IT HAS BEEN REVIEWED
-	public void insertRegularCase(Vector<Object> newTuple, Page currentPageInMemory,int indexClusteringKey,Object clusteringKey, String clusteringKeyType) throws IOException, ClassNotFoundException {
+	public void insertRegularCase(Vector<Object> newTuple, Page currentPageInMemory,int indexClusteringKey,Object clusteringKey, String clusteringKeyType) {
 		int indxOfNewRow = currentPageInMemory.binarySearch(indexClusteringKey, clusteringKey, clusteringKeyType);
 		//get indx of current page in memory
 		int i=getPageIndx(currentPageInMemory);
@@ -260,8 +271,8 @@ public class Table implements Serializable{
 		}
 
 	}
-	
-	public void delete(Hashtable<String, Object> htblColNameValue) throws IOException, ClassNotFoundException, DBAppException{
+
+	public void delete(Hashtable<String, Object> htblColNameValue){
 		// checking if the entered hashtable has columns matching the table and
 		// populating Hashtable with integers for keys for later usage
 		// and checking if all requested columns for delete are valid
@@ -276,7 +287,8 @@ public class Table implements Serializable{
 			}
 		}
 		if (keyValue.size() != htblColNameValue.size()) {
-			throw new DBAppException("Invalid Columns");
+			System.out.println("Failed to delete!");
+			return;
 		}
 
 		// Looping on all the pages to check for the elements to be deleted
@@ -285,16 +297,13 @@ public class Table implements Serializable{
 		for (int i = 0; i < pagesGroup.size(); i++) {
 			Page p = Utilities.deserializePage(pagesGroup.get(i));
 			p.deleteByValue(keyValue);
-			if (p.getPageElements().size() == 0) {
-				pagesGroup.remove(i);
-				i--;
+			if (p.getElementsCount() == 0) {
 				deletePage(p);
 			} else {
 				Utilities.serializePage(p);
 			}
 
 		}
-		Utilities.serializeTable(this);
 
 		// populating pages with empty rows
 
@@ -319,11 +328,16 @@ public class Table implements Serializable{
 			}
 		}*/
 	}
+
 	// Deleting the page completely
 	public void deletePage(Page P) {
 		int pageID = P.getID();
-		File f = new File("data//" + "page_" + pageID + ".class");
-		f.delete();
+		try {
+			File f = new File("data//" + "page_" + pageID + ".class");
+			f.delete();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 
