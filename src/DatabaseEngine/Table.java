@@ -268,7 +268,7 @@ public class Table implements Serializable{
 
 	}
 
-	public void delete(Hashtable<String, Object> htblColNameValue){
+	public void delete(Hashtable<String, Object> htblColNameValue) throws DBAppException{
 		// checking if the entered hashtable has columns matching the table and
 		// populating Hashtable with integers for keys for later usage
 		// and checking if all requested columns for delete are valid
@@ -283,8 +283,7 @@ public class Table implements Serializable{
 			}
 		}
 		if (keyValue.size() != htblColNameValue.size()) {
-			System.out.println("Failed to delete!");
-			return;
+			throw new DBAppException("Invalid Columns");
 		}
 
 		// Looping on all the pages to check for the elements to be deleted
@@ -293,13 +292,20 @@ public class Table implements Serializable{
 		for (int i = 0; i < pagesGroup.size(); i++) {
 			Page p = Utilities.deserializePage(pagesGroup.get(i));
 			p.deleteByValue(keyValue);
-			if (p.getElementsCount() == 0) {
+			if (p.getPageElements().size() == 0) {
+				pagesGroup.remove(i);
+				i--;
 				deletePage(p);
 			} else {
 				Utilities.serializePage(p);
 			}
-
+	
 		}
+		Utilities.serializeTable(this);
+
+		
+		
+		
 
 		// populating pages with empty rows
 
