@@ -11,7 +11,7 @@ import java.util.*;
 
 public class DBApp {
 
-	public void init() throws DBAppException {
+	public void init() {
 		Utilities.initializeMetaData();
 		Utilities.initializeProperties();
 
@@ -47,11 +47,6 @@ public class DBApp {
 			e.printStackTrace();	}
 	}
 
-	//TODO: FOR ALL Y'ALL: PLEASE KEEP TESTS IN COMMENTS!!
-
-
-//Ali's part:
-
 	public void insertIntoTable(String strTableName, Hashtable<String, Object> htblColNameValue) throws DBAppException {
 		//Step 0: Load table object
 		Table tableToInsertIn = Utilities.deserializeTable(strTableName);
@@ -85,7 +80,7 @@ public class DBApp {
 		//Step 9:serialize page again
 		Utilities.serializeTable(tableToInsertIn);
 	}
-	//Mayar's part:
+
 	//---------------------------------------------------------------------UPDATE METHOD--------------------------------------------------------------------
 
 	//Mimi's part: update the records :)
