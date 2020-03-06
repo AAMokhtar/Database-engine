@@ -125,8 +125,8 @@ public class DBApp {
 				clusterKey = Date.valueOf(strClusteringKey);
 			else if (clusterType.equals("java.lang.String"))
 				clusterKey = strClusteringKey;
-  			//else if(clusterType.equals("java.awt.Polygon"))
-  				//clusterKey = polygonParse(strClusteringKey);
+  			else if(clusterType.equals("java.awt.Polygon"))
+  				clusterKey = myPolygon.parsePolygon(strClusteringKey);
 			else if (clusterType.equals("java.lang.Boolean")) {
 				System.out.println("Boolean clustering data type detected in updateTable() method");
 				return;
@@ -142,10 +142,8 @@ public class DBApp {
 
 			Vector<Integer> pagesID = t.getPages();
 
-			//TODO: ask basant about this
-			boolean finito = false; //flag that identifies when to break from loop
 
-			for (int i = 0; i < pagesID.size() && !finito; i++) {
+			for (int i = 0; i < pagesID.size(); i++) {
 				Page page = Utilities.deserializePage(pagesID.get(i));
 				Vector<Vector> records = page.getPageElements();
 
@@ -160,10 +158,6 @@ public class DBApp {
 					Utilities.binarySearchUpdate(records, 0, records.firstElement().size() - 1, clusterIdx, clusterKey, strTableName, htblColNameValue);
 
 				}
-				//if the page encountered has its first element clustering value greater than the key => abort
-				//we are no longer going to find the clustering key in this page or the following
-				else if (((Comparable) records.firstElement().get(clusterIdx)).compareTo(clusterKey) > 0)
-					finito = true;
 
 				Utilities.serializePage(page);
 			}
