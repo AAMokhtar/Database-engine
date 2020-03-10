@@ -51,7 +51,9 @@ public class BPlusTree<T extends Comparable<T>> implements Serializable,index<T>
     //Insert
     public void insert(T value, pointer recordPointer) throws DBAppException {
         shiftPointersAt(recordPointer.getPage(), recordPointer.getOffset(), 1); //change old pointers
-        int pointerPlace = Utilities.selectiveBinarySearch(getPointerList(), recordPointer, ">="); //correct position
+
+        int pointerPlace = Utilities.selectiveBinarySearch(getPointerList(), recordPointer, ">="); //get correct position
+
         if(pointerPlace == -1) pointerPlace = getPointerList().size(); //insert at the end
 
         getPointerList().add(pointerPlace,recordPointer); //insert pointer
@@ -214,7 +216,6 @@ public class BPlusTree<T extends Comparable<T>> implements Serializable,index<T>
 
         return ret;
     }
-
 
     //Delete
     public void delete(T key){

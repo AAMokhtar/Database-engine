@@ -702,7 +702,8 @@ public class Utilities {
 				if (list.get(mid).compareTo(value) >= 0) { //value less or equal
 					hi = mid - 1;
 					index = mid;
-				} else { //value greater
+				}
+				else { //value greater
 					lo = mid + 1;
 				}
 			}
@@ -716,7 +717,8 @@ public class Utilities {
 
 				if (list.get(mid).compareTo(value) > 0) { //value <
 					hi = mid - 1;
-				} else { //value greater
+				}
+				else { //value greater or equal
 					lo = mid + 1;
 					index = mid;
 				}
@@ -730,7 +732,8 @@ public class Utilities {
 
 				if (list.get(mid).compareTo(value) >= 0) { //value less or equal
 					hi = mid - 1;
-				} else { //value greater
+				}
+				else { //value greater
 					lo = mid + 1;
 					index = mid;
 				}
@@ -745,7 +748,8 @@ public class Utilities {
 				if (list.get(mid).compareTo(value) > 0) { //value <
 					hi = mid - 1;
 					index = mid;
-				} else { //value greater
+				}
+				else { //value greater or equal
 					lo = mid + 1;
 				}
 			}
@@ -786,26 +790,30 @@ public class Utilities {
 
 	//select
 	//TODO: explain your code!!!!!! pls!!!!!!!!!!! aboos reglek eshra7
-	public static boolean condition(Object a, Object b,Class type , String condition){
+	//fine!!!
 
-		switch (type.getName()){ //perform query
-			case "java.lang.Integer":
-				return conditionHelp((Integer) a,(Integer) b,condition);
-			case "java.lang.Double":
-				return conditionHelp((Double) a,(Double) b,condition);
+	public static boolean condition(Object a, Object b,Class type , String condition){ //method
 
-			case "java.lang.String":
-				return conditionHelp((String) a,(String) b,condition);
+		switch (type.getName()){ //switch condition ;)
+			case "java.lang.Integer": //some case
+				return conditionHelp((Integer) a,(Integer) b,condition); //do something
 
-			case "java.util.Date":
-				return conditionHelp((Date) a,(Date) b,condition);
+			case "java.lang.Double": //some other case
+				return conditionHelp((Double) a,(Double) b,condition);  //do something else
 
-			case "java.lang.Boolean":
-				return conditionHelp((Boolean) a,(Boolean) b,condition);
+			case "java.lang.String": //an entirely different case
+				return conditionHelp((String) a,(String) b,condition); //do something entirely different
 
-			default:break;
+			case "java.util.Date": //i forgot what this is
+				return conditionHelp((Date) a,(Date) b,condition); //figure this out yourself
+
+			case "java.lang.Boolean": //final case
+				return conditionHelp((Boolean) a,(Boolean) b,condition); //do stuff
+
+			default:break; //some other stuff
 		}
-		return false;
+
+		return false; //something
 	}
 
 	private static <T extends Comparable<T>> boolean conditionHelp(T a, T b, String condition){
@@ -825,6 +833,50 @@ public class Utilities {
 		}
 
 		return false;
+	}
+
+	public static int[] binarySearchValuePage(Vector<Integer> list, Comparable value, int column){
+		//smallest element greater than or equal element. returns the pageID and the index respectively
+
+		int lo = 0;
+		int hi = list.size() - 1;
+		int[] ret ={-1, -1};
+		Vector<Vector> elements = null;
+
+		while (lo <= hi){ //binary search for page
+			int mid = (lo + hi) / 2;
+
+			Page page = Utilities.deserializePage(list.get(mid)); //get mid page
+			elements = page.getPageElements();
+
+			Comparable last = (Comparable) elements.get(elements.size() - 1).get(column); //last element in page
+
+			if (last.compareTo(value) < 0){ // last element is less than value
+				lo = mid + 1;
+			}
+			else { // last element is >= than value
+				hi = mid - 1;
+				ret[0] = mid;
+			}
+		}
+
+		lo = 0;
+		hi = elements.size() - 1;
+
+		while (lo <= hi && ret[0] != -1){ //binary search in page
+			int mid = (lo + hi) / 2;
+
+
+			if (((Comparable) elements.get(mid).get(column)).compareTo(value) < 0){ // current element is less than value
+				lo = mid + 1;
+			}
+			else { // last element is >= than value
+				hi = mid - 1;
+				ret[1] = mid;
+			}
+		}
+
+		return ret;
 	}
 	
 	
