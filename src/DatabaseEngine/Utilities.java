@@ -27,6 +27,9 @@ import java.util.*;
 import javax.print.attribute.standard.RequestingUserName;
 import javax.swing.plaf.synth.SynthSpinnerUI;
 
+import DatabaseEngine.BPlus.BPTExternal;
+import DatabaseEngine.BPlus.BPTInternal;
+import DatabaseEngine.BPlus.BPTNode;
 import javafx.util.Pair;
 
 public class Utilities {
@@ -647,6 +650,181 @@ public class Utilities {
 				binarySearchUpdate(records, mid+1, high, clusterIdx, clusterKey, table, newVal); //check the second half
 		}
 		else return;
+	}
+
+	//indices
+
+	//loads all indices from memory and associates columns with their index
+	public static Hashtable<String, Hashtable<String, index>> loadIndices() {
+		BufferedReader meta = new BufferedReader(new StringReader(readMetaData()));
+		Hashtable<String, Hashtable<String, index>> ret = new Hashtable<>();
+
+		try {
+			meta.readLine();
+
+			while (meta.ready()) {
+				String[] info = meta.readLine().split(", ");
+				//Table Name [0], Column Name [1], Column Type [2], ClusteringKey [3], Indexed [4]
+
+				if (!ret.contains(info[0])) {
+					ret.put(info[0], new Hashtable<>());
+				}
+
+				if (info[4].charAt(0) == 'T') {
+//TODO				ret.get(info[0]).put(info[1], /* tree here */ );
+				}
+
+			}
+		}
+		catch (IOException e){
+			return null;
+		}
+
+
+
+		return ret;
+	}
+
+	//B+ trees
+
+	//binary search
+	public static <T extends Comparable<T>> int selectiveBinarySearch(ArrayList<T> list, T value, String mode){
+		int lo = 0;
+		int hi = list.size() - 1;
+		int mid;
+		int index = -1;
+
+		if (mode.equals(">=")) { //smallest index greater than or equal value
+
+			while (lo <= hi) {
+				mid = (hi + lo) / 2;
+
+				if (list.get(mid).compareTo(value) >= 0) { //value less or equal
+					hi = mid - 1;
+					index = mid;
+				} else { //value greater
+					lo = mid + 1;
+				}
+			}
+
+		}
+
+		if (mode.equals("<=")) { //greatest index smaller than or equal value
+
+			while (lo <= hi) {
+				mid = (hi + lo) / 2;
+
+				if (list.get(mid).compareTo(value) > 0) { //value <
+					hi = mid - 1;
+				} else { //value greater
+					lo = mid + 1;
+					index = mid;
+				}
+			}
+		}
+
+		if (mode.equals("<")) { //greatest index smaller than value
+
+			while (lo <= hi) {
+				mid = (hi + lo) / 2;
+
+				if (list.get(mid).compareTo(value) >= 0) { //value less or equal
+					hi = mid - 1;
+				} else { //value greater
+					lo = mid + 1;
+					index = mid;
+				}
+			}
+		}
+
+		if (mode.equals(">")) { //smallest index greater than value
+
+			while (lo <= hi) {
+				mid = (hi + lo) / 2;
+
+				if (list.get(mid).compareTo(value) > 0) { //value <
+					hi = mid - 1;
+					index = mid;
+				} else { //value greater
+					lo = mid + 1;
+				}
+			}
+		}
+
+		if (mode.equals("=")) { //earliest index equal to value
+
+			while (lo <= hi) {
+				mid = (hi + lo) / 2;
+
+				if (list.get(mid).compareTo(value) > 0) { //value <
+					hi = mid - 1;
+				}
+				else if (list.get(mid).compareTo(value) == 0) { //value found
+					hi = mid - 1;
+					index = mid;
+				}
+				else { //value greater
+					lo = mid + 1;
+				}
+			}
+		}
+
+		return index;
+	}
+
+	//get leaf inside B+ tree (takes a value, returns the leaf node of that value)
+	public static <T extends Comparable<T>> BPTExternal<T> findLeaf(BPTNode<T> cur, T value, boolean firstNode){
+
+		if (cur instanceof BPTInternal){
+			int key = selectiveBinarySearch(cur.getValues(), value, "<="); //find place in array
+			if (firstNode) key = -1;
+			return findLeaf(((BPTInternal<T>) cur).getPointers().get(key + 1),value, firstNode); //down the tree
+		}
+
+		return (BPTExternal<T>) cur;
+	}
+
+	//select
+	//TODO: explain your code!!!!!! pls!!!!!!!!!!! aboos reglek eshra7
+	public static boolean condition(Object a, Object b,Class type , String condition){
+
+		switch (type.getName()){ //perform query
+			case "java.lang.Integer":
+				return conditionHelp((Integer) a,(Integer) b,condition);
+			case "java.lang.Double":
+				return conditionHelp((Double) a,(Double) b,condition);
+
+			case "java.lang.String":
+				return conditionHelp((String) a,(String) b,condition);
+
+			case "java.util.Date":
+				return conditionHelp((Date) a,(Date) b,condition);
+
+			case "java.lang.Boolean":
+				return conditionHelp((Boolean) a,(Boolean) b,condition);
+
+			default:break;
+		}
+		return false;
+	}
+
+	private static <T extends Comparable<T>> boolean conditionHelp(T a, T b, String condition){
+
+		switch (condition){
+			case ">":
+				return a.compareTo(b) > 0;
+			case ">=":
+				return a.compareTo(b) >= 0;
+			case "<":
+				return a.compareTo(b) < 0;
+			case "<=":
+				return a.compareTo(b) <= 0;
+			case "=":
+				return a.compareTo(b) == 0;
+			default: break;
+		}
+
+		return false;
 	}
 	
 	
