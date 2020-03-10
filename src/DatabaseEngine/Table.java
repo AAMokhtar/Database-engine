@@ -278,7 +278,13 @@ public class Table implements Serializable{
 		for (String key : keys) {
 			for (int i = 0; i < data.size(); i++) {
 				if (data.get(i)[1].equals(key)) {
-					keyValue.put(i, htblColNameValue.get(key));
+					if(htblColNameValue.get(key) instanceof Polygon){
+						myPolygon poly = new myPolygon((Polygon)htblColNameValue.get(key));
+						keyValue.put(i,poly);
+					}
+					else{
+						keyValue.put(i, htblColNameValue.get(key));
+					}
 				}
 			}
 		}
