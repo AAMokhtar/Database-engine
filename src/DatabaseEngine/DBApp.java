@@ -1,6 +1,5 @@
 package DatabaseEngine; //change to team name before submitting
 
-import java.awt.Polygon;
 import java.sql.Date;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -12,9 +11,13 @@ import java.util.*;
 
 public class DBApp {
 
-	public void init() {
+	private Hashtable<String, Hashtable<String, index>> indices; // table name -> column name -> tree (M2 code)
+
+	public void init() throws DBAppException {
 		Utilities.initializeMetaData();
 		Utilities.initializeProperties();
+		indices = Utilities.loadIndices();
+
 
 		//TODO: add any other "initializing code" here!
 	}
