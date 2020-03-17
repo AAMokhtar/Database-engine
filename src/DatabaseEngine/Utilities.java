@@ -1,8 +1,7 @@
 package DatabaseEngine;
 
 
-import java.awt.Dimension;
-import java.awt.Polygon;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,16 +15,11 @@ import java.io.PrintWriter;
 
 import java.io.*;
 
-import java.lang.reflect.Array;
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.*;
-
-import javax.print.attribute.standard.RequestingUserName;
-import javax.swing.plaf.synth.SynthSpinnerUI;
 
 import DatabaseEngine.BPlus.BPTExternal;
 import DatabaseEngine.BPlus.BPTInternal;
@@ -74,11 +68,6 @@ public class Utilities {
 				write.flush();
 				write.close();
 			}
-
-
-			else{
-
-			}
 		}
 
 		catch(IOException E) {
@@ -112,14 +101,7 @@ public class Utilities {
 				   write.append("False");
 
 			   write.append(",");
-
-
-			   if(n==keyAndIndex)
-				   write.append("True");
-
-			   else
-				   write.append("False");
-
+			   write.append("False");
 			   write.append("\n");
 		   }
 
@@ -237,6 +219,7 @@ public class Utilities {
 			while ((line = read.readLine()) != null) {
 				String[] data = line.split(",");
 				tableMetaData+=(Arrays.toString(data)+"\n");
+				//WARNING: Arrays.toString() returns data in this form : [...]
 
 		    }
 
@@ -663,7 +646,7 @@ public class Utilities {
 			meta.readLine();
 
 			while (meta.ready()) {
-				String[] info = meta.readLine().split(", ");
+				String[] info = meta.readLine().split(", ] \\[");
 				//Table Name [0], Column Name [1], Column Type [2], ClusteringKey [3], Indexed [4]
 
 				if (!ret.contains(info[0])) {

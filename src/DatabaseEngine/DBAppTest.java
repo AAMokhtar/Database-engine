@@ -1,6 +1,7 @@
 package DatabaseEngine; //change to team name before submitting
 
 import java.awt.*;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -14,24 +15,53 @@ public class DBAppTest {
     static String[] types = {"java.lang.Integer", "java.lang.String", "java.lang.Boolean"
             , "java.util.Date", "java.lang.Double", "java.awt.Polygon"}; //all possible data types
 
-    public static void main(String[] args) throws DBAppException, ParseException { //run to generate tables and insert tuples into them
-        tables = new ArrayList<>();
-        columns = new HashMap<>();
-        tableVals = new HashMap<>();
-        clusteringKeys = new Hashtable<>();
+    public static void main(String[] args) throws DBAppException, ParseException, IOException, ClassNotFoundException { //run to generate tables and insert tuples into them
+//        tables = new ArrayList<>();
+//        columns = new HashMap<>();
+//        tableVals = new HashMap<>();
+//        clusteringKeys = new Hashtable<>();
+//
+//        DB = new DBApp();
 
-        DB = new DBApp();
 
-
-        createTable(5); //create a table with 5 columns
-        createTable(5);
-        Insert(tables.get(0),20000); //insert 20000 records into it
-        Insert(tables.get(1),20000);
+//        createTable(5); //create a table with 5 columns
+//        createTable(5);
+//        Insert(tables.get(0),10); //insert 20000 records into it
+//        Insert(tables.get(1),20000);
 
 //        deleteFromTable(tables.get(0),500); //delete 500 records
 //        deleteFromTable(tables.get(1),500);
 //        updateTable(tables.get(0), 500); //update 500 records
 //        updateTable(tables.get(1), 500);
+//        DB.indices = Utilities.loadIndices();
+//        SQLTerm[] t = new SQLTerm[3];
+//        t[0] = new SQLTerm();
+//        t[1] = new SQLTerm();
+//        t[2] = new SQLTerm();
+
+//        t[0]._strTableName = "foxyi";
+//        t[0]._strColumnName = "mqnoug";
+//        t[0]._strOperator = "=";
+//        t[0]._objValue = false;
+//
+//        t[1]._strTableName = "foxyi";
+//        t[1]._strColumnName = "jzya";
+//        t[1]._strOperator = "=";
+//        t[1]._objValue = false;
+//
+//        t[2]._strTableName = "igcfshvydlmgd";
+//        t[2]._strColumnName = "atcazd";
+//        t[2]._strOperator = ">=";
+//        t[2]._objValue = 42.47931960242464;
+//
+//        String[] operators = {"AND","AND"};
+//
+//        Iterator res = DB.selectFromTable(t, operators);
+//
+//        while (res.hasNext()){
+//            Vector cur = (Vector) res.next();
+//            System.out.println(cur.get(3) + " " + cur.get(4) + " " + cur.get(2));
+//        }
     }
 
     public static String randomString(int length) { //a string of random characters from a-z of the desired length

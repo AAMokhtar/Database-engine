@@ -1,5 +1,7 @@
 package DatabaseEngine;
 
+import java.util.Objects;
+
 public class pointer implements Comparable<pointer>{
     private int page; //puge num
     private int offset; //index in page
@@ -20,5 +22,19 @@ public class pointer implements Comparable<pointer>{
         if (this.page != p.page)
             return  this.page - p.page;
         return this.offset - p.offset;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        pointer pointer = (pointer) o;
+        return page == pointer.page &&
+                offset == pointer.offset;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(page, offset);
     }
 }
