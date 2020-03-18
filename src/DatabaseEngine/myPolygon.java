@@ -119,14 +119,12 @@ public class myPolygon extends Polygon implements Comparable<myPolygon>{
   	{
   		HashSet<Pair<Integer,Integer>> pts1 = intertwine(p1); //results in a set of polygon points
   		HashSet<Pair<Integer,Integer>> pts2 = intertwine(p2);
-
   		return pts1.equals(pts2);
 
   	}
 
 	public boolean equals(myPolygon p2){
-
-		return myPolygon.isEqual(this,p2);
+		return myPolygon.isEqual(this.shape,p2.shape);
 
 	}
   	
