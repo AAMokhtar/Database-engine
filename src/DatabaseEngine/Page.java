@@ -360,10 +360,17 @@ public class Page implements Serializable {
 		for (int i = 0 ; i<PageElements.size();i++) {
 			boolean match = true;
 			Vector<Object> v = PageElements.get(i);
-			for(int key: indexedKeys) {
+				for(int key: indexedKeys) {
+				if(keyValue.get(key) instanceof myPolygon) {
+					myPolygon poly = (myPolygon) keyValue.get(key);  
+					myPolygon poly1 = (myPolygon) v.get(key);
+					if(!poly.equals(poly1)){
+						match = false;
+					}
+				}else {
 				if(!(v.get(key).equals(keyValue.get(key)))){
 					match = false;
-				}
+				}}
 			}
 			if(match) {
 				PageElements.removeElementAt(i);
