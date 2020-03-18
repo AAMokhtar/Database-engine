@@ -126,7 +126,7 @@ public class myPolygon extends Polygon implements Comparable<myPolygon>{
 
 	public boolean equals(myPolygon p2){
 
-		return myPolygon.isEqual(this,p2);
+		return myPolygon.isEqual(this.shape,p2.shape);
 
 	}
   	
