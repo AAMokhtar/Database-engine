@@ -8,16 +8,16 @@ import java.util.ArrayList;
 public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
 
     private ArrayList<pointer> pointers; //pointers to records
-    private  BPTExternal<T> next; //next node in the linked list
+    private  String next; //next node in the linked list
 
-    BPTExternal(int N) {
-        super(N);
+    BPTExternal(int N, String ID) {
+        super(N,ID);
         pointers = new ArrayList<>();
         this.next = null;
     }
 
     // getters/setters:
-    public BPTExternal<T> getNext(){
+    public String getNext(){
         return this.next;
     }
 
@@ -25,7 +25,7 @@ public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
         return pointers;
     }
 
-    public void setNext(BPTExternal<T> node){
+    public void setNext(String node){
         this.next = node;
     }
 
@@ -47,7 +47,7 @@ public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
     }
 
     public BPTNode<T> split() {
-        BPTExternal<T> newNode = new BPTExternal<>(getMaxPerNode()); //last node to the right
+        BPTExternal<T> newNode = new BPTExternal<>(getMaxPerNode(),""); //last node to the right
         ArrayList<T> newValues = new ArrayList<>(); //temp values
         ArrayList<pointer> newPointers = new ArrayList<>(); //temp pointers
 
@@ -72,7 +72,7 @@ public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
 
         //linked list pointer assignment
         newNode.setNext(this.next);
-        this.setNext(newNode);
+//        this.setNext(newNode.getID());
 
         return newNode; //node to be inserted as a pointer one level up the tree
     }

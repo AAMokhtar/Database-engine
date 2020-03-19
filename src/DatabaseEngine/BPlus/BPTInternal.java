@@ -5,24 +5,24 @@ import DatabaseEngine.Utilities;
 import java.util.ArrayList;
 
 public class BPTInternal<T extends Comparable<T>> extends BPTNode<T> { // non leaf nodes
-    private ArrayList<BPTNode<T>> pointers; //pointers to children nodes
+    private ArrayList<String> pointers; //pointers to children nodes
 
-    BPTInternal(int N) {
-        super(N);
+    BPTInternal(int N, String ID) {
+        super(N,ID);
         pointers = new ArrayList<>();
     }
 
     // getters/setters:
-    public ArrayList<BPTNode<T>> getPointers(){
+    public ArrayList<String> getPointers(){
         return pointers;
     }
-    public void setPointers(ArrayList<BPTNode<T>> pointers){
+    public void setPointers(ArrayList<String> pointers){
         this.pointers = pointers;
     }
 
     //------------------------METHODS-------------------------------
 
-    public void insert(T value, BPTNode<T> newPointer) {
+    public void insert(T value, String newPointer) {
         incSize();
 
         int insertAt = Utilities.selectiveBinarySearch(getValues(), value, ">="); //binary search for the correct place
@@ -34,9 +34,9 @@ public class BPTInternal<T extends Comparable<T>> extends BPTNode<T> { // non le
     }
 
     public BPTNode<T> split() {
-        BPTInternal<T> newNode = new BPTInternal<>(getMaxPerNode()); ////last node to the right (in in the same level)
+        BPTInternal<T> newNode = new BPTInternal<>(getMaxPerNode(),""); ////last node to the right (in the same level)
         ArrayList<T> newValues = new ArrayList<>(); //temp values
-        ArrayList<BPTNode<T>> newPointers = new ArrayList<>(); //temp pointers
+        ArrayList<String> newPointers = new ArrayList<>(); //temp pointers
 
         int splittingIndex = (getSize() - 1)/2; //split node in half
 

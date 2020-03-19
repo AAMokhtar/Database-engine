@@ -24,6 +24,7 @@ import java.util.*;
 import DatabaseEngine.BPlus.BPTExternal;
 import DatabaseEngine.BPlus.BPTInternal;
 import DatabaseEngine.BPlus.BPTNode;
+import DatabaseEngine.BPlus.BPlusTree;
 import javafx.util.Pair;
 
 public class Utilities {
@@ -635,7 +636,7 @@ public class Utilities {
 		else return;
 	}
 
-	//indices
+	//------------------------------========================INDEX HELPERS========================------------------------------------
 
 	//loads all indices from memory and associates columns with their index
 	public static Hashtable<String, Hashtable<String, index>> loadIndices() {
@@ -668,9 +669,41 @@ public class Utilities {
 		return ret;
 	}
 
-	//B+ trees
+	public static <T extends Comparable<T>> void serializeBPT(BPlusTree<T> tree) { //copy pasted from Basant's (thx XD)
 
-	//binary search
+		try {
+			File file = new File("data//BPlus//Trees//" + "BPlusTree_" +tree.getName() + ".class");
+			FileOutputStream fileAccess;
+			fileAccess = new FileOutputStream(file);
+			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
+			objectAccess.writeObject(tree);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Failed to serialize tree.");
+		}
+	}
+
+	public static <T extends Comparable<T>> BPlusTree<T> deserializeBPT(String name) { //copy pasted from Basant's (thx XD)
+		//read from file (deserialize)
+		try {
+			FileInputStream readFromFile = new FileInputStream("data//BPlus//Trees//" + "BPlusTree_" + name+ ".class");
+			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
+			BPlusTree<T> k = (BPlusTree<T>) readObject.readObject();
+			readObject.close();
+			readFromFile.close();
+			return k;
+
+		}
+
+		catch(Exception E) {
+			System.out.println("Failed to deserialize tree. Return value: NULL");
+		}
+		return null;
+	}
+
+	//------------------------========================B+ TREE HELPERS========================---------------------------
+
+	//the best binary search you will ever see. It can even find your lost hopes and dreams in logarithmic time complexity
 	public static <T extends Comparable<T>> int selectiveBinarySearch(ArrayList<T> list, T value, String mode){
 		int lo = 0;
 		int hi = list.size() - 1;
@@ -759,22 +792,61 @@ public class Utilities {
 		return index;
 	}
 
-	//get leaf inside B+ tree (takes a value, returns the leaf node of that value)
+	//recursively searches for a value until it finds and returns the leaf containing it
+	// set the "firstNode" flag to true if you want the first leaf in your tree (most left leaf)
 	public static <T extends Comparable<T>> BPTExternal<T> findLeaf(BPTNode<T> cur, T value, boolean firstNode){
 
 		if (cur instanceof BPTInternal){
-			int key = selectiveBinarySearch(cur.getValues(), value, "<="); //find place in array
-			if (firstNode) key = -1;
-			return findLeaf(((BPTInternal<T>) cur).getPointers().get(key + 1),value, firstNode); //down the tree
+			int key = -1;
+			if (!firstNode)
+				key = selectiveBinarySearch(cur.getValues(), value, "<="); //find place in array (greatest index less than or equal value)
+
+			return findLeaf(Utilities.deserializeNode(((BPTInternal<T>) cur).getPointers().get(key + 1)),value, firstNode); //down the tree
 		}
 
 		return (BPTExternal<T>) cur;
 	}
 
-	//select
+	public static <T extends Comparable<T>> void serializeNode(BPTNode<T> N) { //copy pasted from Basant's (thx XD)
+
+		try {
+			File file = new File("data//BPlus//B+_Nodes//" + "Node_" + N.getID() + ".class");
+			FileOutputStream fileAccess;
+			fileAccess = new FileOutputStream(file);
+			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
+			objectAccess.writeObject(N);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Failed to serialize node.");
+		}
+	}
+
+	public static <T extends Comparable<T>> BPTNode<T> deserializeNode(String nodeID) { //copy pasted from Basant's (thx XD)
+		if (nodeID == null) return null;
+
+		try {
+			FileInputStream readFromFile = new FileInputStream("data//BPlus//B+_Nodes//" + "Node_" + nodeID + ".class");
+			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
+			BPTNode<T> k = (BPTNode<T>) readObject.readObject();
+			readObject.close();
+			readFromFile.close();
+			return k;
+		}
+		catch(Exception E) {
+			System.out.println("Failed to deserialize node. Return value: NULL");
+		}
+
+		return null;
+	}
+
+	//--------------------------======================SELECT HELPERS=====================-------------------------------
+
 	//TODO: explain your code!!!!!! pls!!!!!!!!!!! aboos reglek eshra7
 	//fine!!!
 
+	//imprtent pls no dlet tes mesod poleez dees metud gud no dleeet no metld lt me explon metd
+	//dees mtus tek 2 et tek 2 oobyekt 1 cowent 1! cles des 2 obct er kles yes? dez cmper 2 veluz
+	//wet cndeson met gibs yes no yes? puleeeez no dlet des wrk des guod okee bai
 	public static boolean condition(Object a, Object b,Class type , String condition){ //method
 
 		switch (type.getName()){ //switch condition ;)
@@ -799,6 +871,7 @@ public class Utilities {
 		return false; //something
 	}
 
+	//takes 2 values and a condition, checks whether the condition is true
 	private static <T extends Comparable<T>> boolean conditionHelp(T a, T b, String condition){
 
 		switch (condition){
@@ -818,6 +891,8 @@ public class Utilities {
 		return false;
 	}
 
+	//searches for a page then the index of a value inside that page. takes a list of pages, a value,
+	//and the column number of your value. returns pageID, index respectively
 	public static int[] binarySearchValuePage(Vector<Integer> list, Comparable value, int column){
 		//smallest element greater than or equal element. returns the pageID and the index respectively
 
@@ -862,7 +937,7 @@ public class Utilities {
 		return ret;
 	}
 	
-	
+//------------------------------========================MAIN========================------------------------------------
 //	public static void main(String[] args) {
 //		try {
 			//testing returnIndex()
