@@ -323,10 +323,12 @@ public class BPlusTree<T extends Comparable<T>> implements Serializable,index<T>
             int offset = pointerList.get(i).getOffset(); //get index
             int page = pointerList.get(i).getPage(); //get page numberf
 
+            //the offset became negative after shifting
+            int negative = ((offset + amount < 0) && (offset + amount)%maxTuplesPerPage != 0?-1:0);
 
-            offset = ((offset + amount) % (maxTuplesPerPage + 1)); //index in new page
+            pointerList.get(i).setPage(page + ((offset + amount) / maxTuplesPerPage) + negative); //new page number
+            offset = ((offset + amount) % (maxTuplesPerPage)); //index in new page
             pointerList.get(i).setOffset(offset); //set new index
-            pointerList.get(i).setPage(page + (offset / maxTuplesPerPage)); //new page number
 
         }
     }

@@ -2,7 +2,7 @@ package DatabaseEngine;
 
 import java.util.HashSet;
 
-public class BSet<T> extends HashSet<T>{
+public class BSet<T> extends HashSet<T>{ //NOTE: avoid comparing by reference
     public BSet(){ super(); }
 
     public BSet<T> AND(BSet<T> set){
