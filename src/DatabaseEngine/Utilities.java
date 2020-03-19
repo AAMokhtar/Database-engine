@@ -21,10 +21,7 @@ import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.*;
 
-import DatabaseEngine.BPlus.BPTExternal;
-import DatabaseEngine.BPlus.BPTInternal;
-import DatabaseEngine.BPlus.BPTNode;
-import DatabaseEngine.BPlus.BPlusTree;
+import DatabaseEngine.BPlus.*;
 import javafx.util.Pair;
 
 public class Utilities {
@@ -669,38 +666,6 @@ public class Utilities {
 		return ret;
 	}
 
-	public static <T extends Comparable<T>> void serializeBPT(BPlusTree<T> tree) { //copy pasted from Basant's (thx XD)
-
-		try {
-			File file = new File("data//BPlus//Trees//" + "BPlusTree_" +tree.getName() + ".class");
-			FileOutputStream fileAccess;
-			fileAccess = new FileOutputStream(file);
-			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
-			objectAccess.writeObject(tree);
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Failed to serialize tree.");
-		}
-	}
-
-	public static <T extends Comparable<T>> BPlusTree<T> deserializeBPT(String name) { //copy pasted from Basant's (thx XD)
-		//read from file (deserialize)
-		try {
-			FileInputStream readFromFile = new FileInputStream("data//BPlus//Trees//" + "BPlusTree_" + name+ ".class");
-			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
-			BPlusTree<T> k = (BPlusTree<T>) readObject.readObject();
-			readObject.close();
-			readFromFile.close();
-			return k;
-
-		}
-
-		catch(Exception E) {
-			System.out.println("Failed to deserialize tree. Return value: NULL");
-		}
-		return null;
-	}
-
 	//------------------------========================B+ TREE HELPERS========================---------------------------
 
 	//the best binary search you will ever see. It can even find your lost hopes and dreams in logarithmic time complexity
@@ -837,6 +802,115 @@ public class Utilities {
 		}
 
 		return null;
+	}
+
+	public static <T extends Comparable<T>> void serializeBPT(BPlusTree<T> tree) { //copy pasted from Basant's (thx XD)
+
+		try {
+			File file = new File("data//BPlus//Trees//" + "BPlusTree_" +tree.getName() + ".class");
+			FileOutputStream fileAccess;
+			fileAccess = new FileOutputStream(file);
+			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
+			objectAccess.writeObject(tree);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Failed to serialize tree.");
+		}
+	}
+
+	public static <T extends Comparable<T>> BPlusTree<T> deserializeBPT(String name) { //copy pasted from Basant's (thx XD)
+		//read from file (deserialize)
+		try {
+			FileInputStream readFromFile = new FileInputStream("data//BPlus//Trees//" + "BPlusTree_" + name+ ".class");
+			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
+			BPlusTree<T> k = (BPlusTree<T>) readObject.readObject();
+			readObject.close();
+			readFromFile.close();
+			return k;
+
+		}
+
+		catch(Exception E) {
+			System.out.println("Failed to deserialize tree. Return value: NULL");
+		}
+		return null;
+	}
+
+	public static void serializeBOverflow(overflowPage p) { //copy pasted from Basant's (thx XD)
+
+		try {
+			File file = new File("data//BPlus//overflow_Pages//" + "overflow_" + p.getName() + p.getID() + ".class");
+			FileOutputStream fileAccess;
+			fileAccess = new FileOutputStream(file);
+			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
+			objectAccess.writeObject(p);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Failed to serialize page.");
+		}
+	}
+
+	public static overflowPage deserializeBOverflow(String name) { //copy pasted from Basant's (thx XD)
+		if (name == null) return null;
+		try {
+			FileInputStream readFromFile = new FileInputStream("data//BPlus//overflow_Pages//" + "overflow_" + name + ".class");
+			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
+			overflowPage k = (overflowPage) readObject.readObject();
+			readObject.close();
+			readFromFile.close();
+			return k;
+
+		}
+
+		catch(Exception E) {
+			System.out.println("Failed to deserialize page. Return value: NULL");
+		}
+		return null;
+	}
+
+	public static <T> void  overflowInsert(String name, T value, pointer recordPointer){
+
+		//get the maximum number of tuples per page:
+		int N = 0;
+		try {
+			N = Utilities.readPageSize("config//DBApp.properties");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("insertion failed");
+			e.printStackTrace();
+			return;
+		}
+
+		//the first overflow page does not exist
+		if (!new File("data//BPlus//overflow_Pages//" + "overflow_" + name + value + "_0.class").isFile()){
+			overflowPage firstPage = new overflowPage(name + value + "_");
+			firstPage.insert(recordPointer);
+			Utilities.serializeBOverflow(firstPage);
+		}
+		//the first overflow page exists
+		else {
+			overflowPage curPage = Utilities.deserializeBOverflow(name + value + "_0"); //get the first page
+
+			while (curPage.getNext() != null){ //a suitable page or the last page
+				if (curPage.size() < N){
+					break;
+				}
+				else {
+					curPage = Utilities.deserializeBOverflow(curPage.getNext());
+				}
+			}
+
+			if (curPage.size() < N) { //a vacant space exists
+				curPage.insert(recordPointer);
+				Utilities.serializeBOverflow(curPage);
+			}
+
+			else { //create new page
+				overflowPage lastPage = new overflowPage(curPage);
+				lastPage.insert(recordPointer);
+				Utilities.serializeBOverflow(lastPage);
+			}
+		}
 	}
 
 	//--------------------------======================SELECT HELPERS=====================-------------------------------
