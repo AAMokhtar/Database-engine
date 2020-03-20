@@ -182,6 +182,8 @@ public class Utilities {
 	}
 	//initialize properties
 	public static void initializeProperties(){
+		if (new File("config//DBApp.properties").exists()) return; //file is already initialized
+
 		Properties p=new Properties();
 		p.setProperty("MaximumRowsCountinPage","200");
 		p.setProperty("NodeSize","15");
@@ -708,12 +710,12 @@ public class Utilities {
 
 		try {
 			meta.readLine();
-
-			while (meta.ready()) {
-				String[] info = meta.readLine().split(", ] \\[");
+			String curLine;
+			while ((curLine = meta.readLine()) != null) {
+				String[] info =curLine.substring(1).split(", |\\[|]");
 				//Table Name [0], Column Name [1], Column Type [2], ClusteringKey [3], Indexed [4]
-
-				if (!ret.contains(info[0])) {
+				String temp = info[0];
+				if (!ret.containsKey(info[0])) {
 					ret.put(info[0], new Hashtable<>());
 				}
 
@@ -841,7 +843,7 @@ public class Utilities {
 	public static <T extends Comparable<T>> void serializeNode(BPTNode<T> N) { //copy pasted from Basant's (thx XD)
 
 		try {
-			File file = new File("data//BPlus//overflow_Pages//B+_Nodes//" + "Node_" + N.getID() + ".class");
+			File file = new File("data//BPlus//B+_Nodes//" + "Node_" + N.getID() + ".class");
 			FileOutputStream fileAccess;
 			fileAccess = new FileOutputStream(file);
 			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
@@ -856,7 +858,7 @@ public class Utilities {
 		if (nodeID == null) return null;
 
 		try {
-			FileInputStream readFromFile = new FileInputStream("data//BPlus//overflow_Pages//B+_Nodes//" + "Node_" + nodeID + ".class");
+			FileInputStream readFromFile = new FileInputStream("data//BPlus//B+_Nodes//" + "Node_" + nodeID + ".class");
 			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
 			BPTNode<T> k = (BPTNode<T>) readObject.readObject();
 			readObject.close();
@@ -873,7 +875,7 @@ public class Utilities {
 	public static <T extends Comparable<T>> void serializeBPT(BPlusTree<T> tree) {
 
 		try {
-			File file = new File("data//BPlus//overflow_Pages//Trees//" + "BPlusTree_" +tree.getName() + ".class");
+			File file = new File("data//BPlus//Trees//" + "BPlusTree_" +tree.getName() + ".class");
 			FileOutputStream fileAccess;
 			fileAccess = new FileOutputStream(file);
 			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
@@ -887,7 +889,7 @@ public class Utilities {
 	public static <T extends Comparable<T>> BPlusTree<T> deserializeBPT(String name) {
 		//read from file (deserialize)
 		try {
-			FileInputStream readFromFile = new FileInputStream("data//BPlus//overflow_Pages//Trees//" + "BPlusTree_" + name+ ".class");
+			FileInputStream readFromFile = new FileInputStream("data//BPlus//Trees//" + "BPlusTree_" + name+ ".class");
 			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
 			BPlusTree<T> k = (BPlusTree<T>) readObject.readObject();
 			readObject.close();

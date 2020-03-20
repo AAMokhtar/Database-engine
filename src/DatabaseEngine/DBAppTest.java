@@ -14,44 +14,45 @@ public class DBAppTest {
     static String[] types = {"java.lang.Integer", "java.lang.String", "java.lang.Boolean"
             , "java.util.Date", "java.lang.Double", "java.awt.Polygon"}; //all possible data types
 
-    public static void main(String[] args){ //run to generate tables and insert tuples into them
+    public static void main(String[] args) { //run to generate tables and insert tuples into them
 //        tables = new ArrayList<>();
 //        columns = new HashMap<>();
 //        tableVals = new HashMap<>();
 //        clusteringKeys = new Hashtable<>();
 //
 //        DB = new DBApp();
-
+//        DB.createBTreeIndex("obevdjbiaoqgod","nvhmexdhcb");
+//        DB.init();
 
 //        createTable(5); //create a table with 5 columns
 //        createTable(5);
 //        Insert(tables.get(0),10); //insert 20000 records into it
-//        Insert(tables.get(1),20000);
+//        Insert(tables.get(1),10);
 
 //        deleteFromTable(tables.get(0),500); //delete 500 records
 //        deleteFromTable(tables.get(1),500);
 //        updateTable(tables.get(0), 500); //update 500 records
 //        updateTable(tables.get(1), 500);
-//        DB.indices = Utilities.loadIndices();
+
 //        SQLTerm[] t = new SQLTerm[3];
 //        t[0] = new SQLTerm();
 //        t[1] = new SQLTerm();
 //        t[2] = new SQLTerm();
-
-//        t[0]._strTableName = "foxyi";
-//        t[0]._strColumnName = "mqnoug";
-//        t[0]._strOperator = "=";
-//        t[0]._objValue = false;
 //
-//        t[1]._strTableName = "foxyi";
-//        t[1]._strColumnName = "jzya";
+//        t[0]._strTableName = "obevdjbiaoqgod";
+//        t[0]._strColumnName = "uyjyhuxf";
+//        t[0]._strOperator = ">";
+//        t[0]._objValue = 10;
+//
+//        t[1]._strTableName = "obevdjbiaoqgod";
+//        t[1]._strColumnName = "kskr";
 //        t[1]._strOperator = "=";
 //        t[1]._objValue = false;
 //
-//        t[2]._strTableName = "igcfshvydlmgd";
-//        t[2]._strColumnName = "atcazd";
-//        t[2]._strOperator = ">=";
-//        t[2]._objValue = 42.47931960242464;
+//        t[2]._strTableName = "obevdjbiaoqgod";
+//        t[2]._strColumnName = "nvhmexdhcb";
+//        t[2]._strOperator = "<";
+//        t[2]._objValue = "m";
 //
 //        String[] operators = {"AND","AND"};
 //
@@ -59,7 +60,7 @@ public class DBAppTest {
 //
 //        while (res.hasNext()){
 //            Vector cur = (Vector) res.next();
-//            System.out.println(cur.get(3) + " " + cur.get(4) + " " + cur.get(2));
+//            System.out.println(cur.get(2) + " " + cur.get(0) + " " + cur.get(3));
 //        }
     }
 
@@ -179,14 +180,14 @@ public class DBAppTest {
     public static Date RandomDate() throws ParseException { //random date between 1/1/1900 to 1/1/2045
         String ret = "";
 
-        ret+= RandomInt(1900,2045)+'-'; //random year 1900-2045
+        ret+= RandomInt(1900,2045)+ "-"; //random year 1900-2045
 
         int month = RandomInt(1,31); //random month
-        if (month < 10) ret+= '0';
-        ret += month +'-';
+        if (month < 10) ret+= "0";
+        ret += month + "-";
 
         int day = RandomInt(1,31); //random day
-        if (day < 10) ret+= '0';
+        if (day < 10) ret+= "0";
         ret += day + " ";
 
         ret +="00:00:00";

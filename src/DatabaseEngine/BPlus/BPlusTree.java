@@ -84,7 +84,6 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                         }
 
                     }
-
                 }
 
                 break;
@@ -108,7 +107,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                         ret.add(curNode.getPointers().get(index)); // add to output
 
                         if (new File("data//BPlus//overflow_Pages//" + "overflow_" + name + curNode.getValues().get(index) + "_0.class").isFile()){
-                            overflowPage curPage = Utilities.deserializeBOverflow(name + curNode.getValues().get(index++) + "_0"); //get the first page
+                            overflowPage curPage = Utilities.deserializeBOverflow(name + curNode.getValues().get(index) + "_0"); //get the first page
 
                             while (curPage != null){ //loop over all overflow pages
 
@@ -120,7 +119,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                             }
 
                         }
-
+                        index++;
                     }
                 }
 
@@ -144,7 +143,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                         ret.add(curNode.getPointers().get(index)); //add pointer to output
 
                         if (new File("data//BPlus//overflow_Pages//" + "overflow_" + name + curNode.getValues().get(index) + "_0.class").isFile()){
-                            overflowPage curPage = Utilities.deserializeBOverflow(name + curNode.getValues().get(index++) + "_0"); //get the first page
+                            overflowPage curPage = Utilities.deserializeBOverflow(name + curNode.getValues().get(index) + "_0"); //get the first page
 
                             while (curPage != null){ //loop over all overflow pages
 
@@ -156,7 +155,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                             }
 
                         }
-
+                        index++;
                     }
                 }
 
@@ -192,7 +191,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                             }
 
                         }
-
+                        index++;
                     }
                 }
 
@@ -221,7 +220,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                         ret.add(curNode.getPointers().get(index)); //add pointer to output
 
                         if (new File("data//BPlus//overflow_Pages//" + "overflow_" + name + curNode.getValues().get(index) + "_0.class").isFile()){
-                            overflowPage curPage = Utilities.deserializeBOverflow(name + curNode.getValues().get(index++) + "_0"); //get the first page
+                            overflowPage curPage = Utilities.deserializeBOverflow(name + curNode.getValues().get(index) + "_0"); //get the first page
 
                             while (curPage != null){ //loop over all overflow pages
 
@@ -233,7 +232,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                             }
 
                         }
-
+                        index++;
                     }
                 }
 
@@ -261,7 +260,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                         ret.add(curNode.getPointers().get(index)); //add to output
 
                         if (new File("data//BPlus//overflow_Pages//" + "overflow_" + name + curNode.getValues().get(index) + "_0.class").isFile()){
-                            overflowPage curPage = Utilities.deserializeBOverflow(name + curNode.getValues().get(index++) + "_0"); //get the first page
+                            overflowPage curPage = Utilities.deserializeBOverflow(name + curNode.getValues().get(index) + "_0"); //get the first page
 
                             while (curPage != null){ //loop over all overflow pages
 
@@ -273,7 +272,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                             }
 
                         }
-
+                        index++;
                     }
                 }
 
@@ -475,6 +474,33 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
             Utilities.serializeNode(cur);
             cur = (BPTExternal<T>) Utilities.deserializeNode(cur.getNext());
         }
+    }
 
+    public String leavesToString(){
+        StringBuilder ret = new StringBuilder();
+
+        BPTExternal cur = Utilities.findLeaf(root,null,true);
+
+        while (cur != null){
+            ret.append("[");
+
+            int i = 0;
+            for(Object val : cur.getValues()){
+                ret.append(" " + val.toString());
+
+                if (i != maxPerNode - 1) ret.append(" |");
+            }
+
+            while (i < maxPerNode - 1){
+                ret.append("    |");
+            }
+            ret.append("    ");
+
+            if (cur.getNext() != null) ret.append("] -> ");
+            else ret.append("]");
+
+            cur = (BPTExternal) Utilities.deserializeNode(cur.getNext());
+        }
+        return ret.toString();
     }
 }

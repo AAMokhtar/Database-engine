@@ -215,7 +215,7 @@ public class DBApp {
 				throw new DBAppException("the number of operators is incorrect!");
 
 		BSet<pointer> resultPointers = null; //final pointers of the select statement
-		int i = 0; //strarrOperator index
+		int i = -1; //strarrOperator index
 
 		for(SQLTerm cur: arrSQLTerms){ //for each SQLTerm
 
@@ -250,7 +250,7 @@ public class DBApp {
 
 			//-------retrieve Index------
 				index tree = null;
-				if (indices.get(cur._strTableName).contains(cur._strColumnName)) //find tree
+				if (indices != null && indices.get(cur._strTableName).containsKey(cur._strColumnName)) //find tree
 					tree = indices.get(cur._strTableName).get(cur._strColumnName);
 
 				if (Indexed && tree == null)
@@ -267,7 +267,15 @@ public class DBApp {
 				}
 
 			//-----------perform set operation-----------
+			if (i == -1){  //first term (no operator)
+				resultPointers = Utilities.setOperation(resultPointers,queryResult,null);
+				i++;
+			}
+			else {
 				resultPointers = Utilities.setOperation(resultPointers,queryResult,strarrOperators[i++].toUpperCase());
+			}
+
+
 
 		} //repeat for all SQL terms
 
