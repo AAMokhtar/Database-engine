@@ -1076,6 +1076,207 @@ public class Utilities {
 
 		return ret;
 	}
+
+	//returns a set containing the query's results as pointers
+	public static BSet<pointer> indexedQuery(Class colType,index tree,SQLTerm cur){
+		BSet<pointer> queryResult = new BSet<>(); //output
+
+		if (colType.getName().equals("DatabaseEngine.myPolygon")){ //use R tree
+			//TODO: R tree query
+		}
+
+		else { //use B+ trees
+
+			switch (colType.getName()){ //perform query
+				case "java.lang.Integer":
+					queryResult = ((BPlusTree) tree).search((Integer) cur._objValue, cur._strOperator);
+					break;
+
+				case "java.lang.Double":
+					queryResult = ((BPlusTree) tree).search((Double) cur._objValue, cur._strOperator);
+					break;
+
+				case "java.lang.String":
+					queryResult = ((BPlusTree) tree).search((String) cur._objValue, cur._strOperator);
+					break;
+
+				case "java.util.Date":
+					queryResult = ((BPlusTree) tree).search((Date) cur._objValue, cur._strOperator);
+					break;
+
+				case "java.lang.Boolean":
+					queryResult = ((BPlusTree) tree).search((Boolean) cur._objValue, cur._strOperator);
+					break;
+
+				default:break;
+			}
+		}
+		return queryResult;
+	}
+
+	public static BSet<pointer> recordQuery(SQLTerm cur, boolean key,Table cur_table,int colnum,Class colType) throws DBAppException {
+		BSet<pointer> queryResult = new BSet<>(); //initialize query result
+
+		//clustering key (binary search):
+		if (key){
+			int[] pageIndex = {-1,-1}; //{page, index}
+
+			//Get the appropriate starting position:
+			if (cur._strOperator.equals("<=") || cur._strOperator.equals("<")){ //no binary search needed
+				pageIndex[0] = 0;
+				pageIndex[1] = 0;
+			}
+			else {
+				//find the appropriate page, index
+				pageIndex = Utilities.binarySearchValuePage(cur_table.getPages(), (Comparable) cur._objValue,colnum);
+			}
+			//start traversing the pages
+			if (pageIndex[0] != -1){ //found a page
+				if (pageIndex[1] != -1){ //found an index inside the page
+					boolean done = false; //flag to break from both loops if needed
+
+					while (pageIndex[0] < cur_table.getPages().size()){ //for every page
+
+						Vector<Vector> page = Utilities.deserializePage(cur_table.getPages().get(pageIndex[0]))
+								.getPageElements(); //get page elements
+
+						while (pageIndex[1] < page.size()) { //for every tuple inside the current page
+
+							Vector<Object> tuple = page.get(pageIndex[1]); //get tuple from page elements
+
+							if (tuple.size() <= colnum) //somehow the tuple size is smaller than the column number
+								throw new DBAppException("could not reach column in tuple");
+
+							//if the tuple satisfies the SQL term
+							if (Utilities.condition(tuple.get(colnum), cur._objValue, colType, cur._strOperator))
+								queryResult.add(new pointer(pageIndex[0],pageIndex[1])); //add it to the result
+
+							else{
+								done = true;//for outer loop
+								break; //break since the records are sorted (the remaining records do not satisfy the condition)
+							}
+							pageIndex[1]++; //next index
+						}
+
+						if (done) break; //query is done
+						pageIndex[1] = 0; //reset index for the next page
+						pageIndex[0]++; //next page
+					}
+				}
+			}
+		}
+
+		//non clustering key (linear search):
+		else{
+
+			for(int pageId : cur_table.getPages()){ //get table page by page
+				Vector<Vector> page = Utilities.deserializePage(pageId).getPageElements(); //current page
+
+				int tupleNum = 0;
+				for(Vector tuple : page){ //for every tuple inside the current page
+
+					if (tuple.size() <= colnum ) //somehow the tuple size is smaller than the column number
+						throw new DBAppException("could not reach column in tuple");
+
+					//if the tuple satisfies the SQL term
+					if (Utilities.condition(tuple.get(colnum), cur._objValue, colType, cur._strOperator))
+						queryResult.add(new pointer(pageId, tupleNum)); //add it to the result
+
+					tupleNum++; //increment index
+				}
+			}
+		}
+		return queryResult;
+	}
+
+	public static BSet<pointer> setOperation(BSet<pointer> resultPointers, BSet<pointer> queryResult, String operator) throws DBAppException {
+		BSet<pointer> ret; //output
+
+		if (resultPointers == null) ret = queryResult; //first query
+
+		else { // not first
+			switch (operator){
+				case "AND": ret = resultPointers.AND(queryResult);break;
+				case "OR": ret = resultPointers.OR(queryResult);break;
+				case "XOR": ret = resultPointers.XOR(queryResult);break;
+				default: throw new DBAppException("invalid set operation!");
+			}
+		}
+
+		return ret;
+	}
+
+	public static Iterator getPointerRecords(BSet<pointer> resultPointers){
+		Vector<Vector> result = new Vector<>(); //final array of tuples
+		Page curPage = null;
+
+		if(!resultPointers.isEmpty()){ //we have results
+			Iterator pointers = resultPointers.iterator(); //get set iterator
+
+			while (pointers.hasNext()){ //for every pointer
+				pointer cur = (pointer) pointers.next();
+
+				if (curPage == null || curPage.getID() != cur.getPage()) //to avoid loading the page twice
+					curPage = Utilities.deserializePage(cur.getPage()); //get pointer's page
+
+				result.add(curPage.getPageElements().get(cur.getOffset())); //get tuple
+			}
+		}
+		return result.iterator();
+	}
+
+	public static boolean allowedOperator(String operator){
+		switch (operator){ //one of the allowed operators
+			case ">":
+			case ">=":
+			case "<":
+			case "<=":
+			case "=":break;
+			default: return false; //else
+		}
+		return true;
+	}
+
+	public static boolean validTerm(SQLTerm cur){
+		if (cur._strTableName == null || cur._strColumnName == null
+				|| cur._strOperator == null || cur._objValue == null){
+
+			return false;
+		}
+		return true;
+	}
+
+	public static Class correctType(String typeName,Object value){
+		Class colType = null;
+		try {
+			colType = Class.forName(typeName); //type of our column
+		}
+		catch (ClassNotFoundException e){
+			System.out.println("class " + typeName + " not found");
+			e.printStackTrace();
+		}
+
+
+		if (!colType.isInstance(value)){ //incorrect value type
+			return null;
+		}
+
+		return colType;
+	}
+
+	public static Pair<String[],Integer>  getColumnFromMetadata(String columnName,ArrayList<String[]> metaData){
+		String[] colInfo = null;
+		int colnum = 0;
+
+		for(String[] col : metaData){ //loop on all columns
+			if (col[1].equals(columnName)){ //found our column
+				colInfo = col;
+				break;
+			}
+			colnum++; //increment column number
+		}
+		return new Pair<>(colInfo,colnum);
+	}
 	
 //------------------------------========================MAIN========================------------------------------------
 //	public static void main(String[] args) {

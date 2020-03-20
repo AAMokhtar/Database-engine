@@ -209,225 +209,69 @@ public class DBApp {
 	}
 
 	//----------------------------------M2------------------------------------------
-	public Iterator selectFromTable(SQLTerm[] arrSQLTerms, String[] strarrOperators) throws DBAppException, ClassNotFoundException {
-		BSet<pointer> resultPointers = null;
+	public Iterator selectFromTable(SQLTerm[] arrSQLTerms, String[] strarrOperators) throws DBAppException{
 		//----=not enough operators=-----
-		if (strarrOperators.length != arrSQLTerms.length - 1)
-			throw new DBAppException("the number of operators is incorrect!");
+			if (strarrOperators.length != arrSQLTerms.length - 1)
+				throw new DBAppException("the number of operators is incorrect!");
 
+		BSet<pointer> resultPointers = null; //final pointers of the select statement
 		int i = 0; //operator index
+
 		for(SQLTerm cur: arrSQLTerms){ //for each SQLTerm
 
 			//------------------------------------Integrity checks------------------------------------
 
 			//--current term is complete-
-			if (cur._strTableName == null || cur._strColumnName == null
-					|| cur._strOperator == null || cur._objValue == null){
-				throw new DBAppException("Incomplete SQLTerm!");
-			}
+				if (!Utilities.validTerm(cur)) throw new DBAppException("Incomplete SQLTerm!");
 
 			//--------table exists-------
-			Table cur_table = Utilities.deserializeTable(cur._strTableName);
-			if (cur_table == null) throw new DBAppException("Table not found!");
-
+				Table cur_table = Utilities.deserializeTable(cur._strTableName);
+				if (cur_table == null) throw new DBAppException("Table not found!");
 
 			//---extract table metadata--
-			ArrayList<String[]> metaData = Utilities.readMetaDataForSpecificTable(cur._strTableName);
-			if (metaData == null) throw new DBAppException("Cannot fetch metadata!");
+				ArrayList<String[]> metaData = Utilities.readMetaDataForSpecificTable(cur._strTableName);
+				if (metaData == null) throw new DBAppException("Cannot fetch metadata!");
 
 			//-------column exists-------
-			String[] colInfo = null; //column metadata
-			int colnum = 0;
-			for(String[] col : metaData){ //loop on all columns
-				if (col[1].equals(cur._strColumnName)){ //found our column
-					colInfo = col;
-					break;
-				}
-				colnum++; //increment column number
-			}
-
-			if (colInfo == null) throw new DBAppException("Attribute not found!");
+				Pair<String[],Integer> check = Utilities.getColumnFromMetadata(cur._strColumnName,metaData);
+				String[] colInfo = check.getKey();//column metadata
+				Integer colnum = check.getValue(); //index of that column
+				if (colInfo == null) throw new DBAppException("Attribute not found!");
 
 			//-------correct type--------
-			Class colType = null;
-
-			colType = Class.forName(colInfo[2]); //type of our column
-
-			if (!colType.isInstance(cur._objValue)){ //incorrect value type
-				throw new DBAppException("term value is incompatible with column type!");
-			}
+				Class colType = Utilities.correctType(colInfo[2],cur._objValue);
+				if (colType == null) throw new DBAppException("term value is incompatible with column type!");
 
 			//------correct operator-----
-			switch (cur._strOperator){ //one of the allowed operators
-				case ">":
-				case ">=":
-				case "<":
-				case "<=":
-				case "=":break;
-				default: throw new DBAppException("Unrecognized operator!"); //else
-			}
+				if (!Utilities.allowedOperator(cur._strOperator)) throw new DBAppException("Unrecognized operator!");;
 
 			//------indexed column?------
-			Boolean Indexed = colInfo[4].charAt(0) == 'T';
+				Boolean Indexed = colInfo[4].charAt(0) == 'T';
 
 			//-------retrieve Index------
-			index tree = null;
-//			if (indices.get(cur._strTableName).contains(cur._strColumnName)) //find tree
-//				tree = indices.get(cur._strTableName).get(cur._strColumnName);
+				index tree = null;
+//				if (indices.get(cur._strTableName).contains(cur._strColumnName)) //find tree
+//					tree = indices.get(cur._strTableName).get(cur._strColumnName);
 
-			if (Indexed && tree == null)
-				throw new DBAppException("Could not find index!");
-
+				if (Indexed && tree == null)
+					throw new DBAppException("Could not find index!");
 
 			//------------------------------------Execution------------------------------------
-			BSet<pointer> queryResult = null;
+				BSet<pointer> queryResult; //results of the the current query
 
-			if (Indexed){ //binary search in tree
-
-				Class polygon = null;
-				polygon = Class.forName("java.awt.Polygon"); //get polygpn class
-				if (polygon == null) throw new DBAppException("a problem occurred!"); //somehow polygon class is not found
-
-				if (polygon.isAssignableFrom(colType)){ //use R tree
-					//TODO: R tree query
+				if (Indexed){ //binary search in tree
+					queryResult = Utilities.indexedQuery(colType,tree,cur);
 				}
-
-				else { //use B+ trees
-
-					switch (colType.getName()){ //perform query
-						case "java.lang.Integer":
-							queryResult = ((BPlusTree) tree).search((Integer) cur._objValue, cur._strOperator);
-							break;
-
-						case "java.lang.Double":
-							queryResult = ((BPlusTree) tree).search((Double) cur._objValue, cur._strOperator);
-							break;
-
-						case "java.lang.String":
-							queryResult = ((BPlusTree) tree).search((String) cur._objValue, cur._strOperator);
-							break;
-
-						case "java.util.Date":
-							queryResult = ((BPlusTree) tree).search((Date) cur._objValue, cur._strOperator);
-							break;
-
-						case "java.lang.Boolean":
-							queryResult = ((BPlusTree) tree).search((Boolean) cur._objValue, cur._strOperator);
-							break;
-
-						default:break;
-					}
+				else { //no index, search in records
+					queryResult = Utilities.recordQuery(cur,colInfo[4].charAt(0) == 'T',cur_table,colnum,colType);
 				}
-			}
-
-			else { //no index, search in records
-				queryResult = new BSet<>(); //initialize query result
-
-				//clustering key (binary search):
-				if (colInfo[4].charAt(0) == 'T'){
-					int[] pageIndex = {-1,-1}; //{page, index}
-
-					//Get the appropriate starting position:
-					if (cur._strOperator.equals("<=") || cur._strOperator.equals("<")){ //no binary search needed
-						pageIndex[0] = 0;
-						pageIndex[1] = 0;
-					}
-					else {
-						//find the appropriate page, index
-						pageIndex = Utilities.binarySearchValuePage(cur_table.getPages(), (Comparable) cur._objValue,colnum);
-					}
-					//start traversing the pages
-					if (pageIndex[0] != -1){ //found a page
-						if (pageIndex[1] != -1){ //found an index inside the page
-							boolean done = false;
-							while (pageIndex[0] < cur_table.getPages().size()){
-								Vector<Vector> page = Utilities.deserializePage(cur_table.getPages().get(pageIndex[0]))
-										.getPageElements(); //get page elements
-
-								while (pageIndex[1] < page.size()) {//for every tuple inside the current page
-									Vector<Object> tuple = page.get(pageIndex[1]); //get tuple from page elements
-
-									if (tuple.size() <= colnum) //somehow the tuple size is smaller than the column number
-										throw new DBAppException("could not reach column in tuple");
-
-									//if the tuple satisfies the SQL term
-									if (Utilities.condition(tuple.get(colnum), cur._objValue, colType, cur._strOperator))
-										queryResult.add(new pointer(pageIndex[0],pageIndex[1])); //add it to the result
-
-									else{
-										done = true; //to break from the parent loop
-										break; //break since the records are sorted
-									}
-									pageIndex[1]++; //next index
-								}
-
-								if (done) break; //no more tuples needed
-								pageIndex[1] = 0; //reset index for the next page
-								pageIndex[0]++; //next page
-							}
-						}
-					}
-
-				}
-
-				//non clustering key (linear search):
-				else{
-
-					for(int pageId : cur_table.getPages()){ //get table page by page
-						Vector<Vector> page = Utilities.deserializePage(pageId).getPageElements(); //current page
-						int tupleNum = 0;
-						for(Vector tuple : page){ //for every tuple inside the current page
-
-							if (tuple.size() <= colnum ) //somehow the tuple size is smaller than the column number
-								throw new DBAppException("could not reach column in tuple");
-
-							//if the tuple satisfies the SQL term
-							if (Utilities.condition(tuple.get(colnum), cur._objValue, colType, cur._strOperator))
-								queryResult.add(new pointer(pageId, tupleNum)); //add it to the result
-							tupleNum++; //increment index
-						}
-					}
-				}
-
-			}
-
-			if (queryResult == null)
-				throw new DBAppException("Query failed!"); //could not perform query
 
 			//-----------perform set operation-----------
+				resultPointers = Utilities.setOperation(resultPointers,queryResult,strarrOperators[i++].toUpperCase());
 
-			if (resultPointers == null) resultPointers = queryResult; //first query
-
-			else { // not first
-				switch (strarrOperators[i++].toUpperCase()){
-					case "AND": resultPointers = resultPointers.AND(queryResult);break;
-					case "OR": resultPointers = resultPointers.OR(queryResult);break;
-					case "XOR": resultPointers = resultPointers.XOR(queryResult);break;
-					default: throw new DBAppException("invalid set operation!");
-				}
-			}
 		} //repeat for all SQL terms
 
-		//----------------------------Getting Tuples----------------------------
-
-		Vector<Vector> result = new Vector<>(); //final array of tuples
-		Page curPage = null;
-
-		if(!resultPointers.isEmpty()){ //we have results
-			Iterator ret = resultPointers.iterator(); //get set iterator
-
-			while (ret.hasNext()){
-				pointer cur = (pointer) ret.next();
-
-				if (curPage == null || curPage.getID() != cur.getPage()) //to avoid loading the page twice
-					curPage = Utilities.deserializePage(cur.getPage()); //get pointer's page
-
-				result.add(curPage.getPageElements().get(cur.getOffset())); //get tuple
-
-			}
-		}
-
-		return result.iterator(); //return the iterator of the final result
+		return Utilities.getPointerRecords(resultPointers); //return an iterator containing the records extracted from resultPointers
 	}
 	
 	public void createBTreeIndex(String strTableName, String strColName) throws DBAppException{

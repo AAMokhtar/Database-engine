@@ -1,7 +1,6 @@
 package DatabaseEngine; //change to team name before submitting
 
 import java.awt.*;
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -15,7 +14,7 @@ public class DBAppTest {
     static String[] types = {"java.lang.Integer", "java.lang.String", "java.lang.Boolean"
             , "java.util.Date", "java.lang.Double", "java.awt.Polygon"}; //all possible data types
 
-    public static void main(String[] args) throws DBAppException, ParseException, IOException, ClassNotFoundException { //run to generate tables and insert tuples into them
+    public static void main(String[] args){ //run to generate tables and insert tuples into them
 //        tables = new ArrayList<>();
 //        columns = new HashMap<>();
 //        tableVals = new HashMap<>();
