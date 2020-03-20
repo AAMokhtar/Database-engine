@@ -14,15 +14,12 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
     private long nodeID; //don't tell me there's not enough IDs!!!
     private int minPerNode; // min elements per node
     private BPTNode<T> root; //root node
-    private ArrayList<pointer> pointerList; //all record pointers in tree sorted by page#, index#
-
 
     public BPlusTree(String name, int N) {
         this.name = name;
         maxPerNode = N;
         minPerNode = N/2; //change it as you see fit
         nodeID = 0; //i know it's already 0. this looks cleaner though.
-        pointerList = new ArrayList<>();
     }
 
 // getters/setters:
@@ -42,8 +39,6 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
         return minPerNode;
     }
 
-    public ArrayList<pointer> getPointerList(){ return pointerList;}
-
     public void setNodeID(long size){
         nodeID = size;
     }
@@ -56,12 +51,6 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
     public void insert(T value, pointer recordPointer, boolean changeOldPointers) throws DBAppException {
         if (changeOldPointers)
             shiftPointersAt(recordPointer.getPage(), recordPointer.getOffset(), 1); //if you inserted a new record as well
-
-        int pointerPlace = Utilities.selectiveBinarySearch(getPointerList(), recordPointer, ">="); //get correct position
-
-        if(pointerPlace == -1) pointerPlace = getPointerList().size(); //insert at the end
-
-        getPointerList().add(pointerPlace,recordPointer); //insert pointer
 
         insertHelp(value, recordPointer, root); //the actual insertion
     }

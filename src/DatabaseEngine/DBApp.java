@@ -22,7 +22,7 @@ public class DBApp {
 	public void init()  {
 		Utilities.initializeMetaData();
 		Utilities.initializeProperties();
-//		indices = Utilities.loadIndices();
+		indices = Utilities.loadIndices();
 
 		//TODO: add any other "initializing code" here!
 	}
@@ -91,7 +91,7 @@ public class DBApp {
 				String[] temp=metaDataForSpecificTable.get(i);
 				if(temp[4].equals("True") && !temp[2].equals("java.awt.Polygon"))
 				{
-					BPlusTree tree=Utilities.deserializeBPT(strTableName+temp[1]);
+					BPlusTree tree= (BPlusTree) indices.get(strTableName).get(temp[1]);
 					if(temp[2].equals("java.lang.Integer"))
 					{
 						tree.insert((Integer)htblColNameValue.get(temp[1]), new pointer(ans.get(0), ans.get(1)), true);					}
@@ -215,7 +215,7 @@ public class DBApp {
 				throw new DBAppException("the number of operators is incorrect!");
 
 		BSet<pointer> resultPointers = null; //final pointers of the select statement
-		int i = 0; //operator index
+		int i = 0; //strarrOperator index
 
 		for(SQLTerm cur: arrSQLTerms){ //for each SQLTerm
 
@@ -250,8 +250,8 @@ public class DBApp {
 
 			//-------retrieve Index------
 				index tree = null;
-//				if (indices.get(cur._strTableName).contains(cur._strColumnName)) //find tree
-//					tree = indices.get(cur._strTableName).get(cur._strColumnName);
+				if (indices.get(cur._strTableName).contains(cur._strColumnName)) //find tree
+					tree = indices.get(cur._strTableName).get(cur._strColumnName);
 
 				if (Indexed && tree == null)
 					throw new DBAppException("Could not find index!");
