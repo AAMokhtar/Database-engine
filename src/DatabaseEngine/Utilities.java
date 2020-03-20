@@ -73,8 +73,75 @@ public class Utilities {
 			System.out.println("problem with writing table info");
 		}
 	}
+	public static void updateMetaData(String tblName, String indxCol){
+		ArrayList<String[]> metaData= new ArrayList<String[]>();
+		try {
+			String line = "";
 
+		BufferedReader read = new BufferedReader(new FileReader("data//metadata.csv"));
+		while ((line = read.readLine()) != null) {
+			String[] data = line.split(",");
+			if(data[0].equals(tblName) && data[1].equals(indxCol))
+			{
+				data[4]="True";
+			}
+			metaData.add(data);
+		}
+		read.close();	
+		}
 
+		catch(Exception E) {
+			System.out.println("Failed to read from metadata.csv!");
+		}
+		try {
+			PrintWriter write = new PrintWriter(new FileWriter(met, false));
+			write.append("Table Name");
+			write.append(",");
+			write.append("Column Name");
+			write.append(",");
+			write.append("Column Type");
+			write.append(",");
+			write.append("Key");
+			write.append(",");
+			write.append("Indexed");
+			write.append("\n");
+			write.flush();
+			write.close();
+		}
+		catch(IOException E) {
+			E.printStackTrace();
+			System.out.println("problem with writing table info");
+		}
+		try {
+			PrintWriter write = new PrintWriter(new FileWriter(met, true));
+			for (int i = 1; i < metaData.size(); i++) {
+				String[] temp= metaData.get(i);
+				 write.append(temp[0]);
+				   write.append(",");
+
+				   write.append(temp[1]);
+				   write.append(",");
+
+				   write.append(temp[2]);
+				   write.append(",");
+
+				   write.append(temp[3]);
+				   write.append(",");
+				   
+				   write.append(temp[4]);
+				   write.append("\n");
+			}
+
+		   write.flush();
+		   write.close();
+	   }
+
+	   catch(Exception E) {
+		   System.out.println("Failed to update metadata.csv!");
+		   E.printStackTrace();
+	   }
+	}
+	 
 	//used everytime a table is created to define its structure.
 	public static void writeHeaderIntoMetaData(Hashtable<String, String> colNameType, String tableName, String keyAndIndex) {
 		Set<String> colName = colNameType.keySet();
@@ -313,7 +380,6 @@ public class Utilities {
 	//serialize Table
 	public static void serializeTable(Table T) {
 		  //store into file (serialize)
-
 				try {
 					File file = new File("data//" + "table_" + T.getName() + ".class"); //TODO: fix up path (first item) once directory is set
 					FileOutputStream fileAccess;
@@ -775,7 +841,7 @@ public class Utilities {
 	public static <T extends Comparable<T>> void serializeNode(BPTNode<T> N) { //copy pasted from Basant's (thx XD)
 
 		try {
-			File file = new File("data//BPlus//B+_Nodes//" + "Node_" + N.getID() + ".class");
+			File file = new File("data//" + "Node_" + N.getID() + ".class");
 			FileOutputStream fileAccess;
 			fileAccess = new FileOutputStream(file);
 			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
@@ -790,7 +856,7 @@ public class Utilities {
 		if (nodeID == null) return null;
 
 		try {
-			FileInputStream readFromFile = new FileInputStream("data//BPlus//B+_Nodes//" + "Node_" + nodeID + ".class");
+			FileInputStream readFromFile = new FileInputStream("data//" + "Node_" + nodeID + ".class");
 			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
 			BPTNode<T> k = (BPTNode<T>) readObject.readObject();
 			readObject.close();
@@ -807,7 +873,7 @@ public class Utilities {
 	public static <T extends Comparable<T>> void serializeBPT(BPlusTree<T> tree) { //copy pasted from Basant's (thx XD)
 
 		try {
-			File file = new File("data//BPlus//Trees//" + "BPlusTree_" +tree.getName() + ".class");
+			File file = new File("data//" + "BPlusTree_" +tree.getName() + ".class");
 			FileOutputStream fileAccess;
 			fileAccess = new FileOutputStream(file);
 			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
@@ -821,7 +887,7 @@ public class Utilities {
 	public static <T extends Comparable<T>> BPlusTree<T> deserializeBPT(String name) { //copy pasted from Basant's (thx XD)
 		//read from file (deserialize)
 		try {
-			FileInputStream readFromFile = new FileInputStream("data//BPlus//Trees//" + "BPlusTree_" + name+ ".class");
+			FileInputStream readFromFile = new FileInputStream("data//" + "BPlusTree_" + name+ ".class");
 			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
 			BPlusTree<T> k = (BPlusTree<T>) readObject.readObject();
 			readObject.close();

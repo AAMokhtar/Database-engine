@@ -78,16 +78,47 @@ public class DBApp {
 			String clusteringKeyType = clusteringKeyInfo[2];
 			Page toInsertIn = tableToInsertIn.determinePageNeededForInsert(indexClusteringKey, htblColNameValue.get(clusteringKey), clusteringKeyType, newTuple);
 			//Step 7: *SPECIAL CASE OF INSERT* if it was determined in step 6 that the tuple to be inserted is the last in the ENTIRE table
+			ArrayList<Integer> ans=null;
 			if (toInsertIn == null) {
-				tableToInsertIn.insertSpecialCase(newTuple);
+				ans=tableToInsertIn.insertSpecialCase(newTuple);
 			}
 			//Step 8: *REGULAR CASE OF INSERT*
 			else if (toInsertIn.getElementsCount() != 0) {
-				tableToInsertIn.insertRegularCase(newTuple, toInsertIn, indexClusteringKey, htblColNameValue.get(clusteringKey), clusteringKeyType);
+				ans=tableToInsertIn.insertRegularCase(newTuple, toInsertIn, indexClusteringKey, htblColNameValue.get(clusteringKey), clusteringKeyType);
 			}
+			//step 9: inserting in B+ tree index. RTREE NOT DONE YET
+			for (int i = 0; i <metaDataForSpecificTable.size() ; i++) {
+				String[] temp=metaDataForSpecificTable.get(i);
+				if(temp[4].equals("True") && !temp[2].equals("java.awt.Polygon"))
+				{
+					BPlusTree tree=Utilities.deserializeBPT(strTableName+temp[1]);
+					if(temp[2].equals("java.lang.Integer"))
+					{
+						tree.insert((Integer)htblColNameValue.get(temp[1]), new pointer(ans.get(0), ans.get(1)), true);					}
+					else if(temp[2].equals("java.lang.String"))
+					{
+						tree.insert((String)htblColNameValue.get(temp[1]), new pointer(ans.get(0), ans.get(1)), true);					}
+					else if(temp[2].equals("java.lang.Double"))
+					{
+						tree.insert((Double)htblColNameValue.get(temp[1]), new pointer(ans.get(0), ans.get(1)), true);					}
+					else if(temp[2].equals("java.lang.Boolean"))
+					{
+						tree.insert((Boolean)htblColNameValue.get(temp[1]), new pointer(ans.get(0), ans.get(1)), true);					}
+					else if(temp[2].equals("java.util.Date"))
+					{
+						tree.insert((Date)htblColNameValue.get(temp[1]), new pointer(ans.get(0), ans.get(1)), true);					}
+					Utilities.serializeBPT(tree);
+				}
+					
+					
+			}
+			
+			
 		}
-		//Step 9:serialize page again
+		//Step 10:serialize page again
 		Utilities.serializeTable(tableToInsertIn);
+		
+		
 	}
 
 	//---------------------------------------------------------------------UPDATE METHOD--------------------------------------------------------------------
@@ -398,9 +429,97 @@ public class DBApp {
 
 		return result.iterator(); //return the iterator of the final result
 	}
-
+	
 	public void createBTreeIndex(String strTableName, String strColName) throws DBAppException{
-		//TODO
+		//name of index
+		String name=strTableName+strColName;
+		//load metadata of table
+		ArrayList<String[]> metaData=Utilities.readMetaDataForSpecificTable(strTableName);
+		if(metaData.isEmpty())
+		{
+			//table doesn't exist in meta data
+			throw new DBAppException("Table " + strTableName + " has not been initialized. Cannot create index for uninitialized table.");
+		}
+		else
+		{
+			String[] metaDataForIndexedColumn=null;
+			int locationOfIndexedColumn=0;
+			for (int i = 0; i < metaData.size(); i++) {
+				String[] temp=metaData.get(i);
+				if(temp[1].equals(strColName))
+				{
+					locationOfIndexedColumn=i;
+					metaDataForIndexedColumn=temp;break;
+				}
+			}
+			if(metaDataForIndexedColumn==null)
+			{
+				//column name doesnt exist in meta data
+				throw new DBAppException("Column " + strColName +" in table " + strTableName + " does not exist. Cannot create index for nonexistent column.");
+			}
+			else
+			{
+				//determining column type to create appropriate BTree
+				String type=metaDataForIndexedColumn[2];
+				//creating appropriate Btree
+				BPlusTree tree=null;
+				if(type.equals("java.lang.Integer"))
+				{
+					tree= new BPlusTree<Integer>(name, 15);
+				}
+				else if(type.equals("java.lang.String"))
+				{
+					tree= new BPlusTree<String>(name, 15);
+				}
+				else if(type.equals("java.lang.Double"))
+				{
+					tree= new BPlusTree<Double>(name, 15);
+				}
+				else if(type.equals("java.lang.Boolean"))
+				{
+					tree= new BPlusTree<Boolean>(name, 15);
+				}
+				else if(type.equals("java.util.Date"))
+				{
+					tree= new BPlusTree<java.util.Date>(name, 15);
+				}
+				Table t= Utilities.deserializeTable(strTableName);
+				for (int i = 0; i < t.getPages().size(); i++) {
+					Page p= Utilities.deserializePage(t.getPages().get(i));
+					for (int j = 0; j < p.getPageElements().size(); j++) {
+						Vector<Object> tuple=p.getTupleFromPage(j);
+						Object value=tuple.get(locationOfIndexedColumn);
+						if(type.equals("java.lang.Integer"))
+						{
+							tree.insert((int)value, new pointer(t.getPages().get(i), j), false);
+						}
+						else if(type.equals("java.lang.String"))
+						{
+							System.out.println((String)value);
+							tree.insert((String)value, new pointer(t.getPages().get(i), j), false);
+						}
+						else if(type.equals("java.lang.Double"))
+						{
+							tree.insert((Double)value, new pointer(t.getPages().get(i), j), false);
+						}
+						else if(type.equals("java.lang.Boolean"))
+						{
+							tree.insert((Boolean)value, new pointer(t.getPages().get(i), j), false);
+						}
+						else if(type.equals("java.util.Date"))
+						{
+							tree.insert((Date)value, new pointer(t.getPages().get(i), j), false);
+						}
+					}
+					Utilities.serializePage(p);
+				}
+				Utilities.serializeTable(t);
+				Utilities.serializeBPT(tree);
+				//modify metaData
+				Utilities.updateMetaData(strTableName, strColName);
+			}
+		}
+		
 	}
 
 	public void createRTreeIndex(String strTableName, String strColName) throws DBAppException{

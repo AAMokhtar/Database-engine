@@ -186,7 +186,8 @@ public class Table implements Serializable{
 
 	//special case of insert, where tuple to be inserted is last one in entire table or table is still empty
 	////METHOD WORKS. IT HAS BEEN REVIEWED
-	public void insertSpecialCase(Vector<Object> newTuple){
+	public ArrayList<Integer> insertSpecialCase(Vector<Object> newTuple){
+		ArrayList<Integer> ans=null;
 		if(pagesGroup.size()==0)
 		{
 			//table is still empty
@@ -194,7 +195,11 @@ public class Table implements Serializable{
 			newPage.insertIntoPage(newTuple);
 			//serialize again to save changes
 			Utilities.serializePage(newPage);
-			return;
+			//returning page index and row number in an arrayList
+			ans= new ArrayList<Integer>();
+			ans.add(pagesGroup.get(0));
+			ans.add(0);
+			return ans;
 
 		}
 		Page lastPage= Utilities.deserializePage(pagesGroup.get(pagesGroup.size()-1));
@@ -202,7 +207,10 @@ public class Table implements Serializable{
 		{
 			//last page is not full. Tuple will be placed in that page
 			lastPage.insertIntoPage(newTuple);
-
+			//returning page index and row number in an arrayList
+			ans= new ArrayList<Integer>();
+			ans.add(pagesGroup.get(pagesGroup.size()-1));
+			ans.add(lastPage.getElementsCount()-1);
 		}
 		else
 		{
@@ -210,9 +218,14 @@ public class Table implements Serializable{
 			Utilities.serializePage(lastPage);
 			lastPage= createNewPage();
 			lastPage.insertIntoPage(newTuple);
+			//returning page index and row number in an arrayList
+			ans= new ArrayList<Integer>();
+			ans.add(pagesGroup.get(pagesGroup.size()-1));
+			ans.add(0);
 		}
 		//serialize again to save changes
 		Utilities.serializePage(lastPage);
+		return ans;
 	}
 	public int getPageIndx(Page p)
 	{
@@ -227,7 +240,7 @@ public class Table implements Serializable{
 
 	//in insertion I create new pages, insert tuple in them and delete old pages
 	//METHOD WORKS. IT HAS BEEN REVIEWED
-	public void insertRegularCase(Vector<Object> newTuple, Page currentPageInMemory,int indexClusteringKey,Object clusteringKey, String clusteringKeyType) {
+	public ArrayList<Integer> insertRegularCase(Vector<Object> newTuple, Page currentPageInMemory,int indexClusteringKey,Object clusteringKey, String clusteringKeyType) {
 		int indxOfNewRow = currentPageInMemory.binarySearch(indexClusteringKey, clusteringKey, clusteringKeyType);
 		//get indx of current page in memory
 		int i=getPageIndx(currentPageInMemory);
@@ -265,7 +278,11 @@ public class Table implements Serializable{
 			Utilities.serializePage(currentPageInMemory);
 			currentPage++;
 		}
-
+		ArrayList<Integer> ans= new ArrayList<Integer>();
+		//returning page index and row number in an arrayList
+		ans.add(pagesGroup.get(i));
+		ans.add(indxOfNewRow);
+		return ans;
 	}
 
 	public void delete(Hashtable<String, Object> htblColNameValue) throws DBAppException{
