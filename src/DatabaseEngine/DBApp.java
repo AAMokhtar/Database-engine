@@ -1,5 +1,6 @@
 package DatabaseEngine; //change to team name before submitting
 
+
 import java.awt.Polygon;
 import java.io.IOException;
 import java.sql.Date;
@@ -177,7 +178,7 @@ public class DBApp {
 	}
 
 	//----------------------------------M2------------------------------------------
-	public Iterator selectFromTable(SQLTerm[] arrSQLTerms, String[] strarrOperators) throws DBAppException, ClassNotFoundException, IOException {
+	public Iterator selectFromTable(SQLTerm[] arrSQLTerms, String[] strarrOperators) throws DBAppException, ClassNotFoundException {
 		BSet<pointer> resultPointers = null;
 		//----=not enough operators=-----
 		if (strarrOperators.length != arrSQLTerms.length - 1)

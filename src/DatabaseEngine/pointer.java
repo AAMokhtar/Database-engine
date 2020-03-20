@@ -1,8 +1,9 @@
 package DatabaseEngine;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class pointer implements Comparable<pointer>{
+public class pointer implements Comparable<pointer>, Serializable {
     private int page; //puge num
     private int offset; //index in page
 

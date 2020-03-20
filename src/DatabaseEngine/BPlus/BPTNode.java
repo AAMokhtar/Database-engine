@@ -5,14 +5,18 @@ import java.util.ArrayList;
 
 public abstract class BPTNode<T extends Comparable<T>> implements Serializable {  //B+ tree node
     private int size; //number of keys in the node
+
+
+    private String ID;
     private int maxPerNode; //max number of keys the node can hold
     private int minPerNodes; //min number of keys the node can hold
     private  ArrayList<T> values; //keys
 
-    BPTNode(int N){
+    BPTNode(int N, String ID){
         size = 0;
         maxPerNode = N;
         minPerNodes = N/2;
+        this.ID = ID;
         values = new ArrayList<>();
     }
 
@@ -40,6 +44,14 @@ public abstract class BPTNode<T extends Comparable<T>> implements Serializable {
 
     public void setValues(ArrayList<T> values) { //set key array
         this.values = values;
+    }
+
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
     }
 
     //------------------------METHODS-------------------------------
