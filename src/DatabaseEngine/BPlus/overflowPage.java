@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Vector;
 
 public class overflowPage implements Serializable {
     private ArrayList<pointer> pointers;
@@ -38,10 +39,8 @@ public class overflowPage implements Serializable {
         pointers.add(p);
     }
 
-    public void delete(pointer p){
+    public void deletePointer(pointer p){
         pointers.remove(p);
-        if (this.size() == 0);
-            this.destroy();
     }
 
     public int size(){
@@ -75,6 +74,17 @@ public class overflowPage implements Serializable {
         if(!file.delete())
             System.out.println("Failed to delete file!");
 
+    }
+
+    public pointer poll() {
+        pointer ret = pointers.remove(0);
+        if (this.size() == 0) this.destroy();
+        return ret;
+    }
+
+    public void removeIndex(int index){
+        pointers.remove(index);
+        if (this.size() == 0) this.destroy();
     }
 
     public int getID() {
