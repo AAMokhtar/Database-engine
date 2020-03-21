@@ -1,13 +1,7 @@
 Table Name,Column Name,Column Type,Key,Indexed
-Test1,gpa,java.lang.Double,FALSE,TRUE
-Test1,ID,java.lang.Integer,FALSE,TRUE
-Test1,birthdate,java.util.Date,FALSE,True
-Test1,isAdult,java.lang.Boolean,FALSE,TRUE
-Test1,name,java.lang.String,TRUE,TRUE
-Test1,nationality,java.lang.String,FALSE,FALSE
-Test2,gpa,java.lang.Double,False,True
-Test2,ID,java.lang.Integer,False,True
+Test2,gpa,java.lang.Double,False,False
+Test2,ID,java.lang.Integer,False,False
 Test2,birthdate,java.util.Date,False,True
-Test2,isAdult,java.lang.Boolean,False,True
-Test2,name,java.lang.String,True,True
-Test2,nationality,java.lang.String,False,True
+Test2,isAdult,java.lang.Boolean,False,False
+Test2,name,java.lang.String,True,False
+Test2,nationality,java.lang.String,False,False

@@ -83,12 +83,31 @@ public class DBApp {
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
 		}
-		/*try {
-			d.createBTreeIndex("Test2", "nationality");
+
+		tuple = new Hashtable<>();
+		tuple.put("ID",0);
+		tuple.put("name","Ali");
+		tuple.put("isAdult",true);
+		tuple.put("nationality","Uganda");
+		tuple.put("birthdate",new Date(2));
+		tuple.put("gpa",-1.0);
+
+		try {
+			d.insertIntoTable("Test2", tuple);
+
 		} catch (DBAppException e) {
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
-		}*/
+		}
+
+
+		try {
+			d.createBTreeIndex("Test2", "birthdate");
+		} catch (DBAppException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+		}
+
 		Table obj=Utilities.deserializeTable("Test2");
 		
 		for (int i = 0; i < obj.getPages().size(); i++) {
@@ -189,7 +208,7 @@ public class DBApp {
 	//TODO: are many attributes updated or just one at a time?
 	//If only one at a time, simplify updateChecker (inc. Hashtable implementation)
 
-	/*public void updateTable(String strTableName, String strClusteringKey,
+	public void updateTable(String strTableName, String strClusteringKey,
 							Hashtable<String, Object> htblColNameValue) throws DBAppException {
 		//check if table exists, all columns exits and if they do check if the type of object matches
 		boolean valid = Utilities.updateChecker(strTableName, htblColNameValue);
@@ -261,7 +280,7 @@ public class DBApp {
 
 		}
 
-	}*/
+	}
 
 	public void deleteFromTable(String strTableName, Hashtable<String, Object> htblColNameValue) throws DBAppException {
 		Table t = Utilities.deserializeTable(strTableName);
