@@ -14,18 +14,18 @@ public class DBAppTest {
     static String[] types = {"java.lang.Integer", "java.lang.String", "java.lang.Boolean"
             , "java.util.Date", "java.lang.Double", "java.awt.Polygon"}; //all possible data types
 
-    public static void main(String[] args) { //run to generate tables and insert tuples into them
+    public static void main(String[] args) throws DBAppException, ParseException { //run to generate tables and insert tuples into them
 //        tables = new ArrayList<>();
 //        columns = new HashMap<>();
 //        tableVals = new HashMap<>();
 //        clusteringKeys = new Hashtable<>();
 //
 //        DB = new DBApp();
-//        DB.createBTreeIndex("obevdjbiaoqgod","nvhmexdhcb");
 //        DB.init();
-
-//        createTable(5); //create a table with 5 columns
-//        createTable(5);
+//
+//        createTable(5,true); //create a table with 5 columns
+//        createTable(5,true);
+//        DB.init();
 //        Insert(tables.get(0),10); //insert 20000 records into it
 //        Insert(tables.get(1),10);
 
@@ -74,16 +74,25 @@ public class DBAppTest {
         return res;
     }
 
-    public static void createTable(int colnums) throws DBAppException { //
+    public static void createTable(int colnums,boolean Bindex) throws DBAppException { //
         Hashtable<String,String> table = randomTableColumns(colnums); //make columns with random names and types
         String name = randomString(RandomInt(5, 15)); //random table name from 5-15 characters in length
 
         tables.add(name); //save table name
         columns.put(name,table); //save name,type pairs
+
         tableVals.put(name,new ArrayList<>()); //initializes an array for tuples
         String clusteringKey = pickKey(table);
         clusteringKeys.put(name,clusteringKey); //save table's clustering key
         DB.createTable(name, clusteringKey, table); //create a table with the previous info
+
+        if (Bindex){ //create B+ indices for all suitable columns
+            Set<String> col = table.keySet();
+            for(String str: col){
+                if (!table.get(str).equals("java.awt.Polygon"))
+                    DB.createBTreeIndex(name,str);
+            }
+        }
     }
 
     public static void updateTable(String table, int updates) throws DBAppException, ParseException { //update the table a number of times
