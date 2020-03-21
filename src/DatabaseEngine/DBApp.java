@@ -100,6 +100,53 @@ public class DBApp {
 			System.out.println(e.getMessage());
 		}
 
+		tuple = new Hashtable<>();
+		tuple.put("ID",-1);
+		tuple.put("name","Mayar");
+		tuple.put("isAdult",false);
+		tuple.put("nationality","Niger");
+		tuple.put("birthdate",new Date(2));
+		tuple.put("gpa",1234.5);
+
+		try {
+			d.insertIntoTable("Test2", tuple);
+
+		} catch (DBAppException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+		}
+
+		tuple = new Hashtable<>();
+		tuple.put("ID",-1);
+		tuple.put("name","Saeed");
+		tuple.put("isAdult",true);
+		tuple.put("nationality","happy land");
+		tuple.put("birthdate",new Date(2));
+		tuple.put("gpa",0.0001);
+
+		try {
+			d.insertIntoTable("Test2", tuple);
+
+		} catch (DBAppException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+		}
+
+		tuple = new Hashtable<>();
+		tuple.put("ID",13);
+		tuple.put("name","Basant");
+		tuple.put("isAdult",true);
+		tuple.put("nationality","India");
+		tuple.put("birthdate",new Date(2));
+		tuple.put("gpa",420.360);
+
+		try {
+			d.insertIntoTable("Test2", tuple);
+
+		} catch (DBAppException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+		}
 
 		try {
 			d.createBTreeIndex("Test2", "birthdate");
