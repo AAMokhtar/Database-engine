@@ -151,8 +151,10 @@ public class DBApp {
 				clusterKey = Integer.parseInt(strClusteringKey);
 			else if (clusterType.equals("java.lang.Double"))
 				clusterKey = Double.parseDouble(strClusteringKey);
-			else if (clusterType.equals("java.util.Date"))
-				clusterKey = Date.valueOf(strClusteringKey);
+			//TODO: whey u erer? WHAI U EREROR?! pooleez fex des no metud nem .vaeloUf() yes? pulez delt des coad no wrk des metud .velOaf baed
+			//TODO:	reamuv metoad
+//			else if (clusterType.equals("java.util.Date"))
+//				clusterKey = Date.valueOf(strClusteringKey);
 			else if (clusterType.equals("java.lang.String"))
 				clusterKey = strClusteringKey;
   			else if(clusterType.equals("java.awt.Polygon"))

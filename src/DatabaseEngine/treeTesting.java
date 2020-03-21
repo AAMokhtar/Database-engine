@@ -3,18 +3,41 @@ package DatabaseEngine;
 import DatabaseEngine.BPlus.BPlusTree;
 
 import java.awt.*;
-import java.util.Iterator;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class treeTesting {
-    public static void main(String[] args) throws DBAppException {
+    public static void main(String[] args) throws DBAppException, ParseException {
 
         //INSERTION: PASSED
         //SEARCH: PASSED
         //CORRECT NODES ON DISK: PASSED
         //POINTER SHIFTING ON INSERTION: PASSED
         //OVERFLOW PAGES: PASSED
-//        BPlusTree<Integer> tree = new BPlusTree<>("tree",2);
-//        tree.insert(3,new pointer(3,1),true);
+        BPlusTree<Date> tree = new BPlusTree<>("tree",2);
+        Date val = new SimpleDateFormat("YYYY-MM-DD").parse("1988-07-30");
+        tree.insert(val,new pointer(3,1),false);
+        tree.insert(val,new pointer(3,1),false);
+        tree.insert(val,new pointer(3,1),false);
+        tree.insert(val,new pointer(3,1),false);
+        tree.insert(val,new pointer(3,1),false);
+        tree.insert(val,new pointer(3,1),false);
+        tree.insert(val,new pointer(3,1),false);
+        tree.insert(val,new pointer(3,1),false);
+        tree.insert(val,new pointer(3,1),false);
+        tree.insert(val,new pointer(3,1),false);
+        tree.insert(val,new pointer(3,1),false);
+        tree.insert(val,new pointer(3,1),false);
+        tree.insert(val,new pointer(3,1),false);
+        tree.insert(val,new pointer(3,1),false);
+        tree.insert(val,new pointer(3,1),false);
+        tree.insert(val,new pointer(3,1),false);
+        tree.insert(val,new pointer(3,1),false);
+        tree.insert(val,new pointer(3,1),false);
+        tree.insert(val,new pointer(3,1),false);
+        tree.insert(val,new pointer(3,1),false);
+
 //        tree.insert(3,new pointer(3,2),true);
 //        tree.insert(3,new pointer(3,3),true);
 //        tree.insert(3,new pointer(3,4),true);
@@ -64,9 +87,5 @@ public class treeTesting {
 //            pointer cur = (pointer) p.next();
 //            System.out.println(cur.getPage() + " " + cur.getOffset());
 //        }
-
-        myPolygon a = new myPolygon(new Polygon());
-        System.out.println(a.getClass().getName());
-        
     }
 }
