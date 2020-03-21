@@ -50,7 +50,57 @@ public class DBApp {
 //				System.out.println(e.getMessage());
 //			e.printStackTrace();	}
 //	}
+	
+	public static void main(String args[]) {
+		//CREATE TABLE TEST PASSED!
+		Hashtable table = new Hashtable<String, String>();
+		table.put("ID","java.lang.Integer");
+		table.put("name","java.lang.String");
+		table.put("isAdult","java.lang.Boolean");
+		table.put("nationality","java.lang.String");
+		table.put("birthdate","java.util.Date");
+		table.put("gpa","java.lang.Double");
+		DBApp d = new DBApp();
+		d.init();
+		try {
+			d.createTable("Test2","name", table);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		Hashtable<String, Object> tuple = new Hashtable<String, Object>();
+		tuple.put("ID",1);
+		tuple.put("name","Ashraf");
+		tuple.put("isAdult",true);
+		tuple.put("nationality","Guatemala");
+		tuple.put("birthdate",new Date(2));
+		tuple.put("gpa",1.0);
+	
+		try {
+			d.insertIntoTable("Test2", tuple);
 
+		} catch (DBAppException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+		}
+		/*try {
+			d.createBTreeIndex("Test2", "nationality");
+		} catch (DBAppException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+		}*/
+		Table obj=Utilities.deserializeTable("Test2");
+		
+		for (int i = 0; i < obj.getPages().size(); i++) {
+			Page p=Utilities.deserializePage(obj.getPages().get(i));
+			System.out.println("id: " + p.getID());
+			System.out.println(p);
+			Utilities.serializePage(p);
+		}
+		
+		Utilities.serializeTable(obj);
+	}
+	
 	public void insertIntoTable(String strTableName, Hashtable<String, Object> htblColNameValue) throws DBAppException {
 		//Step 0: Load table object
 		Table tableToInsertIn = Utilities.deserializeTable(strTableName);
@@ -82,27 +132,41 @@ public class DBApp {
 				ans=tableToInsertIn.insertRegularCase(newTuple, toInsertIn, indexClusteringKey, htblColNameValue.get(clusteringKey), clusteringKeyType);
 			}
 			//step 9: inserting in B+ tree index. RTREE NOT DONE YET
+			//System.out.println("checking if I need to insert in a B+ tree index");
 			for (int i = 0; i <metaDataForSpecificTable.size() ; i++) {
+				//System.out.println("Retrieving metadata for column " + i);
 				String[] temp=metaDataForSpecificTable.get(i);
+				//System.out.println("Metadata: " + Arrays.toString(temp));
+				
 				if(temp[4].equals("True") && !temp[2].equals("java.awt.Polygon"))
 				{
+					//System.out.println("B+ tree exists for column " + temp[1]);
 					BPlusTree tree= (BPlusTree) indices.get(strTableName).get(temp[1]);
+					//System.out.println("tree fetched");
 					if(temp[2].equals("java.lang.Integer"))
 					{
+						//System.out.println("Tree is of type integer");
 						tree.insert((Integer)htblColNameValue.get(temp[1]), new pointer(ans.get(0), ans.get(1)), true);					}
 					else if(temp[2].equals("java.lang.String"))
 					{
+						//System.out.println("Tree is of type string");
 						tree.insert((String)htblColNameValue.get(temp[1]), new pointer(ans.get(0), ans.get(1)), true);					}
 					else if(temp[2].equals("java.lang.Double"))
 					{
+						//System.out.println("Tree is of type double");
 						tree.insert((Double)htblColNameValue.get(temp[1]), new pointer(ans.get(0), ans.get(1)), true);					}
 					else if(temp[2].equals("java.lang.Boolean"))
 					{
+						//System.out.println("Tree is of type boolean");
 						tree.insert((Boolean)htblColNameValue.get(temp[1]), new pointer(ans.get(0), ans.get(1)), true);					}
 					else if(temp[2].equals("java.util.Date"))
 					{
-						tree.insert((Date)htblColNameValue.get(temp[1]), new pointer(ans.get(0), ans.get(1)), true);					}
+						//System.out.println("Tree is of type date");
+						tree.insert((Date)htblColNameValue.get(temp[1]), new pointer(ans.get(0), ans.get(1)), true);					
+					}
+					//System.out.println("value: " + htblColNameValue.get(temp[1]) + " in page " + ans.get(0) + " in row " + ans.get(1));
 					Utilities.serializeBPT(tree);
+					//System.out.println("Serializing tree");
 				}
 					
 					
@@ -125,7 +189,7 @@ public class DBApp {
 	//TODO: are many attributes updated or just one at a time?
 	//If only one at a time, simplify updateChecker (inc. Hashtable implementation)
 
-	public void updateTable(String strTableName, String strClusteringKey,
+	/*public void updateTable(String strTableName, String strClusteringKey,
 							Hashtable<String, Object> htblColNameValue) throws DBAppException {
 		//check if table exists, all columns exits and if they do check if the type of object matches
 		boolean valid = Utilities.updateChecker(strTableName, htblColNameValue);
@@ -195,7 +259,7 @@ public class DBApp {
 
 		}
 
-	}
+	}*/
 
 	public void deleteFromTable(String strTableName, Hashtable<String, Object> htblColNameValue) throws DBAppException {
 		Table t = Utilities.deserializeTable(strTableName);
@@ -280,8 +344,11 @@ public class DBApp {
 	public void createBTreeIndex(String strTableName, String strColName) throws DBAppException{
 		//name of index
 		String name=strTableName+strColName;
+		//System.out.println("Name: " + name);
 		//load metadata of table
+		//System.out.println("Fetching metadata");
 		ArrayList<String[]> metaData=Utilities.readMetaDataForSpecificTable(strTableName);
+		//System.out.println("MetaData: " + metaData);
 		if(metaData.isEmpty())
 		{
 			//table doesn't exist in meta data
@@ -289,14 +356,22 @@ public class DBApp {
 		}
 		else
 		{
+			//System.out.println("Table exists");
 			String[] metaDataForIndexedColumn=null;
 			int locationOfIndexedColumn=0;
 			for (int i = 0; i < metaData.size(); i++) {
 				String[] temp=metaData.get(i);
 				if(temp[1].equals(strColName))
 				{
+					if(temp[4].equals("True"))
+					{
+						throw new DBAppException("B+ tree index already exists for this column");
+					}
 					locationOfIndexedColumn=i;
-					metaDataForIndexedColumn=temp;break;
+					metaDataForIndexedColumn=temp;
+					//System.out.println("metaDataForIndexedColumn" + Arrays.toString(metaDataForIndexedColumn));
+					break;
+					
 				}
 			}
 			if(metaDataForIndexedColumn==null)
@@ -306,64 +381,84 @@ public class DBApp {
 			}
 			else
 			{
+				//System.out.println("Column exists");
 				//determining column type to create appropriate BTree
 				String type=metaDataForIndexedColumn[2];
+				//System.out.println("Tree should be of type " + type);
 				//creating appropriate Btree
+				//System.out.println("creating Btree");
 				BPlusTree tree=null;
 				if(type.equals("java.lang.Integer"))
 				{
 					tree= new BPlusTree<Integer>(name, 15);
+					//System.out.println("tree of type integer created" );
 				}
 				else if(type.equals("java.lang.String"))
 				{
 					tree= new BPlusTree<String>(name, 15);
+					//System.out.println("tree of type string created" );
 				}
 				else if(type.equals("java.lang.Double"))
 				{
 					tree= new BPlusTree<Double>(name, 15);
+					//System.out.println("tree of type double created" );
 				}
 				else if(type.equals("java.lang.Boolean"))
 				{
 					tree= new BPlusTree<Boolean>(name, 15);
+					//System.out.println("tree of type boolean created" );
 				}
 				else if(type.equals("java.util.Date"))
 				{
 					tree= new BPlusTree<java.util.Date>(name, 15);
+					//System.out.println("tree of type date created" );
 				}
+				//System.out.println("Deserializing table");
 				Table t= Utilities.deserializeTable(strTableName);
 				for (int i = 0; i < t.getPages().size(); i++) {
+					//System.out.println("deserializing page");
 					Page p= Utilities.deserializePage(t.getPages().get(i));
+					//System.out.println("Page: " + p);
 					for (int j = 0; j < p.getPageElements().size(); j++) {
 						Vector<Object> tuple=p.getTupleFromPage(j);
 						Object value=tuple.get(locationOfIndexedColumn);
 						if(type.equals("java.lang.Integer"))
 						{
+							//System.out.println("Inserting an integer");
 							tree.insert((int)value, new pointer(t.getPages().get(i), j), false);
 						}
 						else if(type.equals("java.lang.String"))
 						{
-							System.out.println((String)value);
+							//System.out.println("Inserting a string");
 							tree.insert((String)value, new pointer(t.getPages().get(i), j), false);
 						}
 						else if(type.equals("java.lang.Double"))
 						{
+							//System.out.println("Inserting a double");
 							tree.insert((Double)value, new pointer(t.getPages().get(i), j), false);
 						}
 						else if(type.equals("java.lang.Boolean"))
 						{
+							//System.out.println("Inserting a boolean");
 							tree.insert((Boolean)value, new pointer(t.getPages().get(i), j), false);
 						}
 						else if(type.equals("java.util.Date"))
 						{
+							//System.out.println("Inserting a date");
 							tree.insert((Date)value, new pointer(t.getPages().get(i), j), false);
 						}
+						//System.out.println("value : " + value + " in page " + t.getPages().get(i) + " and row " + j);
 					}
 					Utilities.serializePage(p);
+					//System.out.println("serialized page");
 				}
 				Utilities.serializeTable(t);
+				//System.out.println("serializing table");
 				Utilities.serializeBPT(tree);
+				//System.out.println("Serializing tree");
 				//modify metaData
 				Utilities.updateMetaData(strTableName, strColName);
+				//System.out.println("Metadata modified");
 			}
 		}
 		
