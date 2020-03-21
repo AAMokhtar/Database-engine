@@ -78,16 +78,16 @@ public class Utilities {
 		try {
 			String line = "";
 
-		BufferedReader read = new BufferedReader(new FileReader("data//metadata.csv"));
-		while ((line = read.readLine()) != null) {
-			String[] data = line.split(",");
-			if(data[0].equals(tblName) && data[1].equals(indxCol))
-			{
-				data[4]="True";
+			BufferedReader read = new BufferedReader(new FileReader("data//metadata.csv"));
+			while ((line = read.readLine()) != null) {
+				String[] data = line.split(",");
+				if(data[0].equals(tblName) && data[1].equals(indxCol))
+				{
+					data[4]="True";
+				}
+				metaData.add(data);
 			}
-			metaData.add(data);
-		}
-		read.close();	
+			read.close();
 		}
 
 		catch(Exception E) {
@@ -116,32 +116,32 @@ public class Utilities {
 			PrintWriter write = new PrintWriter(new FileWriter(met, true));
 			for (int i = 1; i < metaData.size(); i++) {
 				String[] temp= metaData.get(i);
-				 write.append(temp[0]);
-				   write.append(",");
+				write.append(temp[0]);
+				write.append(",");
 
-				   write.append(temp[1]);
-				   write.append(",");
+				write.append(temp[1]);
+				write.append(",");
 
-				   write.append(temp[2]);
-				   write.append(",");
+				write.append(temp[2]);
+				write.append(",");
 
-				   write.append(temp[3]);
-				   write.append(",");
-				   
-				   write.append(temp[4]);
-				   write.append("\n");
+				write.append(temp[3]);
+				write.append(",");
+
+				write.append(temp[4]);
+				write.append("\n");
 			}
 
-		   write.flush();
-		   write.close();
-	   }
+			write.flush();
+			write.close();
+		}
 
-	   catch(Exception E) {
-		   System.out.println("Failed to update metadata.csv!");
-		   E.printStackTrace();
-	   }
+		catch(Exception E) {
+			System.out.println("Failed to update metadata.csv!");
+			E.printStackTrace();
+		}
 	}
-	 
+
 	//used everytime a table is created to define its structure.
 	public static void writeHeaderIntoMetaData(Hashtable<String, String> colNameType, String tableName, String keyAndIndex) {
 		Set<String> colName = colNameType.keySet();
@@ -149,35 +149,35 @@ public class Utilities {
 		try {
 			//FileWriter write = new FileWriter("metadata.csv");
 			PrintWriter write = new PrintWriter(new FileWriter(met, true));
-		   for (String n : colName) {
-			   write.append(tableName);
-			   write.append(",");
+			for (String n : colName) {
+				write.append(tableName);
+				write.append(",");
 
-			   write.append(n);
-			   write.append(",");
+				write.append(n);
+				write.append(",");
 
-			   write.append(colNameType.get(n));
-			   write.append(",");
+				write.append(colNameType.get(n));
+				write.append(",");
 
-			   if(n==keyAndIndex)
-				   write.append("True");
+				if(n==keyAndIndex)
+					write.append("True");
 
-			   else
-				   write.append("False");
+				else
+					write.append("False");
 
-			   write.append(",");
-			   write.append("False");
-			   write.append("\n");
-		   }
+				write.append(",");
+				write.append("False");
+				write.append("\n");
+			}
 
-		   write.flush();
-		   write.close();
-	   }
+			write.flush();
+			write.close();
+		}
 
-	   catch(Exception E) {
-		   System.out.println("Failed to update metadata.csv!");
-		   E.printStackTrace();
-	   }
+		catch(Exception E) {
+			System.out.println("Failed to update metadata.csv!");
+			E.printStackTrace();
+		}
 
 	}
 	//initialize properties
@@ -224,14 +224,14 @@ public class Utilities {
 			String line = "";
 			ArrayList<String[]> metaDataForSpecificTable= new ArrayList<String[]>();
 
-		BufferedReader read = new BufferedReader(new FileReader("data//metadata.csv"));
-		while ((line = read.readLine()) != null) {
-			String[] data = line.split(",");
-			if(data[0].equals(strTableName))
-			{
-				metaDataForSpecificTable.add(data);
+			BufferedReader read = new BufferedReader(new FileReader("data//metadata.csv"));
+			while ((line = read.readLine()) != null) {
+				String[] data = line.split(",");
+				if(data[0].equals(strTableName))
+				{
+					metaDataForSpecificTable.add(data);
+				}
 			}
-		}
 
 
 			read.close();
@@ -288,7 +288,7 @@ public class Utilities {
 				tableMetaData+=(Arrays.toString(data)+"\n");
 				//WARNING: Arrays.toString() returns data in this form : [...]
 
-		    }
+			}
 
 
 			read.close();
@@ -364,34 +364,42 @@ public class Utilities {
 
 
 	public static void serializePage(Page P) {
-		  //store into file (serialize)
+		//store into file (serialize)
 
-				try {
-					File file = new File("data//" + "page_" + P.getID() + ".class"); //TODO: fix up path (first item) once directory is set
-					FileOutputStream fileAccess;
-					fileAccess = new FileOutputStream(file);
-					ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
-					objectAccess.writeObject(P);
-				} catch (Exception e) {
-					e.printStackTrace();
-					System.out.println("Failed to serialize page.");
-				}
+		try {
+
+			String path = "data//" + "page_" + P.getID() + ".class" ;
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+			File file = new File(path); //TODO: fix up path (first item) once directory is set
+			FileOutputStream fileAccess;
+			fileAccess = new FileOutputStream(file);
+			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
+			objectAccess.writeObject(P);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Failed to serialize page.");
+		}
 	}
 
 
 	//serialize Table
 	public static void serializeTable(Table T) {
-		  //store into file (serialize)
-				try {
-					File file = new File("data//" + "table_" + T.getName() + ".class"); //TODO: fix up path (first item) once directory is set
-					FileOutputStream fileAccess;
-					fileAccess = new FileOutputStream(file);
-					ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
-					objectAccess.writeObject(T);
-				} catch (Exception e) {
-					e.printStackTrace();
-					System.out.println("Failed to serialize table.");
-				}
+		//store into file (serialize)
+		try {
+
+			String path =  "data//" + "table_" + T.getName() + ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+			File file = new File(path); //TODO: fix up path (first item) once directory is set
+			FileOutputStream fileAccess;
+			fileAccess = new FileOutputStream(file);
+			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
+			objectAccess.writeObject(T);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Failed to serialize table.");
+		}
 	}
 
 
@@ -399,40 +407,48 @@ public class Utilities {
 	//deserialize page: we pass the id of the page (obtained from the table) and we receive the page object.
 	public static Page deserializePage(int pageID) {
 		//read from file (deserialize)
-		       try {
-				FileInputStream readFromFile = new FileInputStream("data//" + "page_" + pageID + ".class");
-				ObjectInputStream readObject = new ObjectInputStream(readFromFile);
-				Page k = (Page)readObject.readObject();
-				readObject.close();
-				readFromFile.close();
-				return k;
+		try {
 
-		       }
+			String path =  "data//" + "page_" + pageID + ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
 
-		       catch(Exception E) {
-		    	   System.out.println("Failed to deserialize page. Return value: NULL");
-		       }
-		       return null;
+			FileInputStream readFromFile = new FileInputStream(path);
+			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
+			Page k = (Page)readObject.readObject();
+			readObject.close();
+			readFromFile.close();
+			return k;
+
+		}
+
+		catch(Exception E) {
+			System.out.println("Failed to deserialize page. Return value: NULL");
+		}
+		return null;
 	}
 
 
 	public static Table deserializeTable(String tableName) {
 		//read from file (deserialize)
-		       try {
-				FileInputStream readFromFile = new FileInputStream("data//" + "table_" + tableName + ".class");
-				ObjectInputStream readObject = new ObjectInputStream(readFromFile);
-				Table k = (Table)readObject.readObject();
-				readObject.close();
-				readFromFile.close();
+		try {
 
-				return k;
+			String path =  "data//" + "table_" + tableName + ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
 
-		       }
+			FileInputStream readFromFile = new FileInputStream(path);
+			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
+			Table k = (Table)readObject.readObject();
+			readObject.close();
+			readFromFile.close();
 
-		       catch(Exception E) {
-		    	   System.out.println("Failed to deserialize page. Return value: NULL");
-		       }
-		       return null;
+			return k;
+
+		}
+
+		catch(Exception E) {
+			System.out.println("Failed to deserialize page. Return value: NULL");
+		}
+		return null;
 	}
 
 
@@ -441,217 +457,217 @@ public class Utilities {
 
 
 	//reads a table name and column name and returns its index
-  	public static int returnIndex(String table, String column) throws DBAppException
-  	{
-  		try {
-  			BufferedReader br = new BufferedReader(new FileReader("data//metadata.csv"));
-  			String line = br.readLine();
-  			if(line==null)
-  			{
-  				//System.out.println("Metadata is empty.");
-  				br.close();
-  				//return -1;
-  				throw new DBAppException("Metadata is empty.");
-  			}
+	public static int returnIndex(String table, String column) throws DBAppException
+	{
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("data//metadata.csv"));
+			String line = br.readLine();
+			if(line==null)
+			{
+				//System.out.println("Metadata is empty.");
+				br.close();
+				//return -1;
+				throw new DBAppException("Metadata is empty.");
+			}
 
-  			line = br.readLine();
-  			String[] ar = new String[5]; //metadata row should only contain 5 comma delimited values
+			line = br.readLine();
+			String[] ar = new String[5]; //metadata row should only contain 5 comma delimited values
 
-  			boolean tableFound = false; //flag if the table is found in metadata
-  			boolean colFound = false; //flag if column is found
-  			boolean finito = false; //signifies that all table entries were read
-  			int index = -1;
+			boolean tableFound = false; //flag if the table is found in metadata
+			boolean colFound = false; //flag if column is found
+			boolean finito = false; //signifies that all table entries were read
+			int index = -1;
 
-  			/*
-  			 * if the buffered reader reached the end of file
-  			 * or column was found
-  			 * or if we reached the end of the consecutive table entries
-  			 * stop executing
-  			*/
-  			while(line != null && !colFound && !finito)
-  			{
-  				ar = line.split(",");
+			/*
+			 * if the buffered reader reached the end of file
+			 * or column was found
+			 * or if we reached the end of the consecutive table entries
+			 * stop executing
+			 */
+			while(line != null && !colFound && !finito)
+			{
+				ar = line.split(",");
 
-  				if(ar[0].equals(table))
-  				{
-  					if(!tableFound) tableFound = true; //flags that the table was found
-  					if(ar[1].equals(column)) colFound = true; //flags that the column was found
-  					index++;
+				if(ar[0].equals(table))
+				{
+					if(!tableFound) tableFound = true; //flags that the table was found
+					if(ar[1].equals(column)) colFound = true; //flags that the column was found
+					index++;
 
-  				}
-  				//if another table name showed up and we already found all the entries of the table, stop executing
-  				//this assumes the table entries follow each other in the metadata
-  				else if(tableFound) finito = true;
+				}
+				//if another table name showed up and we already found all the entries of the table, stop executing
+				//this assumes the table entries follow each other in the metadata
+				else if(tableFound) finito = true;
 
-  				line = br.readLine();
-  			}
+				line = br.readLine();
+			}
 
-  			br.close();
+			br.close();
 
-  			//if table was not found :(
-  			if(!tableFound)
-  			{
-  				//System.out.println("Table name not in metadata");
-  				//return -1;
-  				throw new DBAppException("Table name not in metadata");
-  			}
-  			//if column was not found in table's metadata
-  			else if(!colFound)
-  			{
-  				//System.out.println("Column name not found in table metadata entries");
-  				//return -1;
-  				throw new DBAppException("Column name not found in table metadata entries");
-  			}
-  			else return index;
-  		} catch (IOException e) {
-  			e.printStackTrace();
-  			return -1;
-  		}
+			//if table was not found :(
+			if(!tableFound)
+			{
+				//System.out.println("Table name not in metadata");
+				//return -1;
+				throw new DBAppException("Table name not in metadata");
+			}
+			//if column was not found in table's metadata
+			else if(!colFound)
+			{
+				//System.out.println("Column name not found in table metadata entries");
+				//return -1;
+				throw new DBAppException("Column name not found in table metadata entries");
+			}
+			else return index;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return -1;
+		}
 
-  	}
+	}
 
-  	//reads a column name and returns an index
+	//reads a column name and returns an index
 
-  	//read metadata for a specific table to see if the table exists, checks if the columns exist and if the data type matches
-  	//TODO: should table entries follow each other in metadata?
-  	//if not no need for finito
+	//read metadata for a specific table to see if the table exists, checks if the columns exist and if the data type matches
+	//TODO: should table entries follow each other in metadata?
+	//if not no need for finito
 
-  	public static boolean updateChecker(String tableName, Hashtable<String,Object> value) throws DBAppException
-  	{
-  		try {
-  			BufferedReader br = new BufferedReader(new FileReader("data//metadata.csv"));
-  			String line = br.readLine(); //should contain the first line that contains how the csv file is separated
-  			if(line == null)
-  			{
-  				//System.out.println("Metadata is empty!");
-  				br.close();
-  				//return false;
-  				throw new DBAppException("Metadata is empty!");
-  			}
+	public static boolean updateChecker(String tableName, Hashtable<String,Object> value) throws DBAppException
+	{
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("data//metadata.csv"));
+			String line = br.readLine(); //should contain the first line that contains how the csv file is separated
+			if(line == null)
+			{
+				//System.out.println("Metadata is empty!");
+				br.close();
+				//return false;
+				throw new DBAppException("Metadata is empty!");
+			}
 
-  			line = br.readLine();
-  			String[] ar = new String[5]; //metadata row should only contain 5 comma delimited values
+			line = br.readLine();
+			String[] ar = new String[5]; //metadata row should only contain 5 comma delimited values
 
-  			boolean found = false; //flag if the table is found in metadata
-  			boolean finito = false; //flag to see if all table entries are read
+			boolean found = false; //flag if the table is found in metadata
+			boolean finito = false; //flag to see if all table entries are read
 
-  			//hashtable to store column names and their supported types
-  			Hashtable<String,String> col = new Hashtable<String,String>();
+			//hashtable to store column names and their supported types
+			Hashtable<String,String> col = new Hashtable<String,String>();
 
-  			while(line != null && !finito)
-  			{
-  				ar = line.split(",");
+			while(line != null && !finito)
+			{
+				ar = line.split(",");
 
-  				if(ar[0].equals(tableName))
-  				{
-  					if(!found) found = true;
-  					col.put(ar[1], ar[2]); //puts column name and its type
+				if(ar[0].equals(tableName))
+				{
+					if(!found) found = true;
+					col.put(ar[1], ar[2]); //puts column name and its type
 
-  				}
-  				//if another table name showed up and we already found all the entries of the table, stop executing
-  				//this assumes the table entries follow each other in the metadata
-  				else if(found) finito = true;
+				}
+				//if another table name showed up and we already found all the entries of the table, stop executing
+				//this assumes the table entries follow each other in the metadata
+				else if(found) finito = true;
 
-  				line = br.readLine();
-  			}
+				line = br.readLine();
+			}
 
-  			br.close();
+			br.close();
 
-  			//if table was not found :(
-  			if(!found)
-  			{
-  				//System.out.println("Table name not in metadata");
-  				//return false;
-  				throw new DBAppException("Table name not in metadata");
-  			}
+			//if table was not found :(
+			if(!found)
+			{
+				//System.out.println("Table name not in metadata");
+				//return false;
+				throw new DBAppException("Table name not in metadata");
+			}
 
-  			//check if all columns in input hashtable do exist
-  			//if they exist check the data type
-  			Set<String> colNames = value.keySet();
-  			for(String colName: colNames)
-  			{
-  				//if metadata contains column name of input HT
-  				if(col.containsKey(colName))
-  				{
-  					//if input data is not an instance of the class associated with the column
-  					//TODO: remove or just throw error?
-  					if(!Class.forName(col.get(colName)).isInstance(value.get(colName)))
-  					{
-  						//System.out.println("Value inputted for column " + colName +
-  								           //" does not correspond with " + col.get(colName));
-  						//return false;
-  						throw new DBAppException("Value inputted for column " + colName + " does not correspond with " + col.get(colName));
-  					}
+			//check if all columns in input hashtable do exist
+			//if they exist check the data type
+			Set<String> colNames = value.keySet();
+			for(String colName: colNames)
+			{
+				//if metadata contains column name of input HT
+				if(col.containsKey(colName))
+				{
+					//if input data is not an instance of the class associated with the column
+					//TODO: remove or just throw error?
+					if(!Class.forName(col.get(colName)).isInstance(value.get(colName)))
+					{
+						//System.out.println("Value inputted for column " + colName +
+						//" does not correspond with " + col.get(colName));
+						//return false;
+						throw new DBAppException("Value inputted for column " + colName + " does not correspond with " + col.get(colName));
+					}
 
-  				}
-  				//if column in input HT does not exist
-  				//TODO:remove or just throw error?
-  				else
-  				{
-  					//System.out.println("Column " + colName + " does not exist in table metadata");
-  					//return false;
-  					throw new DBAppException("Column " + colName + " does not exist in table metadata");
-  				}
-  			}
+				}
+				//if column in input HT does not exist
+				//TODO:remove or just throw error?
+				else
+				{
+					//System.out.println("Column " + colName + " does not exist in table metadata");
+					//return false;
+					throw new DBAppException("Column " + colName + " does not exist in table metadata");
+				}
+			}
 
-  			//else if table exists, columns of input HT exist in the metadata
-  			//and the input data matches with the column data type
-  			//kda kda meya meya awi
-  			return true;
+			//else if table exists, columns of input HT exist in the metadata
+			//and the input data matches with the column data type
+			//kda kda meya meya awi
+			return true;
 
-  		} catch (IOException e) 
-  		{
-  			e.printStackTrace();
-  			return false;
-  		}
-  		catch (ClassNotFoundException e)
-  		{
-  			e.printStackTrace();
-  			return false;
-  		}
-  	}
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+		catch (ClassNotFoundException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
 
 
-  	//returns the column name and type of the clustering key, respectively
-  	//note: I don't check if the metadata is empty or table name is nonexistent as these were checked by updateChecker()
-  	//and I only call this method if updateChecker() gave an okay
-  	public static Pair<String,String> returnClustering(String tableName) throws DBAppException
-  	{
-  		try {
-  			BufferedReader br = new BufferedReader(new FileReader("data//metadata.csv"));
-  			br.readLine(); //should read the first line containing how the csv file is ordered
-  			String line = br.readLine();
-  			String[] ar = new String[5]; //csv file contains only 5 comma delimited values
-  			
-  			boolean tableFound = false;
-  			while(line != null)
-  			{
-  				ar = line.split(",");
-  				if(ar[0].equals(tableName))
-  				{
-  					tableFound = true;
+	//returns the column name and type of the clustering key, respectively
+	//note: I don't check if the metadata is empty or table name is nonexistent as these were checked by updateChecker()
+	//and I only call this method if updateChecker() gave an okay
+	public static Pair<String,String> returnClustering(String tableName) throws DBAppException
+	{
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("data//metadata.csv"));
+			br.readLine(); //should read the first line containing how the csv file is ordered
+			String line = br.readLine();
+			String[] ar = new String[5]; //csv file contains only 5 comma delimited values
+
+			boolean tableFound = false;
+			while(line != null)
+			{
+				ar = line.split(",");
+				if(ar[0].equals(tableName))
+				{
+					tableFound = true;
 					if (Boolean.parseBoolean(ar[3]))// found the record with the table name and true for clustering
 					{
 						return new Pair<String, String>(ar[1], ar[2]); // returns clustering column name and its
-																		// respective type
+						// respective type
 					}
-  				}
-  				line = br.readLine();
-  			}
-  			br.close();
-  			//if clustering column was not found
-  			//System.out.println("Clustering column not found");
-  			//return new Pair<String,String>("","");
-  			if(!tableFound)
-  				throw new DBAppException("Table name " + tableName + " was not found in metadata");
-  			
-  			throw new DBAppException("Clustering column not found");
-  		} catch (IOException e) {
-  			e.printStackTrace();
-  			return new Pair<String,String>("",""); //return empty column name and type
-  		}
+				}
+				line = br.readLine();
+			}
+			br.close();
+			//if clustering column was not found
+			//System.out.println("Clustering column not found");
+			//return new Pair<String,String>("","");
+			if(!tableFound)
+				throw new DBAppException("Table name " + tableName + " was not found in metadata");
 
-  	}
+			throw new DBAppException("Clustering column not found");
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new Pair<String,String>("",""); //return empty column name and type
+		}
+
+	}
 
 
 	//binary searches through the vector of records to find the clustering key value
@@ -668,9 +684,9 @@ public class Utilities {
 				//update this record
 
 				//for each key value pair in the HT which contains the values to be updated
-				
+
 				Set<String> keys = newVal.keySet();
-				
+
 				for(String key : keys)
 				{
 					int i = returnIndex(table, key);
@@ -720,7 +736,7 @@ public class Utilities {
 				}
 
 				if (info[4].charAt(0) == 'T') {
-				ret.get(info[0]).put(info[1], deserializeBPT(info[0]+info[1]));
+					ret.get(info[0]).put(info[1], deserializeBPT(info[0]+info[1]));
 				}
 
 			}
@@ -843,7 +859,11 @@ public class Utilities {
 	public static <T extends Comparable<T>> void serializeNode(BPTNode<T> N) { //copy pasted from Basant's (thx XD)
 
 		try {
-			File file = new File("data//BPlus//B+_Nodes//" + "Node_" + N.getID() + ".class");
+
+			String path =  "data//BPlus//B+_Nodes//" + "Node_" + N.getID() + ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+			File file = new File(path);
 			FileOutputStream fileAccess;
 			fileAccess = new FileOutputStream(file);
 			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
@@ -858,7 +878,11 @@ public class Utilities {
 		if (nodeID == null) return null;
 
 		try {
-			FileInputStream readFromFile = new FileInputStream("data//BPlus//B+_Nodes//" + "Node_" + nodeID + ".class");
+
+			String path =  "data//BPlus//B+_Nodes//" + "Node_" + nodeID + ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+			FileInputStream readFromFile = new FileInputStream(path);
 			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
 			BPTNode<T> k = (BPTNode<T>) readObject.readObject();
 			readObject.close();
@@ -875,7 +899,11 @@ public class Utilities {
 	public static <T extends Comparable<T>> void serializeBPT(BPlusTree<T> tree) {
 
 		try {
-			File file = new File("data//BPlus//Trees//" + "BPlusTree_" +tree.getName() + ".class");
+
+			String path =  "data//BPlus//Trees//" + "BPlusTree_" +tree.getName() + ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+			File file = new File(path);
 			FileOutputStream fileAccess;
 			fileAccess = new FileOutputStream(file);
 			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
@@ -889,6 +917,10 @@ public class Utilities {
 	public static <T extends Comparable<T>> BPlusTree<T> deserializeBPT(String name) {
 		//read from file (deserialize)
 		try {
+
+			String path =  "data//BPlus//Trees//" + "BPlusTree_" + name+ ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
 			FileInputStream readFromFile = new FileInputStream("data//BPlus//Trees//" + "BPlusTree_" + name+ ".class");
 			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
 			BPlusTree<T> k = (BPlusTree<T>) readObject.readObject();
@@ -907,7 +939,11 @@ public class Utilities {
 	public static void serializeBOverflow(overflowPage p) {
 
 		try {
-			File file = new File("data//BPlus//overflow_Pages//" + "overflow_" + p.getName() + p.getID() + ".class");
+
+			String path =  "data//BPlus//overflow_Pages//" + "overflow_" + p.getName() + p.getID() + ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+			File file = new File(path);
 			FileOutputStream fileAccess;
 			fileAccess = new FileOutputStream(file);
 			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
@@ -921,7 +957,11 @@ public class Utilities {
 	public static overflowPage deserializeBOverflow(String name) {
 		if (name == null) return null;
 		try {
-			FileInputStream readFromFile = new FileInputStream("data//BPlus//overflow_Pages//" + "overflow_" + name + ".class");
+
+			String path = "data//BPlus//overflow_Pages//" + "overflow_" + name + ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+			FileInputStream readFromFile = new FileInputStream(path);
 			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
 			overflowPage k = (overflowPage) readObject.readObject();
 			readObject.close();
@@ -1279,22 +1319,22 @@ public class Utilities {
 		}
 		return new Pair<>(colInfo,colnum);
 	}
-	
+
 //------------------------------========================MAIN========================------------------------------------
 //	public static void main(String[] args) {
 //		try {
-			//testing returnIndex()
+	//testing returnIndex()
 //			System.out.println(returnIndex("kjhrskj","sss"));
-			
-			//testing updateChecker()
+
+	//testing updateChecker()
 //			Hashtable<String,Object> newVal = new Hashtable<String,Object>();
 //			newVal.put("gpa", "ff");
 //			newVal.put("name", "bibi");
 //			System.out.println(updateChecker("ESTUDIANTE", newVal));
-			
-			//testing returnClustering()
+
+	//testing returnClustering()
 //			System.out.println(returnClustering("Table Name"));
-			
+
 //			gpa,java.lang.Double,False,False
 //			ESTUDIANT,ID,java.lang.Integer,False,False
 //			ESTUDIANT,isAdult,java.lang.Boolean,False,False
