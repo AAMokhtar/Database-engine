@@ -289,7 +289,7 @@ public class DBApp {
 			//TODO: ask if it should be thrown as DBApp exception and if we use default format for date
 			else if (clusterType.equals("java.util.Date"))
 				try {
-					clusterKey = new SimpleDateFormat().parse(strClusteringKey);
+					clusterKey = new SimpleDateFormat("YYYY-MM-DD").parse(strClusteringKey);
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

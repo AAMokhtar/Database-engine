@@ -15,28 +15,28 @@ public class treeTesting {
         //CORRECT NODES ON DISK: PASSED
         //POINTER SHIFTING ON INSERTION: PASSED
         //OVERFLOW PAGES: PASSED
-        BPlusTree<Date> tree = new BPlusTree<>("tree",2);
-        Date val = new SimpleDateFormat("YYYY-MM-DD").parse("1988-07-30");
-        tree.insert(val,new pointer(3,1),false);
-        tree.insert(val,new pointer(3,1),false);
-        tree.insert(val,new pointer(3,1),false);
-        tree.insert(val,new pointer(3,1),false);
-        tree.insert(val,new pointer(3,1),false);
-        tree.insert(val,new pointer(3,1),false);
-        tree.insert(val,new pointer(3,1),false);
-        tree.insert(val,new pointer(3,1),false);
-        tree.insert(val,new pointer(3,1),false);
-        tree.insert(val,new pointer(3,1),false);
-        tree.insert(val,new pointer(3,1),false);
-        tree.insert(val,new pointer(3,1),false);
-        tree.insert(val,new pointer(3,1),false);
-        tree.insert(val,new pointer(3,1),false);
-        tree.insert(val,new pointer(3,1),false);
-        tree.insert(val,new pointer(3,1),false);
-        tree.insert(val,new pointer(3,1),false);
-        tree.insert(val,new pointer(3,1),false);
-        tree.insert(val,new pointer(3,1),false);
-        tree.insert(val,new pointer(3,1),false);
+//        BPlusTree<Date> tree = new BPlusTree<>("tree",2);
+//        Date val = new SimpleDateFormat("YYYY-MM-DD").parse("1988-07-30");
+//        tree.insert(val,new pointer(3,1),false);
+//        tree.insert(val,new pointer(3,1),false);
+//        tree.insert(val,new pointer(3,1),false);
+//        tree.insert(val,new pointer(3,1),false);
+//        tree.insert(val,new pointer(3,1),false);
+//        tree.insert(val,new pointer(3,1),false);
+//        tree.insert(val,new pointer(3,1),false);
+//        tree.insert(val,new pointer(3,1),false);
+//        tree.insert(val,new pointer(3,1),false);
+//        tree.insert(val,new pointer(3,1),false);
+//        tree.insert(val,new pointer(3,1),false);
+//        tree.insert(val,new pointer(3,1),false);
+//        tree.insert(val,new pointer(3,1),false);
+//        tree.insert(val,new pointer(3,1),false);
+//        tree.insert(val,new pointer(3,1),false);
+//        tree.insert(val,new pointer(3,1),false);
+//        tree.insert(val,new pointer(3,1),false);
+//        tree.insert(val,new pointer(3,1),false);
+//        tree.insert(val,new pointer(3,1),false);
+//        tree.insert(val,new pointer(3,1),false);
 
 //        tree.insert(3,new pointer(3,2),true);
 //        tree.insert(3,new pointer(3,3),true);
