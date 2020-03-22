@@ -7,6 +7,8 @@ import java.util.Vector;
 import DatabaseEngine.BPlus.BPlusTree;
 import javafx.util.Pair;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -283,8 +285,16 @@ public class DBApp {
 				clusterKey = Double.parseDouble(strClusteringKey);
 			//TODO: whey u erer? WHAI U EREROR?! pooleez fex des no metud nem .vaeloUf() yes? pulez delt des coad no wrk des metud .velOaf baed
 			//TODO:	reamuv metoad
-//			else if (clusterType.equals("java.util.Date"))
-//				clusterKey = Date.valueOf(strClusteringKey);
+			//TODO: :''''(
+			//TODO: ask if it should be thrown as DBApp exception and if we use default format for date
+			else if (clusterType.equals("java.util.Date"))
+				try {
+					clusterKey = new SimpleDateFormat().parse(strClusteringKey);
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return;
+				}
 			else if (clusterType.equals("java.lang.String"))
 				clusterKey = strClusteringKey;
   			else if(clusterType.equals("java.awt.Polygon"))

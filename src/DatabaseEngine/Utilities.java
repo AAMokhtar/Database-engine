@@ -12,7 +12,7 @@ import java.io.FileWriter;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
-
+import java.awt.Polygon;
 import java.io.*;
 
 import java.util.Date;
@@ -690,7 +690,16 @@ public class Utilities {
 				for(String key : keys)
 				{
 					int i = returnIndex(table, key);
-					records.get(mid).set(i, newVal.get(key)); //ignore the warning, updateChecker already checked the types in the HT matches with metadata
+					
+					//if what we are updating is a polygon, we create a new myPolygon for it to be added to the record
+					if(newVal.get(key) instanceof Polygon)
+					{
+						Polygon p = (Polygon)newVal.get(key);
+						myPolygon m = new myPolygon(p);
+						records.get(mid).set(i, m);
+					}
+					else
+						records.get(mid).set(i, newVal.get(key)); //ignore the warning, updateChecker already checked the types in the HT matches with metadata
 					//TODO: is the TouchDate the last index?
 					records.get(mid).set(records.get(mid).size()-1, LocalDateTime.now()); //updates the TouchDate to current time
 				}
@@ -1392,6 +1401,7 @@ public class Utilities {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
+		
 //	}
 
 }
