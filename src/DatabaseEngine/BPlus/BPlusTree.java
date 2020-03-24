@@ -419,22 +419,27 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
         int maxTuplesPerPage = Integer.parseInt(Utilities.readProperties("config//DBApp.properties")
                 .getProperty("MaximumRowsCountinPage"));
 
-        BPTExternal<T> cur = Utilities.findLeaf(root,null,true);
-        while (cur != null){
+        BPTExternal<T> cur = Utilities.findLeaf(root,null,true); //get the leftmost leaf
+
+        while (cur != null){ //for all leaves
             ArrayList<pointer> pointers = cur.getPointers();
             ArrayList<T> values = cur.getValues();
 
             for(pointer p: pointers){
                 if (p.compareTo(temp) >= 0) { //tuple's position is greater than or equal the given position
+
                     int offset = p.getOffset(); //get index
-                    int page = p.getPage(); //get page numberf
+                    int page = p.getPage(); //get page number
 
-                    //the offset became negative after shifting
-                    int negative = ((offset + amount < 0) && (offset + amount) % maxTuplesPerPage != 0 ? -1 : 0);
-
-                    p.setPage(page + ((offset + amount) / maxTuplesPerPage) + negative); //new page number
-                    offset = ((offset + amount) % (maxTuplesPerPage)); //index in new page
-                    p.setOffset(offset); //set new index
+                    if (amount >= 0) {
+                        p.setPage(page + ((offset + amount) / maxTuplesPerPage)); //new page number
+                        offset = ((offset + amount) % (maxTuplesPerPage)); //index in new page
+                        p.setOffset(offset); //set new index
+                    }
+                    else if (p.getPage() == temp.getPage()){
+                        offset = ((offset + amount) % (maxTuplesPerPage)); //index in new page
+                        p.setOffset(offset); //set new index
+                    }
                 }
 
             }
@@ -453,14 +458,17 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 
                             if (p.compareTo(temp) >= 0) { //tuple's position is greater than or equal the given position
                                 int offset = p.getOffset(); //get index
-                                int page = p.getPage(); //get page numberf
+                                int page = p.getPage(); //get page number
 
-                                //the offset became negative after shifting
-                                int negative = ((offset + amount < 0) && (offset + amount) % maxTuplesPerPage != 0 ? -1 : 0);
-
-                                p.setPage(page + ((offset + amount) / maxTuplesPerPage) + negative); //new page number
-                                offset = ((offset + amount) % (maxTuplesPerPage)); //index in new page
-                                p.setOffset(offset); //set new index
+                                if (amount >= 0) {
+                                    p.setPage(page + ((offset + amount) / maxTuplesPerPage)); //new page number
+                                    offset = ((offset + amount) % (maxTuplesPerPage)); //index in new page
+                                    p.setOffset(offset); //set new index
+                                }
+                                else if (p.getPage() == temp.getPage()){
+                                    offset = ((offset + amount) % (maxTuplesPerPage)); //index in new page
+                                    p.setOffset(offset); //set new index
+                                }
                             }
                         }
                         Utilities.serializeBOverflow(curPage);
