@@ -65,7 +65,7 @@ public class DBApp {
 		DBApp d = new DBApp();
 		d.init();
 		try {
-			d.createTable("Test2","name", table);
+			d.createTable("Test3","name", table);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
@@ -79,7 +79,7 @@ public class DBApp {
 		tuple.put("gpa",1.0);
 	
 		try {
-			d.insertIntoTable("Test2", tuple);
+			d.insertIntoTable("Test3", tuple);
 
 		} catch (DBAppException e) {
 			// TODO Auto-generated catch block
@@ -95,7 +95,7 @@ public class DBApp {
 		tuple.put("gpa",-1.0);
 
 		try {
-			d.insertIntoTable("Test2", tuple);
+			d.insertIntoTable("Test3", tuple);
 
 		} catch (DBAppException e) {
 			// TODO Auto-generated catch block
@@ -111,7 +111,7 @@ public class DBApp {
 		tuple.put("gpa",1234.5);
 
 		try {
-			d.insertIntoTable("Test2", tuple);
+			d.insertIntoTable("Test3", tuple);
 
 		} catch (DBAppException e) {
 			// TODO Auto-generated catch block
@@ -127,7 +127,7 @@ public class DBApp {
 		tuple.put("gpa",0.0001);
 
 		try {
-			d.insertIntoTable("Test2", tuple);
+			d.insertIntoTable("Test3", tuple);
 
 		} catch (DBAppException e) {
 			// TODO Auto-generated catch block
@@ -143,7 +143,7 @@ public class DBApp {
 		tuple.put("gpa",420.360);
 
 		try {
-			d.insertIntoTable("Test2", tuple);
+			d.insertIntoTable("Test3", tuple);
 
 		} catch (DBAppException e) {
 			// TODO Auto-generated catch block
@@ -151,13 +151,14 @@ public class DBApp {
 		}
 
 		try {
-			d.createBTreeIndex("Test2", "birthdate");
+			d.createBTreeIndex("Test3", "birthdate");
 		} catch (DBAppException e) {
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
 		}
 
-		Table obj=Utilities.deserializeTable("Test2");
+		Table obj=Utilities.deserializeTable("Test3");
+		
 
 		for (int i = 0; i < obj.getPages().size(); i++) {
 			Page p=Utilities.deserializePage(obj.getPages().get(i));
