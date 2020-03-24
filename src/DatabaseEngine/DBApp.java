@@ -159,6 +159,7 @@ public class DBApp {
 
 		Table obj=Utilities.deserializeTable("Test3");
 		
+
 		for (int i = 0; i < obj.getPages().size(); i++) {
 			Page p=Utilities.deserializePage(obj.getPages().get(i));
 			System.out.println("id: " + p.getID());
@@ -326,7 +327,7 @@ public class DBApp {
 				if (((Comparable) records.firstElement().get(clusterIdx)).compareTo(clusterKey) <= 0 &&
 						((Comparable) records.lastElement().get(clusterIdx)).compareTo(clusterKey) >= 0) //ignore this stupid warning, Ali should check clustering entered implements comparable
 				{
-					Utilities.binarySearchUpdate(records, 0, records.firstElement().size() - 1, clusterIdx, clusterKey, strTableName, htblColNameValue);
+					Utilities.binarySearchUpdate(records, 0, records.size() - 1, clusterIdx, clusterKey, strTableName, htblColNameValue);
 
 				}
 
