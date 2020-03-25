@@ -55,29 +55,29 @@ public class DBApp {
 	
 	public static void main(String args[]) {
 		//CREATE TABLE TEST PASSED!
-		Hashtable table = new Hashtable<String, String>();
-		table.put("ID","java.lang.Integer");
-		table.put("name","java.lang.String");
-		table.put("isAdult","java.lang.Boolean");
-		table.put("nationality","java.lang.String");
-		table.put("birthdate","java.util.Date");
-		table.put("gpa","java.lang.Double");
+//		Hashtable table = new Hashtable<String, String>();
+//		table.put("ID","java.lang.Integer");
+//		table.put("name","java.lang.String");
+//		table.put("isAdult","java.lang.Boolean");
+//		table.put("nationality","java.lang.String");
+//		table.put("birthdate","java.util.Date");
+//		table.put("gpa","java.lang.Double");
 		DBApp d = new DBApp();
 		d.init();
-		try {
-			d.createTable("Test1","name", table);
-		} catch (DBAppException e) {
-			System.out.println(e.getMessage());
-		}
-		
+//		try {
+//			d.createTable("Test1","name", table);
+//		} catch (DBAppException e) {
+//			System.out.println(e.getMessage());
+//		}
+//
 		Hashtable<String, Object> tuple = new Hashtable<String, Object>();
-		tuple.put("ID",10);
+//		tuple.put("ID",10);
 		tuple.put("name","Nada");
-		tuple.put("isAdult",true);
-		tuple.put("nationality","Egypt");
-		tuple.put("birthdate",new Date(434567650));
-		tuple.put("gpa",1.49);
-	
+//		tuple.put("isAdult",true);
+//		tuple.put("nationality","Egypt");
+//		tuple.put("birthdate",new Date(434567650));
+//		tuple.put("gpa",1.49);
+
 		try {
 			d.insertIntoTable("Test1", tuple);
 
@@ -150,14 +150,14 @@ public class DBApp {
 			System.out.println(e.getMessage());
 		}*/
 
-		/*try {
-			d.createBTreeIndex("Test1", "name");
-		} catch (DBAppException e) {
-			// TODO Auto-generated catch block
-			System.out.println(e.getMessage());
-		}*/
+//		try {
+//			d.createBTreeIndex("Test1", "name");
+//		} catch (DBAppException e) {
+//			// TODO Auto-generated catch block
+//			System.out.println(e.getMessage());
+//		}
 		Table obj=Utilities.deserializeTable("Test1");
-		
+
 
 		for (int i = 0; i < obj.getPages().size(); i++) {
 			Page p=Utilities.deserializePage(obj.getPages().get(i));
@@ -165,7 +165,7 @@ public class DBApp {
 			System.out.println(p);
 			Utilities.serializePage(p);
 		}
-		
+
 		Utilities.serializeTable(obj);
 	}
 	
@@ -223,7 +223,7 @@ public class DBApp {
 							firstPtr=ptr;
 							break;
 						}
-						System.out.println(firstPtr.getPage() + " " + firstPtr.getOffset());
+//						System.out.println(firstPtr.getPage() + " " + firstPtr.getOffset());
 						if(firstPtr==null)
 						{
 							System.out.println("This is the last tuple");

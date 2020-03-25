@@ -1,7 +1,0 @@
-Table Name,Column Name,Column Type,Key,Indexed
-Test1,gpa,java.lang.Double,False,False
-Test1,ID,java.lang.Integer,False,False
-Test1,birthdate,java.util.Date,False,False
-Test1,isAdult,java.lang.Boolean,False,False
-Test1,name,java.lang.String,True,True
-Test1,nationality,java.lang.String,False,False

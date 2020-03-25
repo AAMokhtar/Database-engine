@@ -1,8 +1,9 @@
 package DatabaseEngine;
 
+import java.util.Collections;
 import java.util.HashSet;
 
-public class BSet<T> extends HashSet<T>{ //NOTE: avoid comparing by reference
+public class BSet<T extends Comparable<T>> extends HashSet<T>{ //NOTE: avoid comparing by reference
     public BSet(){ super(); }
 
     public BSet<T> AND(BSet<T> set){
@@ -54,5 +55,10 @@ public class BSet<T> extends HashSet<T>{ //NOTE: avoid comparing by reference
         }
 
         return result;
+    }
+
+    public T getMin(){
+        if (this.isEmpty()) return null;
+        return Collections.min(this);
     }
 }
