@@ -439,6 +439,9 @@ public class DBApp {
 		Table t = Utilities.deserializeTable(strTableName);
 		t.delete(htblColNameValue);
 
+		//TODO: use Utilities.selectPointers(indices, SQLTerm[] arrSQLTerms, String[] strarrOperators) for your
+		// select queries. For the first argument just pass the hashtable "indices" (the instance variable)
+
 	}
 
 	//----------------------------------M2------------------------------------------

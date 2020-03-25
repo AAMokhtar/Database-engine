@@ -1329,6 +1329,81 @@ public class Utilities {
 		return new Pair<>(colInfo,colnum);
 	}
 
+	//select that returns pointers instead of records
+	public Iterator selectPointers(Hashtable<String, Hashtable<String, index>> indices,
+								   SQLTerm[] arrSQLTerms, String[] strarrOperators) throws DBAppException{
+		//----=not enough operators=-----
+		if (strarrOperators.length != arrSQLTerms.length - 1)
+			throw new DBAppException("the number of operators is incorrect!");
+
+		BSet<pointer> resultPointers = null; //final pointers of the select statement
+		int i = -1; //strarrOperator index
+
+		for(SQLTerm cur: arrSQLTerms){ //for each SQLTerm
+
+			//------------------------------------Integrity checks------------------------------------
+
+			//--current term is complete-
+			if (!Utilities.validTerm(cur)) throw new DBAppException("Incomplete SQLTerm!");
+
+			//--------table exists-------
+			Table cur_table = Utilities.deserializeTable(cur._strTableName);
+			if (cur_table == null) throw new DBAppException("Table not found!");
+
+			//---extract table metadata--
+			ArrayList<String[]> metaData = Utilities.readMetaDataForSpecificTable(cur._strTableName);
+			if (metaData == null) throw new DBAppException("Cannot fetch metadata!");
+
+			//-------column exists-------
+			Pair<String[],Integer> check = Utilities.getColumnFromMetadata(cur._strColumnName,metaData);
+			String[] colInfo = check.getKey();//column metadata
+			Integer colnum = check.getValue(); //index of that column
+			if (colInfo == null) throw new DBAppException("Attribute not found!");
+
+			//-------correct type--------
+			Class colType = Utilities.correctType(colInfo[2],cur._objValue);
+			if (colType == null) throw new DBAppException("term value is incompatible with column type!");
+
+			//------correct operator-----
+			if (!Utilities.allowedOperator(cur._strOperator)) throw new DBAppException("Unrecognized operator!");;
+
+			//------indexed column?------
+			Boolean Indexed = colInfo[4].charAt(0) == 'T';
+
+			//-------retrieve Index------
+			index tree = null;
+			if (indices != null && indices.get(cur._strTableName).containsKey(cur._strColumnName)) //find tree
+				tree = indices.get(cur._strTableName).get(cur._strColumnName);
+
+			if (Indexed && tree == null)
+				throw new DBAppException("Could not find index!");
+
+			//------------------------------------Execution------------------------------------
+			BSet<pointer> queryResult; //results of the the current query
+
+			if (Indexed){ //binary search in tree
+				queryResult = Utilities.indexedQuery(colType,tree,cur);
+			}
+			else { //no index, search in records
+				queryResult = Utilities.recordQuery(cur,colInfo[4].charAt(0) == 'T',cur_table,colnum,colType);
+			}
+
+			//-----------perform set operation-----------
+			if (i == -1){  //first term (no operator)
+				resultPointers = Utilities.setOperation(resultPointers,queryResult,null);
+				i++;
+			}
+			else {
+				resultPointers = Utilities.setOperation(resultPointers,queryResult,strarrOperators[i++].toUpperCase());
+			}
+
+
+
+		} //repeat for all SQL terms
+
+		return resultPointers.iterator(); //return an iterator containing the records extracted from resultPointers
+	}
+
 //------------------------------========================MAIN========================------------------------------------
 //	public static void main(String[] args) {
 //		try {
