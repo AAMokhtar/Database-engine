@@ -72,7 +72,7 @@ public class DBApp {
 		
 		Hashtable<String, Object> tuple = new Hashtable<String, Object>();
 		tuple.put("ID",10);
-		tuple.put("name","Nada");
+		tuple.put("name","David");
 		tuple.put("isAdult",true);
 		tuple.put("nationality","Egypt");
 		tuple.put("birthdate",new Date(434567650));
@@ -195,85 +195,85 @@ public class DBApp {
 			//clustering key has an index so I should use that index to search for place
 			if(temp[4].equals("True"))
 			{
-				//if index is a R tree
-				if(clusteringKeyType.equals(""))
+				//System.out.println("I am finally using the B+ tree to insert");
+				//fetch the index
+				HashSet<pointer> set=null;
+				if(clusteringKeyType.equals("java.awt.Polygon"))
 				{
-					
+					//load Rtree and search
 				}
-				//if index is a B+ tree
 				else
 				{
-					System.out.println("I am finally using the B+ tree to insert");
-					//fetch the index
 					BPlusTree index= (BPlusTree) indices.get(strTableName).get(temp[1]);
-					if(tableToInsertIn.getPages().isEmpty())
-					{
-						System.out.println("This is the first tuple");
-						tableToInsertIn.createNewPage();
-						//we are inserting first row
-						pageIndx=tableToInsertIn.getPages().get(0);
-						rowNumber=0;
+					set=index.search((Comparable)htblColNameValue.get(clusteringKey), ">=");
+				}
+				if(tableToInsertIn.getPages().isEmpty())
+				{
+					//System.out.println("This is the first tuple");
+					tableToInsertIn.createNewPage();
+					//we are inserting first row
+					pageIndx=tableToInsertIn.getPages().get(0);
+					rowNumber=0;
+				}
+				else
+				{
+					//there are tuples
+					
+					pointer firstPtr=null;
+					for (pointer ptr:set) {
+						firstPtr=ptr;
+						break;
 					}
-					else
+					//System.out.println(firstPtr.getPage() + " " + firstPtr.getOffset());
+					if(firstPtr==null)
 					{
-						//there are tuples
-						BSet<pointer> set=index.search((Comparable)htblColNameValue.get(clusteringKey), ">=");
-						pointer firstPtr=null;
-						for (pointer ptr:set) {
-							firstPtr=ptr;
-							break;
-						}
-						System.out.println(firstPtr.getPage() + " " + firstPtr.getOffset());
-						if(firstPtr==null)
+						//System.out.println("This is the last tuple");
+						//inserting last tuple in table
+						Page p=Utilities.deserializePage(tableToInsertIn.getPages().get(tableToInsertIn.getPages().size()-1));
+						// last page is full must create new one
+						if(p.getElementsCount()==p.getN())
 						{
-							System.out.println("This is the last tuple");
-							//inserting last tuple in table
-							Page p=Utilities.deserializePage(tableToInsertIn.getPages().get(tableToInsertIn.getPages().size()-1));
-							// last page is full must create new one
-							if(p.getElementsCount()==p.getN())
-							{
-								tableToInsertIn.createNewPage();
-								pageIndx=tableToInsertIn.getPages().get(tableToInsertIn.getPages().size()-1);
-								rowNumber=0;
-							}
-							else
-							{
-								//last page not full. Insert in it
-								pageIndx=tableToInsertIn.getPages().get(tableToInsertIn.getPages().size()-1);
-								rowNumber=p.getElementsCount();
-							}
-							Utilities.serializePage(p);
+							tableToInsertIn.createNewPage();
+							pageIndx=tableToInsertIn.getPages().get(tableToInsertIn.getPages().size()-1);
+							rowNumber=0;
 						}
 						else
 						{
-							System.out.println(firstPtr.getPage() + " " + firstPtr.getOffset());
+							//last page not full. Insert in it
+							pageIndx=tableToInsertIn.getPages().get(tableToInsertIn.getPages().size()-1);
+							rowNumber=p.getElementsCount();
+						}
+						Utilities.serializePage(p);
+					}
+					else
+					{
+						//System.out.println(firstPtr.getPage() + " " + firstPtr.getOffset());
 
-							//might insert in page before if there's space
-							if(firstPtr.getPage()!=1 && firstPtr.getOffset()==1)
+						//might insert in page before if there's space
+						if(firstPtr.getPage()!=1 && firstPtr.getOffset()==1)
+						{
+							//System.out.println("try");
+							Page p=Utilities.deserializePage(firstPtr.getPage()-1);
+							if(p.getElementsCount()<p.getN())
 							{
-								System.out.println("try");
-								Page p=Utilities.deserializePage(firstPtr.getPage()-1);
-								if(p.getElementsCount()<p.getN())
-								{
-								System.out.println("There is space in prev page");
-								pageIndx=firstPtr.getPage()-1;
-								rowNumber=p.getElementsCount();
-								}
-								else
-								{
-									// normal case
-									System.out.println("Regular insertion");
-									pageIndx=firstPtr.getPage();
-									rowNumber=firstPtr.getOffset();
-								}
+							//System.out.println("There is space in prev page");
+							pageIndx=firstPtr.getPage()-1;
+							rowNumber=p.getElementsCount();
 							}
 							else
 							{
 								// normal case
-								System.out.println("Regular insertion");
+								//System.out.println("Regular insertion");
 								pageIndx=firstPtr.getPage();
 								rowNumber=firstPtr.getOffset();
 							}
+						}
+						else
+						{
+							// normal case
+							//System.out.println("Regular insertion");
+							pageIndx=firstPtr.getPage();
+							rowNumber=firstPtr.getOffset();
 						}
 					}
 				}
@@ -286,12 +286,11 @@ public class DBApp {
 				pageIndx=toInsertIn[0];
 				rowNumber=toInsertIn[1];
 			}
-			System.out.println(pageIndx + " " + rowNumber);
-			//Step 8: *REGULAR CASE OF INSERT*
+			//Step 7: Insert actual tuple
 			//else if (toInsertIn.getElementsCount() != 0) {
 			tableToInsertIn.insertRegularCase(newTuple, pageIndx, rowNumber, indexClusteringKey, htblColNameValue.get(clusteringKey), clusteringKeyType);
 			//}
-			//step 9: inserting in B+ tree index. RTREE NOT DONE YET
+			//step 8: inserting in B+ tree and R tree indeces (if any exist).
 			//System.out.println("checking if I need to insert in a B+ tree index");
 			for (int i = 0; i <metaDataForSpecificTable.size() ; i++) {
 				//System.out.println("Retrieving metadata for column " + i);
@@ -331,6 +330,9 @@ public class DBApp {
 				else
 				{
 					//Rtree
+					// fetch tree
+					//insert in tree
+					//serialize
 				}
 					
 					
@@ -338,7 +340,7 @@ public class DBApp {
 			
 			
 		}
-		//Step 10:serialize page again
+		//Step 9:serialize table again
 		Utilities.serializeTable(tableToInsertIn);
 		
 		
