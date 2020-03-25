@@ -91,7 +91,149 @@ public class Table implements Serializable{
 
 		return false;
 	}
-
+	public int[] determinePageNeededForInsertUsingBinarySearch(int indexClusteringKey,Object clusteringKeyValue, String clusteringKeyType){
+		int[] ans= new int[2];
+		//if table is empty
+		if(pagesGroup.size()==0)
+		{
+			this.createNewPage();
+			ans[0]=pagesGroup.get(0);
+			ans[1]=0;
+			return ans;
+		}
+		else
+		{
+			int f=0;
+			int l=pagesGroup.size()-1;
+			while(f<l)
+			{
+				int middle=(f+l)/2;
+				//deserialize page needed
+				int pageID=pagesGroup.get(middle);
+				Page currentPageInMemory=Utilities.deserializePage(pageID);
+				//determine if this is the correct page to insert tuple in
+				boolean correctPage=currentPageInMemory.tupleToBePlacedInPage(indexClusteringKey, clusteringKeyValue, clusteringKeyType);
+				if(correctPage)
+				{
+					l=middle;
+				}
+				else
+				{
+					f=middle+1;
+				}
+				//serialize
+				Utilities.serializePage(currentPageInMemory);
+			}
+			Page p=Utilities.deserializePage(pagesGroup.get(f));
+			//maybe I can check in previous page if there's space because of previous deletion
+			if(f!=0)
+			{
+				Page prevPage=Utilities.deserializePage(pagesGroup.get(f-1));
+				if(prevPage.getElementsCount()<prevPage.getN())
+				{
+					if(clusteringKeyType.equals("java.lang.Integer"))
+					{
+						Integer intObj=(Integer)p.getTupleFromPage(0).get(indexClusteringKey);
+						Integer myintObj=(Integer) clusteringKeyValue;
+						if(myintObj<=intObj)
+						{
+							Utilities.serializePage(prevPage);
+							ans[0]=pagesGroup.get(f-1);
+							ans[1]=prevPage.getElementsCount();
+							Utilities.serializePage(p);
+							return ans;
+						}
+					}
+					else if(clusteringKeyType.equals("java.lang.String"))
+					{
+						String strObj=(String)p.getTupleFromPage(0).get(indexClusteringKey);
+						String mystrObj=(String) clusteringKeyValue;
+						if(mystrObj.compareTo(strObj)<=0)
+						{
+							Utilities.serializePage(prevPage);
+							ans[0]=pagesGroup.get(f-1);
+							ans[1]=prevPage.getElementsCount();
+							Utilities.serializePage(p);
+							return ans;
+						}
+					}
+					else if(clusteringKeyType.equals("java.lang.Double"))
+					{
+						Double dblObj=(Double)p.getTupleFromPage(0).get(indexClusteringKey);
+						Double mydblObj=(Double) clusteringKeyValue;
+						if(mydblObj.compareTo(dblObj)<=0)
+						{
+							Utilities.serializePage(prevPage);
+							ans[0]=pagesGroup.get(f-1);
+							ans[1]=prevPage.getElementsCount();
+							Utilities.serializePage(p);
+							return ans;
+						}
+					}
+					else if(clusteringKeyType.equals("java.util.Date"))
+					{
+						Date dateObj=(Date)p.getTupleFromPage(0).get(indexClusteringKey);
+						Date mydateObj=(Date) clusteringKeyValue;
+						if(mydateObj.compareTo(dateObj)<=0)
+						{
+							Utilities.serializePage(prevPage);
+							ans[0]=pagesGroup.get(f-1);
+							ans[1]=prevPage.getElementsCount();
+							Utilities.serializePage(p);
+							return ans;
+						}
+					}
+					else if(clusteringKeyType.equals("java.awt.Polygon"))
+					{
+						myPolygon polyObj=(myPolygon)p.getTupleFromPage(0).get(indexClusteringKey);
+						myPolygon myPolyObj= new myPolygon((Polygon)clusteringKeyValue);
+						if(myPolyObj.compareTo(polyObj)<=0)
+						{
+							Utilities.serializePage(prevPage);
+							ans[0]=pagesGroup.get(f-1);
+							ans[1]=prevPage.getElementsCount();
+							Utilities.serializePage(p);
+							return ans;
+						}
+					}
+					else if(clusteringKeyType.equals("java.lang.Boolean"))
+					{
+						Boolean boolObj=(Boolean)p.getTupleFromPage(0).get(indexClusteringKey);
+						Boolean myBoolObj= ((Boolean)clusteringKeyValue);
+						if(Boolean.compare(myBoolObj,boolObj)<=0)
+						{
+							Utilities.serializePage(prevPage);
+							ans[0]=pagesGroup.get(f-1);
+							ans[1]=prevPage.getElementsCount();
+							Utilities.serializePage(p);
+							return ans;
+						}
+					}
+				}
+			}
+			//last tuple
+			if(!p.tupleToBePlacedInPage(indexClusteringKey, clusteringKeyValue, clusteringKeyType))
+			{
+				//if page full
+				if(p.getElementsCount()==p.getN())
+				{
+					this.createNewPage();
+					ans[0]=pagesGroup.get(pagesGroup.size()-1);
+					ans[1]=0;
+				}
+				else
+				{
+					ans[0]=pagesGroup.get(f);
+					ans[1]=p.getElementsCount();
+				}
+				return ans;
+			}
+			//will insert in page normally
+			ans[0]=pagesGroup.get(f);
+			ans[1]=p.binarySearch(indexClusteringKey, clusteringKeyValue, clusteringKeyType);
+			return ans;
+		}
+	}
 	//method used to determine which in which of the table pages should I insert in
 	//METHOD WORKS. IT HAS BEEN REVIEWED
 	public Page determinePageNeededForInsert(int indexClusteringKey,Object clusteringKey, String clusteringKeyType, Vector<Object> newTuple){
@@ -240,9 +382,9 @@ public class Table implements Serializable{
 
 	//in insertion I create new pages, insert tuple in them and delete old pages
 	//METHOD WORKS. IT HAS BEEN REVIEWED
-	public ArrayList<Integer> insertRegularCase(Vector<Object> newTuple, Page currentPageInMemory,int indexClusteringKey,Object clusteringKey, String clusteringKeyType) {
-		int indxOfNewRow = currentPageInMemory.binarySearch(indexClusteringKey, clusteringKey, clusteringKeyType);
-		//get indx of current page in memory
+	public void insertRegularCase(Vector<Object> newTuple, int pageIndx, int indxOfNewRow,int indexClusteringKey,Object clusteringKey, String clusteringKeyType) {
+		Page currentPageInMemory=Utilities.deserializePage(pageIndx);
+		//get index of page in vector
 		int i=getPageIndx(currentPageInMemory);
 		//start insertion process
 		int size=currentPageInMemory.getElementsCount();
@@ -254,6 +396,16 @@ public class Table implements Serializable{
 			currentPageInMemory.insertIntoPage(currentPageInMemory.getTupleFromPage(0));
 			currentPageInMemory.deleteFirst();
 		}
+		//page might be empty so it didn't enter loop
+				if(size==0)
+				{
+					currentPageInMemory.insertIntoPage(newTuple);
+				}
+		//might be last tuple in page. Must insert it manually
+				else if(size==indxOfNewRow)
+				{
+					currentPageInMemory.insertIntoPage(newTuple);
+				}
 		Utilities.serializePage(currentPageInMemory);
 		int currentPage=i+1;
 		while(currentPageInMemory.getElementsCount()>currentPageInMemory.getN())
@@ -278,11 +430,11 @@ public class Table implements Serializable{
 			Utilities.serializePage(currentPageInMemory);
 			currentPage++;
 		}
-		ArrayList<Integer> ans= new ArrayList<Integer>();
+		/*ArrayList<Integer> ans= new ArrayList<Integer>();
 		//returning page index and row number in an arrayList
 		ans.add(pagesGroup.get(i));
 		ans.add(indxOfNewRow);
-		return ans;
+		return ans;*/
 	}
 
 	public void delete(Hashtable<String, Object> htblColNameValue) throws DBAppException{

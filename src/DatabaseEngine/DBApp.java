@@ -65,28 +65,28 @@ public class DBApp {
 		DBApp d = new DBApp();
 		d.init();
 		try {
-			d.createTable("Test3","name", table);
+			d.createTable("Test1","name", table);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
 		
 		Hashtable<String, Object> tuple = new Hashtable<String, Object>();
-		tuple.put("ID",1);
-		tuple.put("name","Ashraf");
+		tuple.put("ID",10);
+		tuple.put("name","Nada");
 		tuple.put("isAdult",true);
-		tuple.put("nationality","Guatemala");
-		tuple.put("birthdate",new Date(2));
-		tuple.put("gpa",1.0);
+		tuple.put("nationality","Egypt");
+		tuple.put("birthdate",new Date(434567650));
+		tuple.put("gpa",1.49);
 	
 		try {
-			d.insertIntoTable("Test3", tuple);
+			d.insertIntoTable("Test1", tuple);
 
 		} catch (DBAppException e) {
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
 		}
-
-		tuple = new Hashtable<>();
+		
+		/*tuple = new Hashtable<>();
 		tuple.put("ID",0);
 		tuple.put("name","Ali");
 		tuple.put("isAdult",true);
@@ -148,16 +148,15 @@ public class DBApp {
 		} catch (DBAppException e) {
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
-		}
+		}*/
 
-		try {
-			d.createBTreeIndex("Test3", "birthdate");
+		/*try {
+			d.createBTreeIndex("Test1", "name");
 		} catch (DBAppException e) {
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
-		}
-
-		Table obj=Utilities.deserializeTable("Test3");
+		}*/
+		Table obj=Utilities.deserializeTable("Test1");
 		
 
 		for (int i = 0; i < obj.getPages().size(); i++) {
@@ -187,24 +186,116 @@ public class DBApp {
 			Page.verifyTuple(strTableName, htblColNameValue, columnNameColumnType);
 			//step 5:  use the value in the hash table called htblColNameValue to create a new tuple. This tuple will be inserted in step 8 or 9
 			Vector newTuple = Page.createNewTuple(metaDataForSpecificTable, htblColNameValue);
-			//step 6: Determine the page in which I should  do the insert and retrieve it
+			//step 6: Determine the page in which I should  do the insert(and determine the row number too) and retrieve it
 			String[] clusteringKeyInfo = metaDataForSpecificTable.get(indexClusteringKey);
 			String clusteringKeyType = clusteringKeyInfo[2];
-			Page toInsertIn = tableToInsertIn.determinePageNeededForInsert(indexClusteringKey, htblColNameValue.get(clusteringKey), clusteringKeyType, newTuple);
-			//Step 7: *SPECIAL CASE OF INSERT* if it was determined in step 6 that the tuple to be inserted is the last in the ENTIRE table
-			ArrayList<Integer> ans=null;
-			if (toInsertIn == null) {
-				ans=tableToInsertIn.insertSpecialCase(newTuple);
+			String[] temp=metaDataForSpecificTable.get(indexClusteringKey);
+			int pageIndx=0;
+			int rowNumber=0;
+			//clustering key has an index so I should use that index to search for place
+			if(temp[4].equals("True"))
+			{
+				//if index is a R tree
+				if(clusteringKeyType.equals(""))
+				{
+					
+				}
+				//if index is a B+ tree
+				else
+				{
+					System.out.println("I am finally using the B+ tree to insert");
+					//fetch the index
+					BPlusTree index= (BPlusTree) indices.get(strTableName).get(temp[1]);
+					if(tableToInsertIn.getPages().isEmpty())
+					{
+						System.out.println("This is the first tuple");
+						tableToInsertIn.createNewPage();
+						//we are inserting first row
+						pageIndx=tableToInsertIn.getPages().get(0);
+						rowNumber=0;
+					}
+					else
+					{
+						//there are tuples
+						BSet<pointer> set=index.search((Comparable)htblColNameValue.get(clusteringKey), ">=");
+						pointer firstPtr=null;
+						for (pointer ptr:set) {
+							firstPtr=ptr;
+							break;
+						}
+						System.out.println(firstPtr.getPage() + " " + firstPtr.getOffset());
+						if(firstPtr==null)
+						{
+							System.out.println("This is the last tuple");
+							//inserting last tuple in table
+							Page p=Utilities.deserializePage(tableToInsertIn.getPages().get(tableToInsertIn.getPages().size()-1));
+							// last page is full must create new one
+							if(p.getElementsCount()==p.getN())
+							{
+								tableToInsertIn.createNewPage();
+								pageIndx=tableToInsertIn.getPages().get(tableToInsertIn.getPages().size()-1);
+								rowNumber=0;
+							}
+							else
+							{
+								//last page not full. Insert in it
+								pageIndx=tableToInsertIn.getPages().get(tableToInsertIn.getPages().size()-1);
+								rowNumber=p.getElementsCount();
+							}
+							Utilities.serializePage(p);
+						}
+						else
+						{
+							System.out.println(firstPtr.getPage() + " " + firstPtr.getOffset());
+
+							//might insert in page before if there's space
+							if(firstPtr.getPage()!=1 && firstPtr.getOffset()==1)
+							{
+								System.out.println("try");
+								Page p=Utilities.deserializePage(firstPtr.getPage()-1);
+								if(p.getElementsCount()<p.getN())
+								{
+								System.out.println("There is space in prev page");
+								pageIndx=firstPtr.getPage()-1;
+								rowNumber=p.getElementsCount();
+								}
+								else
+								{
+									// normal case
+									System.out.println("Regular insertion");
+									pageIndx=firstPtr.getPage();
+									rowNumber=firstPtr.getOffset();
+								}
+							}
+							else
+							{
+								// normal case
+								System.out.println("Regular insertion");
+								pageIndx=firstPtr.getPage();
+								rowNumber=firstPtr.getOffset();
+							}
+						}
+					}
+				}
 			}
+			else
+			{
+				//no clustering index
+				//using binary search to find page index and row number for insertion
+				int[] toInsertIn=tableToInsertIn.determinePageNeededForInsertUsingBinarySearch(indexClusteringKey, htblColNameValue.get(clusteringKey), clusteringKeyType);
+				pageIndx=toInsertIn[0];
+				rowNumber=toInsertIn[1];
+			}
+			System.out.println(pageIndx + " " + rowNumber);
 			//Step 8: *REGULAR CASE OF INSERT*
-			else if (toInsertIn.getElementsCount() != 0) {
-				ans=tableToInsertIn.insertRegularCase(newTuple, toInsertIn, indexClusteringKey, htblColNameValue.get(clusteringKey), clusteringKeyType);
-			}
+			//else if (toInsertIn.getElementsCount() != 0) {
+			tableToInsertIn.insertRegularCase(newTuple, pageIndx, rowNumber, indexClusteringKey, htblColNameValue.get(clusteringKey), clusteringKeyType);
+			//}
 			//step 9: inserting in B+ tree index. RTREE NOT DONE YET
 			//System.out.println("checking if I need to insert in a B+ tree index");
 			for (int i = 0; i <metaDataForSpecificTable.size() ; i++) {
 				//System.out.println("Retrieving metadata for column " + i);
-				String[] temp=metaDataForSpecificTable.get(i);
+				temp=metaDataForSpecificTable.get(i);
 				//System.out.println("Metadata: " + Arrays.toString(temp));
 				
 				if(temp[4].equals("True") && !temp[2].equals("java.awt.Polygon"))
@@ -215,27 +306,31 @@ public class DBApp {
 					if(temp[2].equals("java.lang.Integer"))
 					{
 						//System.out.println("Tree is of type integer");
-						tree.insert((Integer)htblColNameValue.get(temp[1]), new pointer(ans.get(0), ans.get(1)), true);					}
+						tree.insert((Integer)htblColNameValue.get(temp[1]), new pointer(pageIndx, rowNumber), true);					}
 					else if(temp[2].equals("java.lang.String"))
 					{
 						//System.out.println("Tree is of type string");
-						tree.insert((String)htblColNameValue.get(temp[1]), new pointer(ans.get(0), ans.get(1)), true);					}
+						tree.insert((String)htblColNameValue.get(temp[1]), new pointer(pageIndx, rowNumber), true);					}
 					else if(temp[2].equals("java.lang.Double"))
 					{
 						//System.out.println("Tree is of type double");
-						tree.insert((Double)htblColNameValue.get(temp[1]), new pointer(ans.get(0), ans.get(1)), true);					}
+						tree.insert((Double)htblColNameValue.get(temp[1]), new pointer(pageIndx, rowNumber), true);					}
 					else if(temp[2].equals("java.lang.Boolean"))
 					{
 						//System.out.println("Tree is of type boolean");
-						tree.insert((Boolean)htblColNameValue.get(temp[1]), new pointer(ans.get(0), ans.get(1)), true);					}
+						tree.insert((Boolean)htblColNameValue.get(temp[1]), new pointer(pageIndx, rowNumber), true);					}
 					else if(temp[2].equals("java.util.Date"))
 					{
 						//System.out.println("Tree is of type date");
-						tree.insert((Date)htblColNameValue.get(temp[1]), new pointer(ans.get(0), ans.get(1)), true);					
+						tree.insert((Date)htblColNameValue.get(temp[1]), new pointer(pageIndx, rowNumber), true);					
 					}
 					//System.out.println("value: " + htblColNameValue.get(temp[1]) + " in page " + ans.get(0) + " in row " + ans.get(1));
 					Utilities.serializeBPT(tree);
 					//System.out.println("Serializing tree");
+				}
+				else
+				{
+					//Rtree
 				}
 					
 					
