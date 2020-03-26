@@ -678,6 +678,11 @@ public class Utilities {
 		if(low<=high)
 		{
 			int mid = (high-low)/2 + low;
+			// mid = (high - low)/2  + (2low)/2
+			// mid = (high - low + 2low)/2
+			// mid = (high + low) / 2
+			//MUCH EASIER!!!
+
 			Comparable clusterValue = (Comparable)records.get(mid).get(clusterIdx);
 			if(clusterValue.compareTo(clusterKey)==0)
 			{
@@ -1085,7 +1090,7 @@ public class Utilities {
 	//searches for a page then the index of a value inside that page. takes a list of pages, a value,
 	//and the column number of your value. returns pageID, index respectively
 	public static int[] binarySearchValuePage(Vector<Integer> list, Comparable value, int column){
-		//smallest element greater than or equal element. returns the pageID and the index respectively
+		//smallest element greater than or equal value.
 
 		int lo = 0;
 		int hi = list.size() - 1;
