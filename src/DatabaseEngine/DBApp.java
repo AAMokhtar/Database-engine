@@ -11,6 +11,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import com.sun.corba.se.impl.encoding.CodeSetConversion.BTCConverter;
+
 
 public class DBApp {
 
@@ -55,24 +57,23 @@ public class DBApp {
 	
 	public static void main(String args[]) {
 		//CREATE TABLE TEST PASSED!
-//		Hashtable table = new Hashtable<String, String>();
-//		table.put("ID","java.lang.Integer");
-//		table.put("name","java.lang.String");
-//		table.put("isAdult","java.lang.Boolean");
-//		table.put("nationality","java.lang.String");
-//		table.put("birthdate","java.util.Date");
-//		table.put("gpa","java.lang.Double");
+		Hashtable table = new Hashtable<String, String>();
+		table.put("ID","java.lang.Integer");
+		table.put("name","java.lang.String");
+		table.put("isAdult","java.lang.Boolean");
+		table.put("nationality","java.lang.String");
+		table.put("birthdate","java.util.Date");
+		table.put("gpa","java.lang.Double");
 		DBApp d = new DBApp();
 		d.init();
-//		try {
-//			d.createTable("Test1","name", table);
-//		} catch (DBAppException e) {
-//			System.out.println(e.getMessage());
-//		}
-//
+		try {
+			d.createTable("Test1","name", table);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());		}
+
 		Hashtable<String, Object> tuple = new Hashtable<String, Object>();
 		tuple.put("ID",10);
-		tuple.put("name","Emad");
+		tuple.put("name","Shaka");
 		tuple.put("isAdult",true);
 		tuple.put("nationality","Egypt");
 		tuple.put("birthdate",new Date(434567650));
@@ -150,12 +151,12 @@ public class DBApp {
 			System.out.println(e.getMessage());
 		}*/
 
-//		try {
-//			d.createBTreeIndex("Test1", "name");
-//		} catch (DBAppException e) {
-//			// TODO Auto-generated catch block
-//			System.out.println(e.getMessage());
-//		}
+		/*try {
+			d.createBTreeIndex("Test1", "name");
+		} catch (DBAppException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+		}*/
 		Table obj=Utilities.deserializeTable("Test1");
 
 
@@ -192,42 +193,37 @@ public class DBApp {
 			String[] temp=metaDataForSpecificTable.get(indexClusteringKey);
 			int pageIndx=0;
 			int rowNumber=0;
-			//clustering key has an index so I should use that index to search for place
+			//check if clustering key has an index
 			if(temp[4].equals("True"))
 			{
-				//System.out.println("I am finally using the B+ tree to insert");
-				//fetch the index
-				HashSet<pointer> set=null;
-				BPlusTree index= (BPlusTree) indices.get(strTableName).get(temp[1]);
-				if(clusteringKeyType.equals("java.awt.Polygon"))
-				{
-					//load Rtree and search
-				}
-				else
-				{
-					//BPlusTree index= (BPlusTree) indices.get(strTableName).get(temp[1]);
-				}
+			//clustering key has an index so I should use that index to search for place	
 				if(tableToInsertIn.getPages().isEmpty())
 				{
-					//System.out.println("This is the first tuple");
+					//in this case we know table is still empty. So I just need to create a new page
+					//no need to use index here since table is empty
 					tableToInsertIn.createNewPage();
-					//we are inserting first row
 					pageIndx=tableToInsertIn.getPages().get(0);
 					rowNumber=0;
 				}
 				else
 				{
-					//there are tuples
-					set=index.search((Comparable)htblColNameValue.get(clusteringKey), ">=");
+					// since table is not empty, we must use the index
 					pointer firstPtr=null;
-					for (pointer ptr:set) {
-						firstPtr=ptr;
-						break;
+					if(clusteringKeyType.equals("java.awt.Polygon"))
+					{
+						//index is a R tree 
+						//load R tree and search
 					}
-					//System.out.println(firstPtr.getPage() + " " + firstPtr.getOffset());
+					else
+					{
+						//index is a B+ tree
+						BPlusTree index= (BPlusTree) indices.get(strTableName).get(temp[1]);
+						BSet set=index.search((Comparable)htblColNameValue.get(clusteringKey), ">=");
+						firstPtr=(pointer)set.getMin();
+
+					}
 					if(firstPtr==null)
 					{
-						//System.out.println("This is the last tuple");
 						//inserting last tuple in table
 						Page p=Utilities.deserializePage(tableToInsertIn.getPages().get(tableToInsertIn.getPages().size()-1));
 						// last page is full must create new one
@@ -247,23 +243,18 @@ public class DBApp {
 					}
 					else
 					{
-						//System.out.println(firstPtr.getPage() + " " + firstPtr.getOffset());
-
 						//might insert in page before if there's space
-						if(firstPtr.getPage()!=1 && firstPtr.getOffset()==1)
+						if(firstPtr.getPage()!=1 && firstPtr.getOffset()==0)
 						{
-							//System.out.println("try");
 							Page p=Utilities.deserializePage(firstPtr.getPage()-1);
 							if(p.getElementsCount()<p.getN())
 							{
-							//System.out.println("There is space in prev page");
 							pageIndx=firstPtr.getPage()-1;
 							rowNumber=p.getElementsCount();
 							}
 							else
 							{
 								// normal case
-								//System.out.println("Regular insertion");
 								pageIndx=firstPtr.getPage();
 								rowNumber=firstPtr.getOffset();
 							}
@@ -271,7 +262,6 @@ public class DBApp {
 						else
 						{
 							// normal case
-							//System.out.println("Regular insertion");
 							pageIndx=firstPtr.getPage();
 							rowNumber=firstPtr.getOffset();
 						}
