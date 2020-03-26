@@ -72,7 +72,7 @@ public class DBApp {
 		
 		Hashtable<String, Object> tuple = new Hashtable<String, Object>();
 		tuple.put("ID",10);
-		tuple.put("name","David");
+		tuple.put("name","Emad");
 		tuple.put("isAdult",true);
 		tuple.put("nationality","Egypt");
 		tuple.put("birthdate",new Date(434567650));
@@ -198,14 +198,14 @@ public class DBApp {
 				//System.out.println("I am finally using the B+ tree to insert");
 				//fetch the index
 				HashSet<pointer> set=null;
+				BPlusTree index= (BPlusTree) indices.get(strTableName).get(temp[1]);
 				if(clusteringKeyType.equals("java.awt.Polygon"))
 				{
 					//load Rtree and search
 				}
 				else
 				{
-					BPlusTree index= (BPlusTree) indices.get(strTableName).get(temp[1]);
-					set=index.search((Comparable)htblColNameValue.get(clusteringKey), ">=");
+					//BPlusTree index= (BPlusTree) indices.get(strTableName).get(temp[1]);
 				}
 				if(tableToInsertIn.getPages().isEmpty())
 				{
@@ -218,7 +218,7 @@ public class DBApp {
 				else
 				{
 					//there are tuples
-					
+					set=index.search((Comparable)htblColNameValue.get(clusteringKey), ">=");
 					pointer firstPtr=null;
 					for (pointer ptr:set) {
 						firstPtr=ptr;
@@ -286,6 +286,7 @@ public class DBApp {
 				pageIndx=toInsertIn[0];
 				rowNumber=toInsertIn[1];
 			}
+			System.out.println(pageIndx + " "+ rowNumber);
 			//Step 7: Insert actual tuple
 			//else if (toInsertIn.getElementsCount() != 0) {
 			tableToInsertIn.insertRegularCase(newTuple, pageIndx, rowNumber, indexClusteringKey, htblColNameValue.get(clusteringKey), clusteringKeyType);
