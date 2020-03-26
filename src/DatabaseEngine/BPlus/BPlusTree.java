@@ -419,6 +419,9 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
         int maxTuplesPerPage = Integer.parseInt(Utilities.readProperties("config//DBApp.properties")
                 .getProperty("MaximumRowsCountinPage"));
 
+        //get the number of tuples in this page
+        int elementCount = Utilities.deserializePage(pageNum).getElementsCount();
+
         BPTExternal<T> cur = Utilities.findLeaf(root,null,true); //get the leftmost leaf
 
         while (cur != null){ //for all leaves
@@ -431,7 +434,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                     int offset = p.getOffset(); //get index
                     int page = p.getPage(); //get page number
 
-                    if (amount >= 0) {
+                    if (amount >= 0 && elementCount == maxTuplesPerPage) {
                         p.setPage(page + ((offset + amount) / maxTuplesPerPage)); //new page number
                         offset = ((offset + amount) % (maxTuplesPerPage)); //index in new page
                         p.setOffset(offset); //set new index
@@ -460,7 +463,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                                 int offset = p.getOffset(); //get index
                                 int page = p.getPage(); //get page number
 
-                                if (amount >= 0) {
+                                if (amount >= 0 && elementCount == maxTuplesPerPage) {
                                     p.setPage(page + ((offset + amount) / maxTuplesPerPage)); //new page number
                                     offset = ((offset + amount) % (maxTuplesPerPage)); //index in new page
                                     p.setOffset(offset); //set new index
