@@ -67,25 +67,25 @@ public class DBApp {
 		DBApp d = new DBApp();
 		d.init();
 		try {
-			d.createTable("Test1","name", table);
+			d.createTable("Test2","name", table);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());		}
 
 		Hashtable<String, Object> tuple = new Hashtable<String, Object>();
-		tuple.put("ID",10);
-		tuple.put("name","Shaka");
-		tuple.put("isAdult",true);
+		tuple.put("ID",47);
+		tuple.put("name","Nadine");
+		tuple.put("isAdult",false);
 		tuple.put("nationality","Egypt");
 		tuple.put("birthdate",new Date(434567650));
-		tuple.put("gpa",1.49);
+		tuple.put("gpa",3.0);
 	
-		try {
-			d.insertIntoTable("Test1", tuple);
+		/*try {
+			d.insertIntoTable("Test2", tuple);
 
 		} catch (DBAppException e) {
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
-		}
+		}*/
 		
 		/*tuple = new Hashtable<>();
 		tuple.put("ID",0);
@@ -152,7 +152,7 @@ public class DBApp {
 		}*/
 
 		/*try {
-			d.createBTreeIndex("Test1", "name");
+			d.createBTreeIndex("Test1", "gpa");
 		} catch (DBAppException e) {
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
@@ -277,11 +277,7 @@ public class DBApp {
 				rowNumber=toInsertIn[1];
 			}
 			System.out.println(pageIndx + " "+ rowNumber);
-			//Step 7: Insert actual tuple
-			//else if (toInsertIn.getElementsCount() != 0) {
-			tableToInsertIn.insertRegularCase(newTuple, pageIndx, rowNumber, indexClusteringKey, htblColNameValue.get(clusteringKey), clusteringKeyType);
-			//}
-			//step 8: inserting in B+ tree and R tree indeces (if any exist).
+			//step 7: inserting in B+ tree and R tree indeces (if any exist).
 			//System.out.println("checking if I need to insert in a B+ tree index");
 			for (int i = 0; i <metaDataForSpecificTable.size() ; i++) {
 				//System.out.println("Retrieving metadata for column " + i);
@@ -329,6 +325,8 @@ public class DBApp {
 					
 			}
 			
+			//Step 8: Insert actual tuple
+			tableToInsertIn.insertRegularCase(newTuple, pageIndx, rowNumber, indexClusteringKey, htblColNameValue.get(clusteringKey), clusteringKeyType);
 			
 		}
 		//Step 9:serialize table again
