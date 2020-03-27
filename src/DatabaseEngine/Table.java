@@ -62,9 +62,10 @@ public class Table implements Serializable{
 	public Page createNewPage() {
 		//ONLY through a table I can create a page.
 		Page p = new Page();
+		pagesGroup.add(p.getID());
 
 		Utilities.serializePage(p);
-		pagesGroup.add(p.getID());
+		Utilities.serializeTable(this);
 		return p;
 	}
 

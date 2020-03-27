@@ -15,6 +15,7 @@ import java.io.PrintWriter;
 import java.awt.Polygon;
 import java.io.*;
 
+import java.lang.reflect.Array;
 import java.util.Date;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -1054,7 +1055,9 @@ public class Utilities {
 		}
 
 		//the first overflow page does not exist
-		if (!new File("data//BPlus//overflow_Pages//" + "overflow_" + name + value + "_0.class").isFile()){
+		String path = "data//BPlus//overflow_Pages//" + "overflow_" + name + value + "_0.class";
+		path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+		if (!new File(path).isFile()){
 			overflowPage firstPage = new overflowPage(name + value + "_");
 			firstPage.insert(recordPointer);
 			Utilities.serializeBOverflow(firstPage);
@@ -1085,8 +1088,11 @@ public class Utilities {
 		}
 	}
 
-	public static <T extends Comparable<T>> HashMap<Integer,HashMap<Integer,pointer>> getAllPointers(BPlusTree<T> tree){
-		HashMap<Integer,HashMap<Integer,pointer>> ret = new HashMap<>();
+	public static <T extends Comparable<T>> Pair<HashMap<Integer,HashMap<Integer,pointer>>, ArrayList<overflowPage>>
+	getAllPointers(BPlusTree<T> tree){
+		HashMap<Integer,HashMap<Integer,pointer>> ret1 = new HashMap<>();
+		ArrayList<overflowPage> ret2 = new ArrayList<>();
+
 		BPTExternal<T> cur = Utilities.findLeaf(tree.getRoot(),null,true); //get the leftmost leaf
 
 		while (cur != null){ //for all leaves
@@ -1094,14 +1100,16 @@ public class Utilities {
 			ArrayList<T> values = cur.getValues();
 
 			for(pointer p: pointers){
-				if (!ret.containsKey(p.getPage())) ret.put(p.getPage(),new HashMap<>());
-				ret.get(p.getPage()).put(p.getOffset(),p);
+				if (!ret1.containsKey(p.getPage())) ret1.put(p.getPage(),new HashMap<>());
+				ret1.get(p.getPage()).put(p.getOffset(),p);
 			}
 
 
 			for(T v: values) { //get the overflow pages of every value
+				String path = "data//BPlus//overflow_Pages//" + "overflow_" + tree.getName() + v + "_0.class";
+				path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
 
-				if (new File("data//BPlus//overflow_Pages//" + "overflow_" + tree.getName() + v + "_0.class").isFile()) { //has overflow pages
+				if (new File(path).isFile()) { //has overflow pages
 					overflowPage curPage = Utilities.deserializeBOverflow(tree.getName() + v + "_0"); //get the first page
 
 					while (curPage != null) { //loop over all overflow pages
@@ -1109,10 +1117,10 @@ public class Utilities {
 						Queue<pointer> pointersQ = curPage.getPointers(); //get all pointers
 
 						while (!pointersQ.isEmpty()){ //for each pointer in page
-							if (!ret.containsKey(pointersQ.peek().getPage())) ret.put(pointersQ.peek().getPage(),new HashMap<>());
-							ret.get(pointersQ.peek().getPage()).put(pointersQ.peek().getOffset(),pointersQ.poll());
+							if (!ret1.containsKey(pointersQ.peek().getPage())) ret1.put(pointersQ.peek().getPage(),new HashMap<>());
+							ret1.get(pointersQ.peek().getPage()).put(pointersQ.peek().getOffset(),pointersQ.poll());
 						}
-
+						ret2.add(curPage);
 						curPage = Utilities.deserializeBOverflow(curPage.getNext()); //next page
 					}
 				}
@@ -1120,10 +1128,20 @@ public class Utilities {
 
 			cur = (BPTExternal<T>) Utilities.deserializeNode(cur.getNext());
 		}
-		return ret;
+		return new Pair<>(ret1,ret2);
 	}
 
+	public static <T extends Comparable<T>> void serializeAll(BPlusTree<T> tree, ArrayList<overflowPage> pages) {
+		BPTExternal<T> cur = Utilities.findLeaf(tree.getRoot(), null, true); //get the leftmost leaf
 
+		//save all the leaves
+		while (cur != null) {
+			Utilities.serializeNode(cur);
+			cur = (BPTExternal<T>) Utilities.deserializeNode(cur.getNext());
+		}
+		//save all pverflow pages
+		for (overflowPage p : pages) Utilities.serializeBOverflow(p);
+	}
 	//--------------------------======================SELECT HELPERS=====================-------------------------------
 
 	//TODO: explain your code!!!!!! pls!!!!!!!!!!! aboos reglek eshra7

@@ -1,6 +1,7 @@
 package DatabaseEngine.BPlus;
 
 import DatabaseEngine.*;
+import javafx.util.Pair;
 
 import java.io.File;
 import java.io.Serializable;
@@ -76,7 +77,10 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                 if (curNode != null && index != -1){ // find all records = value
                        ret.add(curNode.getPointers().get(index)); //add pointer to output
 
-                    if (new File("data//BPlus//overflow_Pages//" + "overflow_" + name + value + "_0.class").isFile()){
+                    String path = "data//BPlus//overflow_Pages//" + "overflow_" + name + value + "_0.class";
+                    path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+                    if (new File(path).isFile()){
                         overflowPage curPage = Utilities.deserializeBOverflow(name + value + "_0"); //get the first page
 
                         while (curPage != null){ //loop over all overflow pages
@@ -111,7 +115,10 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                     else if (curNode.getValues().get(index) != value){
                         ret.add(curNode.getPointers().get(index)); // add to output
 
-                        if (new File("data//BPlus//overflow_Pages//" + "overflow_" + name + curNode.getValues().get(index) + "_0.class").isFile()){
+                        String path = "data//BPlus//overflow_Pages//" + "overflow_" + name + curNode.getValues().get(index) + "_0.class";
+                        path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+                        if (new File(path).isFile()){
                             overflowPage curPage = Utilities.deserializeBOverflow(name + curNode.getValues().get(index) + "_0"); //get the first page
 
                             while (curPage != null){ //loop over all overflow pages
@@ -147,7 +154,10 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                     else {
                         ret.add(curNode.getPointers().get(index)); //add pointer to output
 
-                        if (new File("data//BPlus//overflow_Pages//" + "overflow_" + name + curNode.getValues().get(index) + "_0.class").isFile()){
+                        String path = "data//BPlus//overflow_Pages//" + "overflow_" + name + curNode.getValues().get(index) + "_0.class";
+                        path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+                        if (new File(path).isFile()){
                             overflowPage curPage = Utilities.deserializeBOverflow(name + curNode.getValues().get(index) + "_0"); //get the first page
 
                             while (curPage != null){ //loop over all overflow pages
@@ -183,7 +193,10 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                     else {
                         ret.add(curNode.getPointers().get(index)); //add pointer to output
 
-                        if (new File("data//BPlus//overflow_Pages//" + "overflow_" + name + curNode.getValues().get(index) + "_0.class").isFile()){
+                        String path = "data//BPlus//overflow_Pages//" + "overflow_" + name + curNode.getValues().get(index) + "_0.class";
+                        path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+                        if (new File(path).isFile()){
                             overflowPage curPage = Utilities.deserializeBOverflow(name + curNode.getValues().get(index++) + "_0"); //get the first page
 
                             while (curPage != null){ //loop over all overflow pages
@@ -224,7 +237,10 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                     else {
                         ret.add(curNode.getPointers().get(index)); //add pointer to output
 
-                        if (new File("data//BPlus//overflow_Pages//" + "overflow_" + name + curNode.getValues().get(index) + "_0.class").isFile()){
+                        String path = "data//BPlus//overflow_Pages//" + "overflow_" + name + curNode.getValues().get(index) + "_0.class";
+                        path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+                        if (new File(path).isFile()){
                             overflowPage curPage = Utilities.deserializeBOverflow(name + curNode.getValues().get(index) + "_0"); //get the first page
 
                             while (curPage != null){ //loop over all overflow pages
@@ -264,7 +280,10 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                     else {
                         ret.add(curNode.getPointers().get(index)); //add to output
 
-                        if (new File("data//BPlus//overflow_Pages//" + "overflow_" + name + curNode.getValues().get(index) + "_0.class").isFile()){
+                        String path = "data//BPlus//overflow_Pages//" + "overflow_" + name + curNode.getValues().get(index) + "_0.class";
+                        path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+                        if (new File(path).isFile()){
                             overflowPage curPage = Utilities.deserializeBOverflow(name + curNode.getValues().get(index) + "_0"); //get the first page
 
                             while (curPage != null){ //loop over all overflow pages
@@ -434,7 +453,10 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 
             for(T v: values){ //get the overflow pages of every value
 
-                if (new File("data//BPlus//overflow_Pages//" + "overflow_" + name + v + "_0.class").isFile()){ //has overflow pages
+                String path = "data//BPlus//overflow_Pages//" + "overflow_" + name + v + "_0.class";
+                path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+                if (new File(path).isFile()){ //has overflow pages
                     overflowPage curPage = Utilities.deserializeBOverflow(name + v + "_0"); //get the first page
 
                     while (curPage != null){ //loop over all overflow pages
@@ -461,7 +483,10 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
     }
 
     public void incrementPointersAt(int pageNum, int vecIndex){
-        HashMap<Integer,HashMap<Integer,pointer>> pointers = Utilities.getAllPointers(this); //all the pointers of the tree
+        Pair<HashMap<Integer,HashMap<Integer,pointer>>,ArrayList<overflowPage>> temp =
+                Utilities.getAllPointers(this);
+        HashMap<Integer,HashMap<Integer,pointer>> pointers = temp.getKey(); //all the pointers of the tree
+        ArrayList<overflowPage> overflow = temp.getValue(); //all the overflow pages of the tree
 
         //table page Ids
         Vector<Integer> pageIds = Utilities.deserializeTable(table).getPages();
@@ -474,7 +499,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
         while (i < pageIds.size()){ //every page after the starting page
             int curPageSize = Utilities.deserializePage(pageIds.get(i)).getElementsCount(); //get number of tuples in page
             while (j < curPageSize){ //all pointers
-                pointer curPointer = pointers.get(i).get(j);
+                pointer curPointer = pointers.get(pageIds.get(i)).get(j);
 
                 if (curPointer.getOffset() + 1  == max){ //last record in a full page
                     //make it the first record in the next page
@@ -494,14 +519,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
             i++;
             j = 0;
         }
-
-        BPTExternal<T> cur = Utilities.findLeaf(root,null,true); //get the leftmost leaf
-
-        //save all the leaves
-        while (cur != null){
-            Utilities.serializeNode(cur);
-            cur = (BPTExternal<T>) Utilities.deserializeNode(cur.getNext());
-        }
+        Utilities.serializeAll(this,overflow);
     }
 
     public String leavesToString(){
