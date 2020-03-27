@@ -187,6 +187,7 @@ public class Utilities {
 		Properties p=new Properties();
 		p.setProperty("MaximumRowsCountinPage","200");
 		p.setProperty("NodeSize","15");
+		p.setProperty("nextNodeId","1");
 
 		try {
 			p.store(new FileWriter("config//DBApp.properties"),"Database engine properties");
@@ -315,6 +316,55 @@ public class Utilities {
 			System.out.println("Error reading properties");
 		}
 		return 0;
+	}
+
+	//read the maximum node size
+	public static int readNodeSize(String path) {
+		try{
+			FileReader reader =new FileReader(path);
+			Properties p = new Properties();
+			p.load(reader);
+			String theNum = p.getProperty("NodeSize");
+			return Integer.parseInt(theNum);}
+
+		catch(IOException E){
+			E.printStackTrace();
+			System.out.println("Error reading properties");
+		}
+		return 0;
+	}
+
+	//read the ID of the next page
+	public static int readNextId(String path) {
+		try{
+			FileReader reader =new FileReader(path);
+			Properties p = new Properties();
+			p.load(reader);
+			String theNum = p.getProperty("nextNodeId");
+			return Integer.parseInt(theNum);}
+
+		catch(IOException E){
+			E.printStackTrace();
+			System.out.println("Error reading properties");
+		}
+		return 0;
+	}
+
+	public static void incrementNextId(String path) {
+		try{
+			FileReader reader =new FileReader(path);
+			Properties p = new Properties();
+			p.load(reader);
+
+			int ID = Integer.parseInt(p.getProperty("nextNodeId")) + 1;
+			p.setProperty("nextNodeId",ID+"");
+			p.store(new FileWriter("config//DBApp.properties"),"Database engine properties");
+		}
+
+		catch(IOException E){
+			E.printStackTrace();
+			System.out.println("Error reading properties");
+		}
 	}
 
 
@@ -1034,6 +1084,45 @@ public class Utilities {
 			}
 		}
 	}
+
+	public static <T extends Comparable<T>> HashMap<Integer,HashMap<Integer,pointer>> getAllPointers(BPlusTree<T> tree){
+		HashMap<Integer,HashMap<Integer,pointer>> ret = new HashMap<>();
+		BPTExternal<T> cur = Utilities.findLeaf(tree.getRoot(),null,true); //get the leftmost leaf
+
+		while (cur != null){ //for all leaves
+			ArrayList<pointer> pointers = cur.getPointers();
+			ArrayList<T> values = cur.getValues();
+
+			for(pointer p: pointers){
+				if (!ret.containsKey(p.getPage())) ret.put(p.getPage(),new HashMap<>());
+				ret.get(p.getPage()).put(p.getOffset(),p);
+			}
+
+
+			for(T v: values) { //get the overflow pages of every value
+
+				if (new File("data//BPlus//overflow_Pages//" + "overflow_" + tree.getName() + v + "_0.class").isFile()) { //has overflow pages
+					overflowPage curPage = Utilities.deserializeBOverflow(tree.getName() + v + "_0"); //get the first page
+
+					while (curPage != null) { //loop over all overflow pages
+
+						Queue<pointer> pointersQ = curPage.getPointers(); //get all pointers
+
+						while (!pointersQ.isEmpty()){ //for each pointer in page
+							if (!ret.containsKey(pointersQ.peek().getPage())) ret.put(pointersQ.peek().getPage(),new HashMap<>());
+							ret.get(pointersQ.peek().getPage()).put(pointersQ.peek().getOffset(),pointersQ.poll());
+						}
+
+						curPage = Utilities.deserializeBOverflow(curPage.getNext()); //next page
+					}
+				}
+			}
+
+			cur = (BPTExternal<T>) Utilities.deserializeNode(cur.getNext());
+		}
+		return ret;
+	}
+
 
 	//--------------------------======================SELECT HELPERS=====================-------------------------------
 

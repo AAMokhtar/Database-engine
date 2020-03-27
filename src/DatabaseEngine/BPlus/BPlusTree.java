@@ -4,21 +4,24 @@ import DatabaseEngine.*;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Queue;
+import java.util.*;
 
 public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializable {
 
     private  String name; // tree filename (tablename + column name)
+    private  String table; // table name (needed for shifting)
+    private String column; //table column needed for name along with the table name
     private int maxPerNode; //max elements per node
     private long nodeID; //don't tell me there's not enough IDs!!!
     private int minPerNode; // min elements per node
     private BPTNode<T> root; //root node
 
-    public BPlusTree(String name, int N) {
-        this.name = name;
-        maxPerNode = N;
-        minPerNode = N/2; //change it as you see fit
+    public BPlusTree(String table,String column) {
+        this.column = column;
+        this.table = table;
+        this.name = table + column;
+        maxPerNode = Utilities.readNodeSize("config//DBApp.properties"); //maximum node size loaded from properties
+        minPerNode = maxPerNode/2; //change it as you see fit
         nodeID = 0; //i know it's already 0. this looks cleaner though.
     }
 
@@ -30,6 +33,8 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
     public int getMaxPerNode(){
         return maxPerNode;
     }
+
+    public BPTNode<T> getRoot() { return root; }
 
     public long getNodeID(){
         return nodeID;
@@ -50,7 +55,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
     //Insert
     public void insert(T value, pointer recordPointer, boolean changeOldPointers) throws DBAppException {
         if (changeOldPointers)
-            shiftPointersAt(recordPointer.getPage(), recordPointer.getOffset(), 1); //if you inserted a new record as well
+            incrementPointersAt(recordPointer.getPage(), recordPointer.getOffset()); //if you inserted a new record as well
 
         insertHelp(value, recordPointer, root); //the actual insertion
     }
@@ -412,15 +417,8 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
     }
 
     //shift pointers left or right
-    public void shiftPointersAt(int pageNum, int vecIndex, int amount){
+    public void decrementPointersAt(int pageNum, int vecIndex){
         pointer temp = new pointer(pageNum,vecIndex); //to compare with other pointers
-
-        //get max entries per page
-        int maxTuplesPerPage = Integer.parseInt(Utilities.readProperties("config//DBApp.properties")
-                .getProperty("MaximumRowsCountinPage"));
-
-        //get the number of tuples in this page
-        int elementCount = Utilities.deserializePage(pageNum).getElementsCount();
 
         BPTExternal<T> cur = Utilities.findLeaf(root,null,true); //get the leftmost leaf
 
@@ -429,22 +427,9 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
             ArrayList<T> values = cur.getValues();
 
             for(pointer p: pointers){
-                if (p.compareTo(temp) >= 0) { //tuple's position is greater than or equal the given position
-
-                    int offset = p.getOffset(); //get index
-                    int page = p.getPage(); //get page number
-
-                    if (amount >= 0 && elementCount == maxTuplesPerPage) {
-                        p.setPage(page + ((offset + amount) / maxTuplesPerPage)); //new page number
-                        offset = ((offset + amount) % (maxTuplesPerPage)); //index in new page
-                        p.setOffset(offset); //set new index
-                    }
-                    else if (p.getPage() == temp.getPage()){
-                        offset = ((offset + amount) % (maxTuplesPerPage)); //index in new page
-                        p.setOffset(offset); //set new index
-                    }
-                }
-
+                //tuple's position is greater than or equal the given position and it's in the same page
+                if (p.compareTo(temp) >= 0 && p.getPage() == temp.getPage())
+                    p.setOffset(p.getOffset() - 1); //set new index
             }
 
             for(T v: values){ //get the overflow pages of every value
@@ -459,29 +444,61 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                         while (!pointersQ.isEmpty()){ //for each pointer in page
                             pointer p = pointersQ.poll();
 
-                            if (p.compareTo(temp) >= 0) { //tuple's position is greater than or equal the given position
-                                int offset = p.getOffset(); //get index
-                                int page = p.getPage(); //get page number
+                            if (p.compareTo(temp) >= 0 && p.getPage() == temp.getPage())
+                                p.setOffset(p.getOffset() - 1); //set new index
 
-                                if (amount >= 0 && elementCount == maxTuplesPerPage) {
-                                    p.setPage(page + ((offset + amount) / maxTuplesPerPage)); //new page number
-                                    offset = ((offset + amount) % (maxTuplesPerPage)); //index in new page
-                                    p.setOffset(offset); //set new index
-                                }
-                                else if (p.getPage() == temp.getPage()){
-                                    offset = ((offset + amount) % (maxTuplesPerPage)); //index in new page
-                                    p.setOffset(offset); //set new index
-                                }
-                            }
                         }
+
                         Utilities.serializeBOverflow(curPage);
                         curPage = Utilities.deserializeBOverflow(curPage.getNext()); //next page
-
                     }
-
                 }
             }
 
+            Utilities.serializeNode(cur);
+            cur = (BPTExternal<T>) Utilities.deserializeNode(cur.getNext());
+        }
+    }
+
+    public void incrementPointersAt(int pageNum, int vecIndex){
+        HashMap<Integer,HashMap<Integer,pointer>> pointers = Utilities.getAllPointers(this); //all the pointers of the tree
+
+        //table page Ids
+        Vector<Integer> pageIds = Utilities.deserializeTable(table).getPages();
+
+        //get max entries per page
+        int max = Utilities.readPageSize("config//DBApp.properties"); // maximum tuples per page
+
+        int i = Utilities.selectiveBinarySearch(new ArrayList<>(pageIds),pageNum,"="); //starting page
+        int j = vecIndex;
+        while (i < pageIds.size()){ //every page after the starting page
+            int curPageSize = Utilities.deserializePage(pageIds.get(i)).getElementsCount(); //get number of tuples in page
+            while (j < curPageSize){ //all pointers
+                pointer curPointer = pointers.get(i).get(j);
+
+                if (curPointer.getOffset() + 1  == max){ //last record in a full page
+                    //make it the first record in the next page
+                    curPointer.setPage (i + 1 == pageIds.size()?Utilities.readNextId("config//DBApp.properties"):pageIds.get(i + 1));
+                    curPointer.setOffset(0);
+                }
+                else {
+                    //shift it once to the right
+                    curPointer.setOffset(j + 1);
+                }
+
+                j++;
+            }
+
+            if (curPageSize < max) break; //no need to shit subsequent pointers
+
+            i++;
+            j = 0;
+        }
+
+        BPTExternal<T> cur = Utilities.findLeaf(root,null,true); //get the leftmost leaf
+
+        //save all the leaves
+        while (cur != null){
             Utilities.serializeNode(cur);
             cur = (BPTExternal<T>) Utilities.deserializeNode(cur.getNext());
         }

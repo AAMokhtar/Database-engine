@@ -11,9 +11,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import com.sun.corba.se.impl.encoding.CodeSetConversion.BTCConverter;
-
-
 public class DBApp {
 
 	public Hashtable<String, Hashtable<String, index>> indices; // table name -> column name -> tree (M2 code)
@@ -59,33 +56,34 @@ public class DBApp {
 		//CREATE TABLE TEST PASSED!
 		Hashtable table = new Hashtable<String, String>();
 		table.put("ID","java.lang.Integer");
-		table.put("name","java.lang.String");
-		table.put("isAdult","java.lang.Boolean");
-		table.put("nationality","java.lang.String");
-		table.put("birthdate","java.util.Date");
-		table.put("gpa","java.lang.Double");
+//		table.put("name","java.lang.String");
+//		table.put("isAdult","java.lang.Boolean");
+//		table.put("nationality","java.lang.String");
+//		table.put("birthdate","java.util.Date");
+//		table.put("gpa","java.lang.Double");
 		DBApp d = new DBApp();
 		d.init();
 		try {
-			d.createTable("Test2","name", table);
+			d.createTable("Test3","ID", table);
 		} catch (DBAppException e) {
-			System.out.println(e.getMessage());		}
+			System.out.println(e.getMessage());
+		}
 
 		Hashtable<String, Object> tuple = new Hashtable<String, Object>();
-		tuple.put("ID",47);
-		tuple.put("name","Nadine");
-		tuple.put("isAdult",false);
-		tuple.put("nationality","Egypt");
-		tuple.put("birthdate",new Date(434567650));
-		tuple.put("gpa",3.0);
-	
-		/*try {
-			d.insertIntoTable("Test2", tuple);
+		tuple.put("ID",-1);
+//		tuple.put("name","Nadine");
+//		tuple.put("isAdult",false);
+//		tuple.put("nationality","Egypt");
+//		tuple.put("birthdate",new Date(434567650));
+//		tuple.put("gpa",3.0);
+
+		try {
+			d.insertIntoTable("Test3", tuple);
 
 		} catch (DBAppException e) {
-			// TODO Auto-generated catch block
+//			 TODO Auto-generated catch block
 			System.out.println(e.getMessage());
-		}*/
+		}
 		
 		/*tuple = new Hashtable<>();
 		tuple.put("ID",0);
@@ -510,7 +508,7 @@ public class DBApp {
 	}
 	
 	public void createBTreeIndex(String strTableName, String strColName) throws DBAppException{
-		//name of index
+		//name of index (DELETE IT)
 		String name=strTableName+strColName;
 		//System.out.println("Name: " + name);
 		//load metadata of table
@@ -558,27 +556,27 @@ public class DBApp {
 				BPlusTree tree=null;
 				if(type.equals("java.lang.Integer"))
 				{
-					tree= new BPlusTree<Integer>(name, 15);
+					tree= new BPlusTree<Integer>(strTableName, strColName);
 					//System.out.println("tree of type integer created" );
 				}
 				else if(type.equals("java.lang.String"))
 				{
-					tree= new BPlusTree<String>(name, 15);
+					tree= new BPlusTree<String>(strTableName, strColName);
 					//System.out.println("tree of type string created" );
 				}
 				else if(type.equals("java.lang.Double"))
 				{
-					tree= new BPlusTree<Double>(name, 15);
+					tree= new BPlusTree<Double>(strTableName, strColName);
 					//System.out.println("tree of type double created" );
 				}
 				else if(type.equals("java.lang.Boolean"))
 				{
-					tree= new BPlusTree<Boolean>(name, 15);
+					tree= new BPlusTree<Boolean>(strTableName, strColName);
 					//System.out.println("tree of type boolean created" );
 				}
 				else if(type.equals("java.util.Date"))
 				{
-					tree= new BPlusTree<java.util.Date>(name, 15);
+					tree= new BPlusTree<java.util.Date>(strTableName, strColName);
 					//System.out.println("tree of type date created" );
 				}
 				//System.out.println("Deserializing table");
