@@ -5,3 +5,4 @@ Test2,birthdate,java.util.Date,False,True
 Test2,isAdult,java.lang.Boolean,False,False
 Test2,name,java.lang.String,True,False
 Test2,nationality,java.lang.String,False,False
+Test2,area,java.awt.Polygon,False,False
