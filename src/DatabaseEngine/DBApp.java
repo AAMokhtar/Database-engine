@@ -5,6 +5,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import DatabaseEngine.BPlus.BPlusTree;
+import DatabaseEngine.BPlus.BPointer;
 import javafx.util.Pair;
 
 import java.text.ParseException;

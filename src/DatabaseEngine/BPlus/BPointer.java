@@ -1,9 +1,11 @@
-package DatabaseEngine;
+package DatabaseEngine.BPlus;
+
+import DatabaseEngine.Pointer;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-public class BPointer implements Comparable<BPointer>, Serializable,Pointer {
+public class BPointer implements Comparable<BPointer>, Serializable, Pointer {
     private int page; //puge num
     private int offset; //index in page
 
