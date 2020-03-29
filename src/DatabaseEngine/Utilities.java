@@ -15,7 +15,6 @@ import java.io.PrintWriter;
 import java.awt.Polygon;
 import java.io.*;
 
-import java.lang.reflect.Array;
 import java.util.Date;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -801,7 +800,7 @@ public class Utilities {
 				}
 
 				if (info[4].charAt(0) == 'T') {
-					ret.get(info[0]).put(info[1], deserializeBPT(info[0]+info[1]));
+					ret.get(info[0]).put(info[1], deserializeBPT(info[0]+"_"+info[1]));
 				}
 
 			}
@@ -1001,127 +1000,43 @@ public class Utilities {
 		return null;
 	}
 
-	public static void serializeBOverflow(overflowPage p) {
 
-		try {
 
-			String path =  "data//BPlus//overflow_Pages//" + "overflow_" + p.getName() + p.getID() + ".class";
-			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
-
-			File file = new File(path);
-			FileOutputStream fileAccess;
-			fileAccess = new FileOutputStream(file);
-			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
-			objectAccess.writeObject(p);
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Failed to serialize page.");
-		}
-	}
-
-	public static overflowPage deserializeBOverflow(String name) {
-		if (name == null) return null;
-		try {
-
-			String path = "data//BPlus//overflow_Pages//" + "overflow_" + name + ".class";
-			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
-
-			FileInputStream readFromFile = new FileInputStream(path);
-			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
-			overflowPage k = (overflowPage) readObject.readObject();
-			readObject.close();
-			readFromFile.close();
-			return k;
-
-		}
-
-		catch(Exception E) {
-			System.out.println("Failed to deserialize page. Return value: NULL");
-		}
-		return null;
-	}
-
-	public static <T> void  overflowInsert(String name, T value, pointer recordPointer){
-
-		//get the maximum number of tuples per page:
-		int N = 0;
-		try {
-			N = Utilities.readPageSize("config//DBApp.properties");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			System.out.println("insertion failed");
-			e.printStackTrace();
-			return;
-		}
-
-		//the first overflow page does not exist
-		String path = "data//BPlus//overflow_Pages//" + "overflow_" + name + value + "_0.class";
-		path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
-		if (!new File(path).isFile()){
-			overflowPage firstPage = new overflowPage(name + value + "_");
-			firstPage.insert(recordPointer);
-			Utilities.serializeBOverflow(firstPage);
-		}
-		//the first overflow page exists
-		else {
-			overflowPage curPage = Utilities.deserializeBOverflow(name + value + "_0"); //get the first page
-
-			while (curPage.getNext() != null){ //a suitable page or the last page
-				if (curPage.size() < N){
-					break;
-				}
-				else {
-					curPage = Utilities.deserializeBOverflow(curPage.getNext());
-				}
-			}
-
-			if (curPage.size() < N) { //a vacant space exists
-				curPage.insert(recordPointer);
-				Utilities.serializeBOverflow(curPage);
-			}
-
-			else { //create new page
-				overflowPage lastPage = new overflowPage(curPage);
-				lastPage.insert(recordPointer);
-				Utilities.serializeBOverflow(lastPage);
-			}
-		}
-	}
-
-	public static <T extends Comparable<T>> Pair<HashMap<Integer,HashMap<Integer,pointer>>, ArrayList<overflowPage>>
-	getAllPointers(BPlusTree<T> tree){
-		HashMap<Integer,HashMap<Integer,pointer>> ret1 = new HashMap<>();
+	public static <T extends Comparable<T>> Pair<HashMap<Integer,HashMap<Integer, BPointer>>, ArrayList<overflowPage>>
+	getAllBPointers(BPlusTree<T> tree){
+		HashMap<Integer,HashMap<Integer, BPointer>> ret1 = new HashMap<>();
 		ArrayList<overflowPage> ret2 = new ArrayList<>();
 
 		BPTExternal<T> cur = Utilities.findLeaf(tree.getRoot(),null,true); //get the leftmost leaf
 
 		while (cur != null){ //for all leaves
-			ArrayList<pointer> pointers = cur.getPointers();
+			ArrayList<BPointer> pointers = cur.getPointers();
 			ArrayList<T> values = cur.getValues();
 
-			for(pointer p: pointers){
+			for(BPointer p: pointers){
 				if (!ret1.containsKey(p.getPage())) ret1.put(p.getPage(),new HashMap<>());
 				ret1.get(p.getPage()).put(p.getOffset(),p);
 			}
 
 
 			for(T v: values) { //get the overflow pages of every value
-				String path = "data//BPlus//overflow_Pages//" + "overflow_" + tree.getName() + v + "_0.class";
+				String path = "data//overflow_Pages//" + "overflow_" + tree.getName() +"_"+ v + "_0.class";
 				path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
 
 				if (new File(path).isFile()) { //has overflow pages
-					overflowPage curPage = Utilities.deserializeBOverflow(tree.getName() + v + "_0"); //get the first page
+					overflowPage curPage = Utilities.deserializeOverflow(tree.getName() +"_"+ v + "_0"); //get the first page
 
 					while (curPage != null) { //loop over all overflow pages
 
-						Queue<pointer> pointersQ = curPage.getPointers(); //get all pointers
+						Queue<Pointer> pointersQ = curPage.getPointers(); //get all pointers
 
 						while (!pointersQ.isEmpty()){ //for each pointer in page
-							if (!ret1.containsKey(pointersQ.peek().getPage())) ret1.put(pointersQ.peek().getPage(),new HashMap<>());
-							ret1.get(pointersQ.peek().getPage()).put(pointersQ.peek().getOffset(),pointersQ.poll());
+							BPointer curPointer = (BPointer) pointersQ.poll();
+							if (!ret1.containsKey(curPointer.getPage())) ret1.put(curPointer.getPage(),new HashMap<>());
+							ret1.get(curPointer.getPage()).put(curPointer.getOffset(), curPointer);
 						}
 						ret2.add(curPage);
-						curPage = Utilities.deserializeBOverflow(curPage.getNext()); //next page
+						curPage = Utilities.deserializeOverflow(curPage.getNext()); //next page
 					}
 				}
 			}
@@ -1140,7 +1055,7 @@ public class Utilities {
 			cur = (BPTExternal<T>) Utilities.deserializeNode(cur.getNext());
 		}
 		//save all pverflow pages
-		for (overflowPage p : pages) Utilities.serializeBOverflow(p);
+		for (overflowPage p : pages) Utilities.serializeOverflow(p);
 	}
 	//--------------------------======================SELECT HELPERS=====================-------------------------------
 
@@ -1241,11 +1156,12 @@ public class Utilities {
 	}
 
 	//returns a set containing the query's results as pointers
-	public static BSet<pointer> indexedQuery(Class colType,index tree,SQLTerm cur){
-		BSet<pointer> queryResult = new BSet<>(); //output
+	public static BSet<BPointer> indexedQuery(Class colType, index tree, SQLTerm cur){
+		BSet<BPointer> queryResult = new BSet<>(); //output
 
 		if (colType.getName().equals("DatabaseEngine.myPolygon")){ //use R tree
 			//TODO: R tree query
+			//turn R pointers into BPointers
 		}
 
 		else { //use B+ trees
@@ -1277,8 +1193,8 @@ public class Utilities {
 		return queryResult;
 	}
 
-	public static BSet<pointer> recordQuery(SQLTerm cur, boolean key,Table cur_table,int colnum,Class colType) throws DBAppException {
-		BSet<pointer> queryResult = new BSet<>(); //initialize query result
+	public static BSet<BPointer> recordQuery(SQLTerm cur, boolean key, Table cur_table, int colnum, Class colType) throws DBAppException {
+		BSet<BPointer> queryResult = new BSet<>(); //initialize query result
 
 		//clustering key (binary search):
 		if (key){
@@ -1312,7 +1228,7 @@ public class Utilities {
 
 							//if the tuple satisfies the SQL term
 							if (Utilities.condition(tuple.get(colnum), cur._objValue, colType, cur._strOperator))
-								queryResult.add(new pointer(pageIndex[0],pageIndex[1])); //add it to the result
+								queryResult.add(new BPointer(pageIndex[0],pageIndex[1])); //add it to the result
 
 							else{
 								done = true;//for outer loop
@@ -1343,7 +1259,7 @@ public class Utilities {
 
 					//if the tuple satisfies the SQL term
 					if (Utilities.condition(tuple.get(colnum), cur._objValue, colType, cur._strOperator))
-						queryResult.add(new pointer(pageId, tupleNum)); //add it to the result
+						queryResult.add(new BPointer(pageId, tupleNum)); //add it to the result
 
 					tupleNum++; //increment index
 				}
@@ -1352,8 +1268,8 @@ public class Utilities {
 		return queryResult;
 	}
 
-	public static BSet<pointer> setOperation(BSet<pointer> resultPointers, BSet<pointer> queryResult, String operator) throws DBAppException {
-		BSet<pointer> ret; //output
+	public static BSet<BPointer> setOperation(BSet<BPointer> resultPointers, BSet<BPointer> queryResult, String operator) throws DBAppException {
+		BSet<BPointer> ret; //output
 
 		if (resultPointers == null) ret = queryResult; //first query
 
@@ -1369,7 +1285,7 @@ public class Utilities {
 		return ret;
 	}
 
-	public static Iterator getPointerRecords(BSet<pointer> resultPointers){
+	public static Iterator getPointerRecords(BSet<BPointer> resultPointers){
 		Vector<Vector> result = new Vector<>(); //final array of tuples
 		Page curPage = null;
 
@@ -1377,7 +1293,7 @@ public class Utilities {
 			Iterator pointers = resultPointers.iterator(); //get set iterator
 
 			while (pointers.hasNext()){ //for every pointer
-				pointer cur = (pointer) pointers.next();
+				BPointer cur = (BPointer) pointers.next();
 
 				if (curPage == null || curPage.getID() != cur.getPage()) //to avoid loading the page twice
 					curPage = Utilities.deserializePage(cur.getPage()); //get pointer's page
@@ -1448,7 +1364,7 @@ public class Utilities {
 		if (strarrOperators.length != arrSQLTerms.length - 1)
 			throw new DBAppException("the number of operators is incorrect!");
 
-		BSet<pointer> resultPointers = null; //final pointers of the select statement
+		BSet<BPointer> resultPointers = null; //final pointers of the select statement
 		int i = -1; //strarrOperator index
 
 		for(SQLTerm cur: arrSQLTerms){ //for each SQLTerm
@@ -1491,7 +1407,7 @@ public class Utilities {
 				throw new DBAppException("Could not find index!");
 
 			//------------------------------------Execution------------------------------------
-			BSet<pointer> queryResult; //results of the the current query
+			BSet<BPointer> queryResult; //results of the the current query
 
 			if (Indexed){ //binary search in tree
 				queryResult = Utilities.indexedQuery(colType,tree,cur);
@@ -1514,6 +1430,128 @@ public class Utilities {
 		} //repeat for all SQL terms
 
 		return resultPointers.iterator(); //return an iterator containing the records extracted from resultPointers
+	}
+
+	//---------------------------====================OVERFLOW PAGES=====================--------------------------------
+
+	public static void serializeOverflow(overflowPage p) {
+
+		try {
+
+			String path =  "data//overflow_Pages//" + "overflow_" + p.getName() +"_"+ p.getID() + ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+			File file = new File(path);
+			FileOutputStream fileAccess;
+			fileAccess = new FileOutputStream(file);
+			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
+			objectAccess.writeObject(p);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Failed to serialize page.");
+		}
+	}
+
+	public static overflowPage deserializeOverflow(String treename_value_id) {
+		if (treename_value_id == null) return null;
+		try {
+
+			String path = "data//overflow_Pages//" + "overflow_" + treename_value_id + ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+			FileInputStream readFromFile = new FileInputStream(path);
+			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
+			overflowPage k = (overflowPage) readObject.readObject();
+			readObject.close();
+			readFromFile.close();
+			return k;
+
+		}
+
+		catch(Exception E) {
+			System.out.println("Failed to deserialize page. Return value: NULL");
+		}
+		return null;
+	}
+
+	//insert a value at the end of the overflow pages
+	public static void overflowInsert(String treeName_value, Pointer recordPointer){
+
+		//get the maximum number of tuples per page:
+		int N = 0;
+		try {
+			N = Utilities.readPageSize("config//DBApp.properties");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("insertion failed");
+			e.printStackTrace();
+			return;
+		}
+
+		//the first overflow page does not exist
+		String path = "data//overflow_Pages//" + "overflow_" + treeName_value + "_0.class";
+		path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+		if (!new File(path).isFile()){
+			overflowPage firstPage = new overflowPage(treeName_value);
+			firstPage.insert(recordPointer);
+			Utilities.serializeOverflow(firstPage);
+		}
+
+		//the first overflow page exists
+		else {
+			overflowPage curPage = Utilities.deserializeOverflow(treeName_value + "_0"); //get the first page
+
+			while (curPage.getNext() != null){ //a suitable page or the last page
+				if (curPage.size() < N){
+					break;
+				}
+
+				curPage = Utilities.deserializeOverflow(curPage.getNext());
+			}
+
+			if (curPage.size() < N) { //a vacant space exists
+				curPage.insert(recordPointer);
+			}
+
+			else { //create new page
+				overflowPage lastPage = new overflowPage(curPage);
+				lastPage.insert(recordPointer);
+				Utilities.serializeOverflow(lastPage);
+			}
+			Utilities.serializeOverflow(curPage);
+		}
+	}
+
+	//remove all overflow pages for a value
+	public static void destroyAllOverflowPages(String treeName_value){
+
+		//first page path
+		String path = "data//overflow_Pages//" + "overflow_" + treeName_value + "_0.class";
+		path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+		File curFile = new File(path);
+
+		//first page exists
+		if (curFile.isFile()){
+
+			overflowPage curPage =  Utilities.deserializeOverflow(treeName_value + "_0");
+
+			while (true) {
+
+				//delete page
+				if (!curFile.delete())
+					System.out.println("Failed to delete file: " + treeName_value + "_0");
+
+				//last page
+				if (curPage.getNext() == null) break;
+
+				//get next page
+				path = "data//overflow_Pages//" + "overflow_" + curPage.getNext() + ".class";
+				curFile = new File(path);
+				curPage = Utilities.deserializeOverflow(curPage.getNext());
+			}
+		}
+
 	}
 
 //------------------------------========================MAIN========================------------------------------------

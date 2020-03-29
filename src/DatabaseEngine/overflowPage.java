@@ -1,18 +1,14 @@
-package DatabaseEngine.BPlus;
-
-import DatabaseEngine.Utilities;
-import DatabaseEngine.pointer;
+package DatabaseEngine;
 
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Vector;
 
 public class overflowPage implements Serializable {
-    private ArrayList<pointer> pointers;
-    private String name;
+    private ArrayList<Pointer> pointers;
+    private String name; //treename_value
     private String next;
     private int ID;
     private String prev;
@@ -22,8 +18,8 @@ public class overflowPage implements Serializable {
         ID = prev.getID() + 1;
         pointers = new ArrayList<>();
         next = null; //i know that it's already null, it looks nicer that way.
-        this.prev = prev.name + prev.getID();
-        prev.next = this.name + ID;
+        this.prev = prev.name +"_"+ prev.getID();
+        prev.next = this.name +"_"+ ID;
     }
 
     public overflowPage(String name){ //constructor for the first page
@@ -35,40 +31,40 @@ public class overflowPage implements Serializable {
         prev= null;
     }
 
-    public void insert(pointer p){
+    public void insert(Pointer p){
         pointers.add(p);
-    }
+    } //DO NOT USE THIS METHOD TO INSERT
 
-    public void deletePointer(pointer p){
+    public void deletePointer(Pointer p){ //deletes a pointer value
         pointers.remove(p);
     }
 
     public int size(){
         return pointers.size();
-    }
+    } //page size
 
 
 
-    public void destroy(){
-        File file = new File("data//BPlus//overflow_Pages//" + "overflow_" + name + ".class");
+    public void destroy(){ //deletes the page and fixes the pointers to the previous and next pages
+        File file = new File("data//overflow_Pages//" + "overflow_" + name + ".class");
 
-        if (prev == null){ //if we are deleting the first page
+        if (ID == 0){ //if we are deleting the first page
             if(next != null){ //make the next page the first
-                overflowPage nextPage = Utilities.deserializeBOverflow(next);
+                overflowPage nextPage = Utilities.deserializeOverflow(next);
                 nextPage.setPrev(null);
-                nextPage.setName(name + ID);
-                Utilities.serializeBOverflow(nextPage);
+                nextPage.setID(0);
+                Utilities.serializeOverflow(nextPage);
             }
         }
         else { //not the first page (remove myself and adjust pointers)
-            overflowPage prevPage = Utilities.deserializeBOverflow(prev);
+            overflowPage prevPage = Utilities.deserializeOverflow(prev);
             if (next != null){
-                overflowPage nextPage = Utilities.deserializeBOverflow(next);
+                overflowPage nextPage = Utilities.deserializeOverflow(next);
                 nextPage.prev = prev;
-                Utilities.serializeBOverflow(nextPage);
+                Utilities.serializeOverflow(nextPage);
             }
             prevPage.next = next;
-            Utilities.serializeBOverflow(prevPage);
+            Utilities.serializeOverflow(prevPage);
         }
 
         if(!file.delete())
@@ -76,13 +72,13 @@ public class overflowPage implements Serializable {
 
     }
 
-    public pointer poll() {
-        pointer ret = pointers.remove(0);
+    public Pointer poll() { //remove first element and return it
+        Pointer ret = pointers.remove(0);
         if (this.size() == 0) this.destroy();
         return ret;
     }
 
-    public void removeIndex(int index){
+    public void removeIndex(int index){ //remove an pointer from the page using its index in the array
         pointers.remove(index);
         if (this.size() == 0) this.destroy();
     }
@@ -115,8 +111,12 @@ public class overflowPage implements Serializable {
         return next;
     }
 
-    public Queue<pointer> getPointers() {
-        Queue<pointer> ret = new LinkedList<>();
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
+    public Queue<Pointer> getPointers() {
+        Queue<Pointer> ret = new LinkedList<>();
         ret.addAll(pointers);
         return ret;
     }

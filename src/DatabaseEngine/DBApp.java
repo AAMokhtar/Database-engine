@@ -28,7 +28,6 @@ public class DBApp {
 		Table t = new Table(strTableName, strClusteringKeyColumn, htblColNameType);
 		//now the programmer may initialize a page to insert into it.
 		//insert into it using Tuples object
-		Utilities.serializeTable(t);
 	}
 
 //	public static void main(String args[]) {
@@ -70,13 +69,13 @@ public class DBApp {
 //		}
 
 		Hashtable<String, Object> tuple = new Hashtable<String, Object>();
-		tuple.put("ID",20030);
-		tuple.put("name","Nadine");
-		tuple.put("isAdult",false);
-		tuple.put("nationality","Egypt");
-		tuple.put("birthdate",new Date(434567650));
-		tuple.put("gpa",3.0);
-
+		tuple.put("ID",7);
+//		tuple.put("name","Nadine");
+//		tuple.put("isAdult",false);
+//		tuple.put("nationality","Egypt");
+//		tuple.put("birthdate",new Date(434567650));
+//		tuple.put("gpa",3.0);
+//
 		try {
 			d.insertIntoTable("Test1", tuple);
 
@@ -150,9 +149,9 @@ public class DBApp {
 		}*/
 
 //		try {
-//			d.createBTreeIndex("Test1", "nationality");
+//			d.createBTreeIndex("Test1", "ID");
 //		} catch (DBAppException e) {
-//			// TODO Auto-generated catch block
+//			 TODO Auto-generated catch block
 //			System.out.println(e.getMessage());
 //		}
 		Table obj=Utilities.deserializeTable("Test1");
@@ -206,7 +205,7 @@ public class DBApp {
 				else
 				{
 					// since table is not empty, we must use the index
-					pointer firstPtr=null;
+					BPointer firstPtr=null;
 					if(clusteringKeyType.equals("java.awt.Polygon"))
 					{
 						//index is a R tree 
@@ -217,7 +216,7 @@ public class DBApp {
 						//index is a B+ tree
 						BPlusTree index= (BPlusTree) indices.get(strTableName).get(temp[1]);
 						BSet set=index.search((Comparable)htblColNameValue.get(clusteringKey), ">=");
-						firstPtr=(pointer)set.getMin();
+						firstPtr=(BPointer)set.getMin();
 
 					}
 					if(firstPtr==null)
@@ -290,23 +289,23 @@ public class DBApp {
 					if(temp[2].equals("java.lang.Integer"))
 					{
 						//System.out.println("Tree is of type integer");
-						tree.insert((Integer)htblColNameValue.get(temp[1]), new pointer(pageIndx, rowNumber), true);					}
+						tree.insert((Integer)htblColNameValue.get(temp[1]), new BPointer(pageIndx, rowNumber), true);					}
 					else if(temp[2].equals("java.lang.String"))
 					{
 						//System.out.println("Tree is of type string");
-						tree.insert((String)htblColNameValue.get(temp[1]), new pointer(pageIndx, rowNumber), true);					}
+						tree.insert((String)htblColNameValue.get(temp[1]), new BPointer(pageIndx, rowNumber), true);					}
 					else if(temp[2].equals("java.lang.Double"))
 					{
 						//System.out.println("Tree is of type double");
-						tree.insert((Double)htblColNameValue.get(temp[1]), new pointer(pageIndx, rowNumber), true);					}
+						tree.insert((Double)htblColNameValue.get(temp[1]), new BPointer(pageIndx, rowNumber), true);					}
 					else if(temp[2].equals("java.lang.Boolean"))
 					{
 						//System.out.println("Tree is of type boolean");
-						tree.insert((Boolean)htblColNameValue.get(temp[1]), new pointer(pageIndx, rowNumber), true);					}
+						tree.insert((Boolean)htblColNameValue.get(temp[1]), new BPointer(pageIndx, rowNumber), true);					}
 					else if(temp[2].equals("java.util.Date"))
 					{
 						//System.out.println("Tree is of type date");
-						tree.insert((Date)htblColNameValue.get(temp[1]), new pointer(pageIndx, rowNumber), true);					
+						tree.insert((Date)htblColNameValue.get(temp[1]), new BPointer(pageIndx, rowNumber), true);
 					}
 					//System.out.println("value: " + htblColNameValue.get(temp[1]) + " in page " + ans.get(0) + " in row " + ans.get(1));
 					Utilities.serializeBPT(tree);
@@ -439,7 +438,7 @@ public class DBApp {
 			if (strarrOperators.length != arrSQLTerms.length - 1)
 				throw new DBAppException("the number of operators is incorrect!");
 
-		BSet<pointer> resultPointers = null; //final pointers of the select statement
+		BSet<BPointer> resultPointers = null; //final pointers of the select statement
 		int i = -1; //strarrOperator index
 
 		for(SQLTerm cur: arrSQLTerms){ //for each SQLTerm
@@ -482,7 +481,7 @@ public class DBApp {
 					throw new DBAppException("Could not find index!");
 
 			//------------------------------------Execution------------------------------------
-				BSet<pointer> queryResult; //results of the the current query
+				BSet<BPointer> queryResult; //results of the the current query
 
 				if (Indexed){ //binary search in tree
 					queryResult = Utilities.indexedQuery(colType,tree,cur);
@@ -591,27 +590,27 @@ public class DBApp {
 						if(type.equals("java.lang.Integer"))
 						{
 							//System.out.println("Inserting an integer");
-							tree.insert((int)value, new pointer(t.getPages().get(i), j), false);
+							tree.insert((int)value, new BPointer(t.getPages().get(i), j), false);
 						}
 						else if(type.equals("java.lang.String"))
 						{
 							//System.out.println("Inserting a string");
-							tree.insert((String)value, new pointer(t.getPages().get(i), j), false);
+							tree.insert((String)value, new BPointer(t.getPages().get(i), j), false);
 						}
 						else if(type.equals("java.lang.Double"))
 						{
 							//System.out.println("Inserting a double");
-							tree.insert((Double)value, new pointer(t.getPages().get(i), j), false);
+							tree.insert((Double)value, new BPointer(t.getPages().get(i), j), false);
 						}
 						else if(type.equals("java.lang.Boolean"))
 						{
 							//System.out.println("Inserting a boolean");
-							tree.insert((Boolean)value, new pointer(t.getPages().get(i), j), false);
+							tree.insert((Boolean)value, new BPointer(t.getPages().get(i), j), false);
 						}
 						else if(type.equals("java.util.Date"))
 						{
 							//System.out.println("Inserting a date");
-							tree.insert((Date)value, new pointer(t.getPages().get(i), j), false);
+							tree.insert((Date)value, new BPointer(t.getPages().get(i), j), false);
 						}
 						//System.out.println("value : " + value + " in page " + t.getPages().get(i) + " and row " + j);
 					}

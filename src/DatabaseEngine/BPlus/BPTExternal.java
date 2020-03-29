@@ -1,16 +1,16 @@
 package DatabaseEngine.BPlus;
 
 import DatabaseEngine.Utilities;
-import DatabaseEngine.pointer;
+import DatabaseEngine.BPointer;
 
 import java.util.ArrayList;
 
 public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
 
-    private ArrayList<pointer> pointers; //pointers to records
+    private ArrayList<BPointer> pointers; //pointers to records
     private  String next; //next node in the linked list
 
-    BPTExternal(int N, String ID) {
+    public BPTExternal(int N, String ID) {
         super(N,ID);
         pointers = new ArrayList<>();
         this.next = null;
@@ -21,7 +21,7 @@ public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
         return this.next;
     }
 
-    public ArrayList<pointer> getPointers(){
+    public ArrayList<BPointer> getPointers(){
         return pointers;
     }
 
@@ -29,13 +29,13 @@ public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
         this.next = node;
     }
 
-    public void setPointers(ArrayList<pointer> pointers){
+    public void setPointers(ArrayList<BPointer> pointers){
         this.pointers = pointers;
     }
 
     //------------------------METHODS-------------------------------
 
-    public void insert(T value, pointer newPointer) { //insert a value
+    public void insert(T value, BPointer newPointer) { //insert a value
         incSize();
 
         int insertAt = Utilities.selectiveBinarySearch(getValues(), value, ">="); //binary search for the correct place
@@ -49,7 +49,7 @@ public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
     public BPTNode<T> split() {
         BPTExternal<T> newNode = new BPTExternal<>(getMaxPerNode(),""); //last node to the right
         ArrayList<T> newValues = new ArrayList<>(); //temp values
-        ArrayList<pointer> newPointers = new ArrayList<>(); //temp pointers
+        ArrayList<BPointer> newPointers = new ArrayList<>(); //temp pointers
 
         int splittingIndex = (getSize() - 1)/2; //split node in half
 
