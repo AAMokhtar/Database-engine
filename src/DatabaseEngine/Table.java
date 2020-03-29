@@ -75,7 +75,21 @@ public class Table implements Serializable{
 		return pagesGroup;
 	}
 
-
+	public Page getPrevPage(int index)
+	{
+		int indexPrevPage=-1;
+		for (int i = 0; i < pagesGroup.size(); i++) {
+			if(index==pagesGroup.get(i))
+			{
+				indexPrevPage=i-1;break;
+			}
+		}
+		if(indexPrevPage!=-1)
+		{
+			return Utilities.deserializePage(pagesGroup.get(indexPrevPage));
+		}
+		return null;
+	}
 
 	//verify column type correctness. USED FOR METADATA FILE.
 	//a helper getPossibleTypes is used.
@@ -110,6 +124,7 @@ public class Table implements Serializable{
 				int pageID=pagesGroup.get(middle);
 				Page currentPageInMemory=Utilities.deserializePage(pageID);
 				//determine if this is the correct page to insert tuple in
+				System.out.println("current page: " + currentPageInMemory);
 				boolean correctPage=currentPageInMemory.tupleToBePlacedInPage(indexClusteringKey, clusteringKeyValue, clusteringKeyType);
 				if(correctPage)
 				{
