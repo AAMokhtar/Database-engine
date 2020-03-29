@@ -12,7 +12,7 @@ import java.io.FileWriter;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
-
+import java.awt.Polygon;
 import java.io.*;
 
 import java.util.Date;
@@ -78,16 +78,16 @@ public class Utilities {
 		try {
 			String line = "";
 
-		BufferedReader read = new BufferedReader(new FileReader("data//metadata.csv"));
-		while ((line = read.readLine()) != null) {
-			String[] data = line.split(",");
-			if(data[0].equals(tblName) && data[1].equals(indxCol))
-			{
-				data[4]="True";
+			BufferedReader read = new BufferedReader(new FileReader("data//metadata.csv"));
+			while ((line = read.readLine()) != null) {
+				String[] data = line.split(",");
+				if(data[0].equals(tblName) && data[1].equals(indxCol))
+				{
+					data[4]="True";
+				}
+				metaData.add(data);
 			}
-			metaData.add(data);
-		}
-		read.close();	
+			read.close();
 		}
 
 		catch(Exception E) {
@@ -116,32 +116,32 @@ public class Utilities {
 			PrintWriter write = new PrintWriter(new FileWriter(met, true));
 			for (int i = 1; i < metaData.size(); i++) {
 				String[] temp= metaData.get(i);
-				 write.append(temp[0]);
-				   write.append(",");
+				write.append(temp[0]);
+				write.append(",");
 
-				   write.append(temp[1]);
-				   write.append(",");
+				write.append(temp[1]);
+				write.append(",");
 
-				   write.append(temp[2]);
-				   write.append(",");
+				write.append(temp[2]);
+				write.append(",");
 
-				   write.append(temp[3]);
-				   write.append(",");
-				   
-				   write.append(temp[4]);
-				   write.append("\n");
+				write.append(temp[3]);
+				write.append(",");
+
+				write.append(temp[4]);
+				write.append("\n");
 			}
 
-		   write.flush();
-		   write.close();
-	   }
+			write.flush();
+			write.close();
+		}
 
-	   catch(Exception E) {
-		   System.out.println("Failed to update metadata.csv!");
-		   E.printStackTrace();
-	   }
+		catch(Exception E) {
+			System.out.println("Failed to update metadata.csv!");
+			E.printStackTrace();
+		}
 	}
-	 
+
 	//used everytime a table is created to define its structure.
 	public static void writeHeaderIntoMetaData(Hashtable<String, String> colNameType, String tableName, String keyAndIndex) {
 		Set<String> colName = colNameType.keySet();
@@ -149,35 +149,35 @@ public class Utilities {
 		try {
 			//FileWriter write = new FileWriter("metadata.csv");
 			PrintWriter write = new PrintWriter(new FileWriter(met, true));
-		   for (String n : colName) {
-			   write.append(tableName);
-			   write.append(",");
+			for (String n : colName) {
+				write.append(tableName);
+				write.append(",");
 
-			   write.append(n);
-			   write.append(",");
+				write.append(n);
+				write.append(",");
 
-			   write.append(colNameType.get(n));
-			   write.append(",");
+				write.append(colNameType.get(n));
+				write.append(",");
 
-			   if(n==keyAndIndex)
-				   write.append("True");
+				if(n==keyAndIndex)
+					write.append("True");
 
-			   else
-				   write.append("False");
+				else
+					write.append("False");
 
-			   write.append(",");
-			   write.append("False");
-			   write.append("\n");
-		   }
+				write.append(",");
+				write.append("False");
+				write.append("\n");
+			}
 
-		   write.flush();
-		   write.close();
-	   }
+			write.flush();
+			write.close();
+		}
 
-	   catch(Exception E) {
-		   System.out.println("Failed to update metadata.csv!");
-		   E.printStackTrace();
-	   }
+		catch(Exception E) {
+			System.out.println("Failed to update metadata.csv!");
+			E.printStackTrace();
+		}
 
 	}
 	//initialize properties
@@ -187,6 +187,7 @@ public class Utilities {
 		Properties p=new Properties();
 		p.setProperty("MaximumRowsCountinPage","200");
 		p.setProperty("NodeSize","15");
+		p.setProperty("nextNodeId","1");
 
 		try {
 			p.store(new FileWriter("config//DBApp.properties"),"Database engine properties");
@@ -224,14 +225,14 @@ public class Utilities {
 			String line = "";
 			ArrayList<String[]> metaDataForSpecificTable= new ArrayList<String[]>();
 
-		BufferedReader read = new BufferedReader(new FileReader("data//metadata.csv"));
-		while ((line = read.readLine()) != null) {
-			String[] data = line.split(",");
-			if(data[0].equals(strTableName))
-			{
-				metaDataForSpecificTable.add(data);
+			BufferedReader read = new BufferedReader(new FileReader("data//metadata.csv"));
+			while ((line = read.readLine()) != null) {
+				String[] data = line.split(",");
+				if(data[0].equals(strTableName))
+				{
+					metaDataForSpecificTable.add(data);
+				}
 			}
-		}
 
 
 			read.close();
@@ -288,7 +289,7 @@ public class Utilities {
 				tableMetaData+=(Arrays.toString(data)+"\n");
 				//WARNING: Arrays.toString() returns data in this form : [...]
 
-		    }
+			}
 
 
 			read.close();
@@ -315,6 +316,55 @@ public class Utilities {
 			System.out.println("Error reading properties");
 		}
 		return 0;
+	}
+
+	//read the maximum node size
+	public static int readNodeSize(String path) {
+		try{
+			FileReader reader =new FileReader(path);
+			Properties p = new Properties();
+			p.load(reader);
+			String theNum = p.getProperty("NodeSize");
+			return Integer.parseInt(theNum);}
+
+		catch(IOException E){
+			E.printStackTrace();
+			System.out.println("Error reading properties");
+		}
+		return 0;
+	}
+
+	//read the ID of the next page
+	public static int readNextId(String path) {
+		try{
+			FileReader reader =new FileReader(path);
+			Properties p = new Properties();
+			p.load(reader);
+			String theNum = p.getProperty("nextNodeId");
+			return Integer.parseInt(theNum);}
+
+		catch(IOException E){
+			E.printStackTrace();
+			System.out.println("Error reading properties");
+		}
+		return 0;
+	}
+
+	public static void incrementNextId(String path) {
+		try{
+			FileReader reader =new FileReader(path);
+			Properties p = new Properties();
+			p.load(reader);
+
+			int ID = Integer.parseInt(p.getProperty("nextNodeId")) + 1;
+			p.setProperty("nextNodeId",ID+"");
+			p.store(new FileWriter("config//DBApp.properties"),"Database engine properties");
+		}
+
+		catch(IOException E){
+			E.printStackTrace();
+			System.out.println("Error reading properties");
+		}
 	}
 
 
@@ -364,34 +414,42 @@ public class Utilities {
 
 
 	public static void serializePage(Page P) {
-		  //store into file (serialize)
+		//store into file (serialize)
 
-				try {
-					File file = new File("data//" + "page_" + P.getID() + ".class"); //TODO: fix up path (first item) once directory is set
-					FileOutputStream fileAccess;
-					fileAccess = new FileOutputStream(file);
-					ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
-					objectAccess.writeObject(P);
-				} catch (Exception e) {
-					e.printStackTrace();
-					System.out.println("Failed to serialize page.");
-				}
+		try {
+
+			String path = "data//" + "page_" + P.getID() + ".class" ;
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+			File file = new File(path); //TODO: fix up path (first item) once directory is set
+			FileOutputStream fileAccess;
+			fileAccess = new FileOutputStream(file);
+			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
+			objectAccess.writeObject(P);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Failed to serialize page.");
+		}
 	}
 
 
 	//serialize Table
 	public static void serializeTable(Table T) {
-		  //store into file (serialize)
-				try {
-					File file = new File("data//" + "table_" + T.getName() + ".class"); //TODO: fix up path (first item) once directory is set
-					FileOutputStream fileAccess;
-					fileAccess = new FileOutputStream(file);
-					ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
-					objectAccess.writeObject(T);
-				} catch (Exception e) {
-					e.printStackTrace();
-					System.out.println("Failed to serialize table.");
-				}
+		//store into file (serialize)
+		try {
+
+			String path =  "data//" + "table_" + T.getName() + ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+			File file = new File(path); //TODO: fix up path (first item) once directory is set
+			FileOutputStream fileAccess;
+			fileAccess = new FileOutputStream(file);
+			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
+			objectAccess.writeObject(T);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Failed to serialize table.");
+		}
 	}
 
 
@@ -399,40 +457,48 @@ public class Utilities {
 	//deserialize page: we pass the id of the page (obtained from the table) and we receive the page object.
 	public static Page deserializePage(int pageID) {
 		//read from file (deserialize)
-		       try {
-				FileInputStream readFromFile = new FileInputStream("data//" + "page_" + pageID + ".class");
-				ObjectInputStream readObject = new ObjectInputStream(readFromFile);
-				Page k = (Page)readObject.readObject();
-				readObject.close();
-				readFromFile.close();
-				return k;
+		try {
 
-		       }
+			String path =  "data//" + "page_" + pageID + ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
 
-		       catch(Exception E) {
-		    	   System.out.println("Failed to deserialize page. Return value: NULL");
-		       }
-		       return null;
+			FileInputStream readFromFile = new FileInputStream(path);
+			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
+			Page k = (Page)readObject.readObject();
+			readObject.close();
+			readFromFile.close();
+			return k;
+
+		}
+
+		catch(Exception E) {
+			System.out.println("Failed to deserialize page. Return value: NULL");
+		}
+		return null;
 	}
 
 
 	public static Table deserializeTable(String tableName) {
 		//read from file (deserialize)
-		       try {
-				FileInputStream readFromFile = new FileInputStream("data//" + "table_" + tableName + ".class");
-				ObjectInputStream readObject = new ObjectInputStream(readFromFile);
-				Table k = (Table)readObject.readObject();
-				readObject.close();
-				readFromFile.close();
+		try {
 
-				return k;
+			String path =  "data//" + "table_" + tableName + ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
 
-		       }
+			FileInputStream readFromFile = new FileInputStream(path);
+			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
+			Table k = (Table)readObject.readObject();
+			readObject.close();
+			readFromFile.close();
 
-		       catch(Exception E) {
-		    	   System.out.println("Failed to deserialize page. Return value: NULL");
-		       }
-		       return null;
+			return k;
+
+		}
+
+		catch(Exception E) {
+			System.out.println("Failed to deserialize page. Return value: NULL");
+		}
+		return null;
 	}
 
 
@@ -441,217 +507,217 @@ public class Utilities {
 
 
 	//reads a table name and column name and returns its index
-  	public static int returnIndex(String table, String column) throws DBAppException
-  	{
-  		try {
-  			BufferedReader br = new BufferedReader(new FileReader("data//metadata.csv"));
-  			String line = br.readLine();
-  			if(line==null)
-  			{
-  				//System.out.println("Metadata is empty.");
-  				br.close();
-  				//return -1;
-  				throw new DBAppException("Metadata is empty.");
-  			}
+	public static int returnIndex(String table, String column) throws DBAppException
+	{
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("data//metadata.csv"));
+			String line = br.readLine();
+			if(line==null)
+			{
+				//System.out.println("Metadata is empty.");
+				br.close();
+				//return -1;
+				throw new DBAppException("Metadata is empty.");
+			}
 
-  			line = br.readLine();
-  			String[] ar = new String[5]; //metadata row should only contain 5 comma delimited values
+			line = br.readLine();
+			String[] ar = new String[5]; //metadata row should only contain 5 comma delimited values
 
-  			boolean tableFound = false; //flag if the table is found in metadata
-  			boolean colFound = false; //flag if column is found
-  			boolean finito = false; //signifies that all table entries were read
-  			int index = -1;
+			boolean tableFound = false; //flag if the table is found in metadata
+			boolean colFound = false; //flag if column is found
+			boolean finito = false; //signifies that all table entries were read
+			int index = -1;
 
-  			/*
-  			 * if the buffered reader reached the end of file
-  			 * or column was found
-  			 * or if we reached the end of the consecutive table entries
-  			 * stop executing
-  			*/
-  			while(line != null && !colFound && !finito)
-  			{
-  				ar = line.split(",");
+			/*
+			 * if the buffered reader reached the end of file
+			 * or column was found
+			 * or if we reached the end of the consecutive table entries
+			 * stop executing
+			 */
+			while(line != null && !colFound && !finito)
+			{
+				ar = line.split(",");
 
-  				if(ar[0].equals(table))
-  				{
-  					if(!tableFound) tableFound = true; //flags that the table was found
-  					if(ar[1].equals(column)) colFound = true; //flags that the column was found
-  					index++;
+				if(ar[0].equals(table))
+				{
+					if(!tableFound) tableFound = true; //flags that the table was found
+					if(ar[1].equals(column)) colFound = true; //flags that the column was found
+					index++;
 
-  				}
-  				//if another table name showed up and we already found all the entries of the table, stop executing
-  				//this assumes the table entries follow each other in the metadata
-  				else if(tableFound) finito = true;
+				}
+				//if another table name showed up and we already found all the entries of the table, stop executing
+				//this assumes the table entries follow each other in the metadata
+				else if(tableFound) finito = true;
 
-  				line = br.readLine();
-  			}
+				line = br.readLine();
+			}
 
-  			br.close();
+			br.close();
 
-  			//if table was not found :(
-  			if(!tableFound)
-  			{
-  				//System.out.println("Table name not in metadata");
-  				//return -1;
-  				throw new DBAppException("Table name not in metadata");
-  			}
-  			//if column was not found in table's metadata
-  			else if(!colFound)
-  			{
-  				//System.out.println("Column name not found in table metadata entries");
-  				//return -1;
-  				throw new DBAppException("Column name not found in table metadata entries");
-  			}
-  			else return index;
-  		} catch (IOException e) {
-  			e.printStackTrace();
-  			return -1;
-  		}
+			//if table was not found :(
+			if(!tableFound)
+			{
+				//System.out.println("Table name not in metadata");
+				//return -1;
+				throw new DBAppException("Table name not in metadata");
+			}
+			//if column was not found in table's metadata
+			else if(!colFound)
+			{
+				//System.out.println("Column name not found in table metadata entries");
+				//return -1;
+				throw new DBAppException("Column name not found in table metadata entries");
+			}
+			else return index;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return -1;
+		}
 
-  	}
+	}
 
-  	//reads a column name and returns an index
+	//reads a column name and returns an index
 
-  	//read metadata for a specific table to see if the table exists, checks if the columns exist and if the data type matches
-  	//TODO: should table entries follow each other in metadata?
-  	//if not no need for finito
+	//read metadata for a specific table to see if the table exists, checks if the columns exist and if the data type matches
+	//TODO: should table entries follow each other in metadata?
+	//if not no need for finito
 
-  	public static boolean updateChecker(String tableName, Hashtable<String,Object> value) throws DBAppException
-  	{
-  		try {
-  			BufferedReader br = new BufferedReader(new FileReader("data//metadata.csv"));
-  			String line = br.readLine(); //should contain the first line that contains how the csv file is separated
-  			if(line == null)
-  			{
-  				//System.out.println("Metadata is empty!");
-  				br.close();
-  				//return false;
-  				throw new DBAppException("Metadata is empty!");
-  			}
+	public static boolean updateChecker(String tableName, Hashtable<String,Object> value) throws DBAppException
+	{
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("data//metadata.csv"));
+			String line = br.readLine(); //should contain the first line that contains how the csv file is separated
+			if(line == null)
+			{
+				//System.out.println("Metadata is empty!");
+				br.close();
+				//return false;
+				throw new DBAppException("Metadata is empty!");
+			}
 
-  			line = br.readLine();
-  			String[] ar = new String[5]; //metadata row should only contain 5 comma delimited values
+			line = br.readLine();
+			String[] ar = new String[5]; //metadata row should only contain 5 comma delimited values
 
-  			boolean found = false; //flag if the table is found in metadata
-  			boolean finito = false; //flag to see if all table entries are read
+			boolean found = false; //flag if the table is found in metadata
+			boolean finito = false; //flag to see if all table entries are read
 
-  			//hashtable to store column names and their supported types
-  			Hashtable<String,String> col = new Hashtable<String,String>();
+			//hashtable to store column names and their supported types
+			Hashtable<String,String> col = new Hashtable<String,String>();
 
-  			while(line != null && !finito)
-  			{
-  				ar = line.split(",");
+			while(line != null && !finito)
+			{
+				ar = line.split(",");
 
-  				if(ar[0].equals(tableName))
-  				{
-  					if(!found) found = true;
-  					col.put(ar[1], ar[2]); //puts column name and its type
+				if(ar[0].equals(tableName))
+				{
+					if(!found) found = true;
+					col.put(ar[1], ar[2]); //puts column name and its type
 
-  				}
-  				//if another table name showed up and we already found all the entries of the table, stop executing
-  				//this assumes the table entries follow each other in the metadata
-  				else if(found) finito = true;
+				}
+				//if another table name showed up and we already found all the entries of the table, stop executing
+				//this assumes the table entries follow each other in the metadata
+				else if(found) finito = true;
 
-  				line = br.readLine();
-  			}
+				line = br.readLine();
+			}
 
-  			br.close();
+			br.close();
 
-  			//if table was not found :(
-  			if(!found)
-  			{
-  				//System.out.println("Table name not in metadata");
-  				//return false;
-  				throw new DBAppException("Table name not in metadata");
-  			}
+			//if table was not found :(
+			if(!found)
+			{
+				//System.out.println("Table name not in metadata");
+				//return false;
+				throw new DBAppException("Table name not in metadata");
+			}
 
-  			//check if all columns in input hashtable do exist
-  			//if they exist check the data type
-  			Set<String> colNames = value.keySet();
-  			for(String colName: colNames)
-  			{
-  				//if metadata contains column name of input HT
-  				if(col.containsKey(colName))
-  				{
-  					//if input data is not an instance of the class associated with the column
-  					//TODO: remove or just throw error?
-  					if(!Class.forName(col.get(colName)).isInstance(value.get(colName)))
-  					{
-  						//System.out.println("Value inputted for column " + colName +
-  								           //" does not correspond with " + col.get(colName));
-  						//return false;
-  						throw new DBAppException("Value inputted for column " + colName + " does not correspond with " + col.get(colName));
-  					}
+			//check if all columns in input hashtable do exist
+			//if they exist check the data type
+			Set<String> colNames = value.keySet();
+			for(String colName: colNames)
+			{
+				//if metadata contains column name of input HT
+				if(col.containsKey(colName))
+				{
+					//if input data is not an instance of the class associated with the column
+					//TODO: remove or just throw error?
+					if(!Class.forName(col.get(colName)).isInstance(value.get(colName)))
+					{
+						//System.out.println("Value inputted for column " + colName +
+						//" does not correspond with " + col.get(colName));
+						//return false;
+						throw new DBAppException("Value inputted for column " + colName + " does not correspond with " + col.get(colName));
+					}
 
-  				}
-  				//if column in input HT does not exist
-  				//TODO:remove or just throw error?
-  				else
-  				{
-  					//System.out.println("Column " + colName + " does not exist in table metadata");
-  					//return false;
-  					throw new DBAppException("Column " + colName + " does not exist in table metadata");
-  				}
-  			}
+				}
+				//if column in input HT does not exist
+				//TODO:remove or just throw error?
+				else
+				{
+					//System.out.println("Column " + colName + " does not exist in table metadata");
+					//return false;
+					throw new DBAppException("Column " + colName + " does not exist in table metadata");
+				}
+			}
 
-  			//else if table exists, columns of input HT exist in the metadata
-  			//and the input data matches with the column data type
-  			//kda kda meya meya awi
-  			return true;
+			//else if table exists, columns of input HT exist in the metadata
+			//and the input data matches with the column data type
+			//kda kda meya meya awi
+			return true;
 
-  		} catch (IOException e) 
-  		{
-  			e.printStackTrace();
-  			return false;
-  		}
-  		catch (ClassNotFoundException e)
-  		{
-  			e.printStackTrace();
-  			return false;
-  		}
-  	}
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+		catch (ClassNotFoundException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
 
 
-  	//returns the column name and type of the clustering key, respectively
-  	//note: I don't check if the metadata is empty or table name is nonexistent as these were checked by updateChecker()
-  	//and I only call this method if updateChecker() gave an okay
-  	public static Pair<String,String> returnClustering(String tableName) throws DBAppException
-  	{
-  		try {
-  			BufferedReader br = new BufferedReader(new FileReader("data//metadata.csv"));
-  			br.readLine(); //should read the first line containing how the csv file is ordered
-  			String line = br.readLine();
-  			String[] ar = new String[5]; //csv file contains only 5 comma delimited values
-  			
-  			boolean tableFound = false;
-  			while(line != null)
-  			{
-  				ar = line.split(",");
-  				if(ar[0].equals(tableName))
-  				{
-  					tableFound = true;
+	//returns the column name and type of the clustering key, respectively
+	//note: I don't check if the metadata is empty or table name is nonexistent as these were checked by updateChecker()
+	//and I only call this method if updateChecker() gave an okay
+	public static Pair<String,String> returnClustering(String tableName) throws DBAppException
+	{
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("data//metadata.csv"));
+			br.readLine(); //should read the first line containing how the csv file is ordered
+			String line = br.readLine();
+			String[] ar = new String[5]; //csv file contains only 5 comma delimited values
+
+			boolean tableFound = false;
+			while(line != null)
+			{
+				ar = line.split(",");
+				if(ar[0].equals(tableName))
+				{
+					tableFound = true;
 					if (Boolean.parseBoolean(ar[3]))// found the record with the table name and true for clustering
 					{
 						return new Pair<String, String>(ar[1], ar[2]); // returns clustering column name and its
-																		// respective type
+						// respective type
 					}
-  				}
-  				line = br.readLine();
-  			}
-  			br.close();
-  			//if clustering column was not found
-  			//System.out.println("Clustering column not found");
-  			//return new Pair<String,String>("","");
-  			if(!tableFound)
-  				throw new DBAppException("Table name " + tableName + " was not found in metadata");
-  			
-  			throw new DBAppException("Clustering column not found");
-  		} catch (IOException e) {
-  			e.printStackTrace();
-  			return new Pair<String,String>("",""); //return empty column name and type
-  		}
+				}
+				line = br.readLine();
+			}
+			br.close();
+			//if clustering column was not found
+			//System.out.println("Clustering column not found");
+			//return new Pair<String,String>("","");
+			if(!tableFound)
+				throw new DBAppException("Table name " + tableName + " was not found in metadata");
 
-  	}
+			throw new DBAppException("Clustering column not found");
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new Pair<String,String>("",""); //return empty column name and type
+		}
+
+	}
 
 
 	//binary searches through the vector of records to find the clustering key value
@@ -662,19 +728,33 @@ public class Utilities {
 		if(low<=high)
 		{
 			int mid = (high-low)/2 + low;
+			// mid = (high - low)/2  + (2low)/2
+			// mid = (high - low + 2low)/2
+			// mid = (high + low) / 2
+			//MUCH EASIER!!!
+
 			Comparable clusterValue = (Comparable)records.get(mid).get(clusterIdx);
 			if(clusterValue.compareTo(clusterKey)==0)
 			{
 				//update this record
 
 				//for each key value pair in the HT which contains the values to be updated
-				
+
 				Set<String> keys = newVal.keySet();
-				
+
 				for(String key : keys)
 				{
 					int i = returnIndex(table, key);
-					records.get(mid).set(i, newVal.get(key)); //ignore the warning, updateChecker already checked the types in the HT matches with metadata
+					
+					//if what we are updating is a polygon, we create a new myPolygon for it to be added to the record
+					if(newVal.get(key) instanceof Polygon)
+					{
+						Polygon p = (Polygon)newVal.get(key);
+						myPolygon m = new myPolygon(p);
+						records.get(mid).set(i, m);
+					}
+					else
+						records.get(mid).set(i, newVal.get(key)); //ignore the warning, updateChecker already checked the types in the HT matches with metadata
 					//TODO: is the TouchDate the last index?
 					records.get(mid).set(records.get(mid).size()-1, LocalDateTime.now()); //updates the TouchDate to current time
 				}
@@ -720,7 +800,7 @@ public class Utilities {
 				}
 
 				if (info[4].charAt(0) == 'T') {
-				ret.get(info[0]).put(info[1], deserializeBPT(info[0]+info[1]));
+					ret.get(info[0]).put(info[1], deserializeBPT(info[0]+"_"+info[1]));
 				}
 
 			}
@@ -843,7 +923,11 @@ public class Utilities {
 	public static <T extends Comparable<T>> void serializeNode(BPTNode<T> N) { //copy pasted from Basant's (thx XD)
 
 		try {
-			File file = new File("data//BPlus//B+_Nodes//" + "Node_" + N.getID() + ".class");
+
+			String path =  "data//BPlus//B+_Nodes//" + "Node_" + N.getID() + ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+			File file = new File(path);
 			FileOutputStream fileAccess;
 			fileAccess = new FileOutputStream(file);
 			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
@@ -858,7 +942,11 @@ public class Utilities {
 		if (nodeID == null) return null;
 
 		try {
-			FileInputStream readFromFile = new FileInputStream("data//BPlus//B+_Nodes//" + "Node_" + nodeID + ".class");
+
+			String path =  "data//BPlus//B+_Nodes//" + "Node_" + nodeID + ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+			FileInputStream readFromFile = new FileInputStream(path);
 			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
 			BPTNode<T> k = (BPTNode<T>) readObject.readObject();
 			readObject.close();
@@ -875,7 +963,11 @@ public class Utilities {
 	public static <T extends Comparable<T>> void serializeBPT(BPlusTree<T> tree) {
 
 		try {
-			File file = new File("data//BPlus//Trees//" + "BPlusTree_" +tree.getName() + ".class");
+
+			String path =  "data//BPlus//Trees//" + "BPlusTree_" +tree.getName() + ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+			File file = new File(path);
 			FileOutputStream fileAccess;
 			fileAccess = new FileOutputStream(file);
 			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
@@ -889,6 +981,10 @@ public class Utilities {
 	public static <T extends Comparable<T>> BPlusTree<T> deserializeBPT(String name) {
 		//read from file (deserialize)
 		try {
+
+			String path =  "data//BPlus//Trees//" + "BPlusTree_" + name+ ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
 			FileInputStream readFromFile = new FileInputStream("data//BPlus//Trees//" + "BPlusTree_" + name+ ".class");
 			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
 			BPlusTree<T> k = (BPlusTree<T>) readObject.readObject();
@@ -904,83 +1000,63 @@ public class Utilities {
 		return null;
 	}
 
-	public static void serializeBOverflow(overflowPage p) {
 
-		try {
-			File file = new File("data//BPlus//overflow_Pages//" + "overflow_" + p.getName() + p.getID() + ".class");
-			FileOutputStream fileAccess;
-			fileAccess = new FileOutputStream(file);
-			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
-			objectAccess.writeObject(p);
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Failed to serialize page.");
-		}
-	}
 
-	public static overflowPage deserializeBOverflow(String name) {
-		if (name == null) return null;
-		try {
-			FileInputStream readFromFile = new FileInputStream("data//BPlus//overflow_Pages//" + "overflow_" + name + ".class");
-			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
-			overflowPage k = (overflowPage) readObject.readObject();
-			readObject.close();
-			readFromFile.close();
-			return k;
+	public static <T extends Comparable<T>> Pair<HashMap<Integer,HashMap<Integer, BPointer>>, ArrayList<overflowPage>>
+	getAllBPointers(BPlusTree<T> tree){
+		HashMap<Integer,HashMap<Integer, BPointer>> ret1 = new HashMap<>();
+		ArrayList<overflowPage> ret2 = new ArrayList<>();
 
-		}
+		BPTExternal<T> cur = Utilities.findLeaf(tree.getRoot(),null,true); //get the leftmost leaf
 
-		catch(Exception E) {
-			System.out.println("Failed to deserialize page. Return value: NULL");
-		}
-		return null;
-	}
+		while (cur != null){ //for all leaves
+			ArrayList<BPointer> pointers = cur.getPointers();
+			ArrayList<T> values = cur.getValues();
 
-	public static <T> void  overflowInsert(String name, T value, pointer recordPointer){
+			for(BPointer p: pointers){
+				if (!ret1.containsKey(p.getPage())) ret1.put(p.getPage(),new HashMap<>());
+				ret1.get(p.getPage()).put(p.getOffset(),p);
+			}
 
-		//get the maximum number of tuples per page:
-		int N = 0;
-		try {
-			N = Utilities.readPageSize("config//DBApp.properties");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			System.out.println("insertion failed");
-			e.printStackTrace();
-			return;
-		}
 
-		//the first overflow page does not exist
-		if (!new File("data//BPlus//overflow_Pages//" + "overflow_" + name + value + "_0.class").isFile()){
-			overflowPage firstPage = new overflowPage(name + value + "_");
-			firstPage.insert(recordPointer);
-			Utilities.serializeBOverflow(firstPage);
-		}
-		//the first overflow page exists
-		else {
-			overflowPage curPage = Utilities.deserializeBOverflow(name + value + "_0"); //get the first page
+			for(T v: values) { //get the overflow pages of every value
+				String path = "data//overflow_Pages//" + "overflow_" + tree.getName() +"_"+ v + "_0.class";
+				path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
 
-			while (curPage.getNext() != null){ //a suitable page or the last page
-				if (curPage.size() < N){
-					break;
-				}
-				else {
-					curPage = Utilities.deserializeBOverflow(curPage.getNext());
+				if (new File(path).isFile()) { //has overflow pages
+					overflowPage curPage = Utilities.deserializeOverflow(tree.getName() +"_"+ v + "_0"); //get the first page
+
+					while (curPage != null) { //loop over all overflow pages
+
+						Queue<Pointer> pointersQ = curPage.getPointers(); //get all pointers
+
+						while (!pointersQ.isEmpty()){ //for each pointer in page
+							BPointer curPointer = (BPointer) pointersQ.poll();
+							if (!ret1.containsKey(curPointer.getPage())) ret1.put(curPointer.getPage(),new HashMap<>());
+							ret1.get(curPointer.getPage()).put(curPointer.getOffset(), curPointer);
+						}
+						ret2.add(curPage);
+						curPage = Utilities.deserializeOverflow(curPage.getNext()); //next page
+					}
 				}
 			}
 
-			if (curPage.size() < N) { //a vacant space exists
-				curPage.insert(recordPointer);
-				Utilities.serializeBOverflow(curPage);
-			}
-
-			else { //create new page
-				overflowPage lastPage = new overflowPage(curPage);
-				lastPage.insert(recordPointer);
-				Utilities.serializeBOverflow(lastPage);
-			}
+			cur = (BPTExternal<T>) Utilities.deserializeNode(cur.getNext());
 		}
+		return new Pair<>(ret1,ret2);
 	}
 
+	public static <T extends Comparable<T>> void serializeAll(BPlusTree<T> tree, ArrayList<overflowPage> pages) {
+		BPTExternal<T> cur = Utilities.findLeaf(tree.getRoot(), null, true); //get the leftmost leaf
+
+		//save all the leaves
+		while (cur != null) {
+			Utilities.serializeNode(cur);
+			cur = (BPTExternal<T>) Utilities.deserializeNode(cur.getNext());
+		}
+		//save all pverflow pages
+		for (overflowPage p : pages) Utilities.serializeOverflow(p);
+	}
 	//--------------------------======================SELECT HELPERS=====================-------------------------------
 
 	//TODO: explain your code!!!!!! pls!!!!!!!!!!! aboos reglek eshra7
@@ -1036,7 +1112,7 @@ public class Utilities {
 	//searches for a page then the index of a value inside that page. takes a list of pages, a value,
 	//and the column number of your value. returns pageID, index respectively
 	public static int[] binarySearchValuePage(Vector<Integer> list, Comparable value, int column){
-		//smallest element greater than or equal element. returns the pageID and the index respectively
+		//smallest element greater than or equal value.
 
 		int lo = 0;
 		int hi = list.size() - 1;
@@ -1080,11 +1156,12 @@ public class Utilities {
 	}
 
 	//returns a set containing the query's results as pointers
-	public static BSet<pointer> indexedQuery(Class colType,index tree,SQLTerm cur){
-		BSet<pointer> queryResult = new BSet<>(); //output
+	public static BSet<BPointer> indexedQuery(Class colType, index tree, SQLTerm cur){
+		BSet<BPointer> queryResult = new BSet<>(); //output
 
 		if (colType.getName().equals("DatabaseEngine.myPolygon")){ //use R tree
 			//TODO: R tree query
+			//turn R pointers into BPointers
 		}
 
 		else { //use B+ trees
@@ -1116,8 +1193,8 @@ public class Utilities {
 		return queryResult;
 	}
 
-	public static BSet<pointer> recordQuery(SQLTerm cur, boolean key,Table cur_table,int colnum,Class colType) throws DBAppException {
-		BSet<pointer> queryResult = new BSet<>(); //initialize query result
+	public static BSet<BPointer> recordQuery(SQLTerm cur, boolean key, Table cur_table, int colnum, Class colType) throws DBAppException {
+		BSet<BPointer> queryResult = new BSet<>(); //initialize query result
 
 		//clustering key (binary search):
 		if (key){
@@ -1151,7 +1228,7 @@ public class Utilities {
 
 							//if the tuple satisfies the SQL term
 							if (Utilities.condition(tuple.get(colnum), cur._objValue, colType, cur._strOperator))
-								queryResult.add(new pointer(pageIndex[0],pageIndex[1])); //add it to the result
+								queryResult.add(new BPointer(pageIndex[0],pageIndex[1])); //add it to the result
 
 							else{
 								done = true;//for outer loop
@@ -1182,7 +1259,7 @@ public class Utilities {
 
 					//if the tuple satisfies the SQL term
 					if (Utilities.condition(tuple.get(colnum), cur._objValue, colType, cur._strOperator))
-						queryResult.add(new pointer(pageId, tupleNum)); //add it to the result
+						queryResult.add(new BPointer(pageId, tupleNum)); //add it to the result
 
 					tupleNum++; //increment index
 				}
@@ -1191,8 +1268,8 @@ public class Utilities {
 		return queryResult;
 	}
 
-	public static BSet<pointer> setOperation(BSet<pointer> resultPointers, BSet<pointer> queryResult, String operator) throws DBAppException {
-		BSet<pointer> ret; //output
+	public static BSet<BPointer> setOperation(BSet<BPointer> resultPointers, BSet<BPointer> queryResult, String operator) throws DBAppException {
+		BSet<BPointer> ret; //output
 
 		if (resultPointers == null) ret = queryResult; //first query
 
@@ -1208,7 +1285,7 @@ public class Utilities {
 		return ret;
 	}
 
-	public static Iterator getPointerRecords(BSet<pointer> resultPointers){
+	public static Iterator getPointerRecords(BSet<BPointer> resultPointers){
 		Vector<Vector> result = new Vector<>(); //final array of tuples
 		Page curPage = null;
 
@@ -1216,7 +1293,7 @@ public class Utilities {
 			Iterator pointers = resultPointers.iterator(); //get set iterator
 
 			while (pointers.hasNext()){ //for every pointer
-				pointer cur = (pointer) pointers.next();
+				BPointer cur = (BPointer) pointers.next();
 
 				if (curPage == null || curPage.getID() != cur.getPage()) //to avoid loading the page twice
 					curPage = Utilities.deserializePage(cur.getPage()); //get pointer's page
@@ -1279,22 +1356,219 @@ public class Utilities {
 		}
 		return new Pair<>(colInfo,colnum);
 	}
-	
+
+	//select that returns pointers instead of records
+	public Iterator selectPointers(Hashtable<String, Hashtable<String, index>> indices,
+								   SQLTerm[] arrSQLTerms, String[] strarrOperators) throws DBAppException{
+		//----=not enough operators=-----
+		if (strarrOperators.length != arrSQLTerms.length - 1)
+			throw new DBAppException("the number of operators is incorrect!");
+
+		BSet<BPointer> resultPointers = null; //final pointers of the select statement
+		int i = -1; //strarrOperator index
+
+		for(SQLTerm cur: arrSQLTerms){ //for each SQLTerm
+
+			//------------------------------------Integrity checks------------------------------------
+
+			//--current term is complete-
+			if (!Utilities.validTerm(cur)) throw new DBAppException("Incomplete SQLTerm!");
+
+			//--------table exists-------
+			Table cur_table = Utilities.deserializeTable(cur._strTableName);
+			if (cur_table == null) throw new DBAppException("Table not found!");
+
+			//---extract table metadata--
+			ArrayList<String[]> metaData = Utilities.readMetaDataForSpecificTable(cur._strTableName);
+			if (metaData == null) throw new DBAppException("Cannot fetch metadata!");
+
+			//-------column exists-------
+			Pair<String[],Integer> check = Utilities.getColumnFromMetadata(cur._strColumnName,metaData);
+			String[] colInfo = check.getKey();//column metadata
+			Integer colnum = check.getValue(); //index of that column
+			if (colInfo == null) throw new DBAppException("Attribute not found!");
+
+			//-------correct type--------
+			Class colType = Utilities.correctType(colInfo[2],cur._objValue);
+			if (colType == null) throw new DBAppException("term value is incompatible with column type!");
+
+			//------correct operator-----
+			if (!Utilities.allowedOperator(cur._strOperator)) throw new DBAppException("Unrecognized operator!");;
+
+			//------indexed column?------
+			Boolean Indexed = colInfo[4].charAt(0) == 'T';
+
+			//-------retrieve Index------
+			index tree = null;
+			if (indices != null && indices.get(cur._strTableName).containsKey(cur._strColumnName)) //find tree
+				tree = indices.get(cur._strTableName).get(cur._strColumnName);
+
+			if (Indexed && tree == null)
+				throw new DBAppException("Could not find index!");
+
+			//------------------------------------Execution------------------------------------
+			BSet<BPointer> queryResult; //results of the the current query
+
+			if (Indexed){ //binary search in tree
+				queryResult = Utilities.indexedQuery(colType,tree,cur);
+			}
+			else { //no index, search in records
+				queryResult = Utilities.recordQuery(cur,colInfo[4].charAt(0) == 'T',cur_table,colnum,colType);
+			}
+
+			//-----------perform set operation-----------
+			if (i == -1){  //first term (no operator)
+				resultPointers = Utilities.setOperation(resultPointers,queryResult,null);
+				i++;
+			}
+			else {
+				resultPointers = Utilities.setOperation(resultPointers,queryResult,strarrOperators[i++].toUpperCase());
+			}
+
+
+
+		} //repeat for all SQL terms
+
+		return resultPointers.iterator(); //return an iterator containing the records extracted from resultPointers
+	}
+
+	//---------------------------====================OVERFLOW PAGES=====================--------------------------------
+
+	public static void serializeOverflow(overflowPage p) {
+
+		try {
+
+			String path =  "data//overflow_Pages//" + "overflow_" + p.getName() +"_"+ p.getID() + ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+			File file = new File(path);
+			FileOutputStream fileAccess;
+			fileAccess = new FileOutputStream(file);
+			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
+			objectAccess.writeObject(p);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Failed to serialize page.");
+		}
+	}
+
+	public static overflowPage deserializeOverflow(String treename_value_id) {
+		if (treename_value_id == null) return null;
+		try {
+
+			String path = "data//overflow_Pages//" + "overflow_" + treename_value_id + ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+			FileInputStream readFromFile = new FileInputStream(path);
+			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
+			overflowPage k = (overflowPage) readObject.readObject();
+			readObject.close();
+			readFromFile.close();
+			return k;
+
+		}
+
+		catch(Exception E) {
+			System.out.println("Failed to deserialize page. Return value: NULL");
+		}
+		return null;
+	}
+
+	//insert a value at the end of the overflow pages
+	public static void overflowInsert(String treeName_value, Pointer recordPointer){
+
+		//get the maximum number of tuples per page:
+		int N = 0;
+		try {
+			N = Utilities.readPageSize("config//DBApp.properties");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("insertion failed");
+			e.printStackTrace();
+			return;
+		}
+
+		//the first overflow page does not exist
+		String path = "data//overflow_Pages//" + "overflow_" + treeName_value + "_0.class";
+		path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+		if (!new File(path).isFile()){
+			overflowPage firstPage = new overflowPage(treeName_value);
+			firstPage.insert(recordPointer);
+			Utilities.serializeOverflow(firstPage);
+		}
+
+		//the first overflow page exists
+		else {
+			overflowPage curPage = Utilities.deserializeOverflow(treeName_value + "_0"); //get the first page
+
+			while (curPage.getNext() != null){ //a suitable page or the last page
+				if (curPage.size() < N){
+					break;
+				}
+
+				curPage = Utilities.deserializeOverflow(curPage.getNext());
+			}
+
+			if (curPage.size() < N) { //a vacant space exists
+				curPage.insert(recordPointer);
+			}
+
+			else { //create new page
+				overflowPage lastPage = new overflowPage(curPage);
+				lastPage.insert(recordPointer);
+				Utilities.serializeOverflow(lastPage);
+			}
+			Utilities.serializeOverflow(curPage);
+		}
+	}
+
+	//remove all overflow pages for a value
+	public static void destroyAllOverflowPages(String treeName_value){
+
+		//first page path
+		String path = "data//overflow_Pages//" + "overflow_" + treeName_value + "_0.class";
+		path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+		File curFile = new File(path);
+
+		//first page exists
+		if (curFile.isFile()){
+
+			overflowPage curPage =  Utilities.deserializeOverflow(treeName_value + "_0");
+
+			while (true) {
+
+				//delete page
+				if (!curFile.delete())
+					System.out.println("Failed to delete file: " + treeName_value + "_0");
+
+				//last page
+				if (curPage.getNext() == null) break;
+
+				//get next page
+				path = "data//overflow_Pages//" + "overflow_" + curPage.getNext() + ".class";
+				curFile = new File(path);
+				curPage = Utilities.deserializeOverflow(curPage.getNext());
+			}
+		}
+
+	}
+
 //------------------------------========================MAIN========================------------------------------------
 //	public static void main(String[] args) {
 //		try {
-			//testing returnIndex()
+	//testing returnIndex()
 //			System.out.println(returnIndex("kjhrskj","sss"));
-			
-			//testing updateChecker()
+
+	//testing updateChecker()
 //			Hashtable<String,Object> newVal = new Hashtable<String,Object>();
 //			newVal.put("gpa", "ff");
 //			newVal.put("name", "bibi");
 //			System.out.println(updateChecker("ESTUDIANTE", newVal));
-			
-			//testing returnClustering()
+
+	//testing returnClustering()
 //			System.out.println(returnClustering("Table Name"));
-			
+
 //			gpa,java.lang.Double,False,False
 //			ESTUDIANT,ID,java.lang.Integer,False,False
 //			ESTUDIANT,isAdult,java.lang.Boolean,False,False
@@ -1352,6 +1626,7 @@ public class Utilities {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
+		
 //	}
 
 }

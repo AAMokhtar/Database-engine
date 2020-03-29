@@ -3,7 +3,7 @@ package DatabaseEngine;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class pointer implements Comparable<pointer>, Serializable {
+public class BPointer implements Comparable<BPointer>, Serializable,Pointer {
     private int page; //puge num
     private int offset; //index in page
 
@@ -13,13 +13,13 @@ public class pointer implements Comparable<pointer>, Serializable {
     public void setPage(int page){this.page = page;}
     public void setOffset(int offset){this.offset = offset;}
 
-    public pointer(int page, int offset){
+    public BPointer(int page, int offset){
         this.page = page;
         this.offset = offset;
     }
 
     @Override
-    public int compareTo(pointer p) { //compare by page number then index
+    public int compareTo(BPointer p) { //compare by page number then index
         if (this.page != p.page)
             return  this.page - p.page;
         return this.offset - p.offset;
@@ -29,7 +29,7 @@ public class pointer implements Comparable<pointer>, Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        pointer pointer = (pointer) o;
+        BPointer pointer = (BPointer) o;
         return page == pointer.page &&
                 offset == pointer.offset;
     }

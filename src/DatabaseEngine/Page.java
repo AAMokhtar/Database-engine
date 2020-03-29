@@ -16,7 +16,6 @@ public class Page implements Serializable {
 
 	//fixed page characteristics
 	private int N = 5;
-	private static int IDUpperBound = 0;
 
 	//page important metadata
 	private int count; //how many items in the page?
@@ -29,7 +28,9 @@ public class Page implements Serializable {
 
 	public Page() {
 		count = 0;
-		pageID = ++IDUpperBound;
+		pageID = Utilities.readNextId("config//DBApp.properties");
+		Utilities.incrementNextId("config//DBApp.properties");
+
 		PageElements = new Vector<Vector>();
 		try {
 			N = Utilities.readPageSize("config//DBApp.properties");
@@ -41,11 +42,6 @@ public class Page implements Serializable {
 	}
 
 
-
-	//to be used for testing purposes only. DO NOT USE IN PROJECT IMPLEMNTATION!
-	public void resetIDUpperBound() {
-		IDUpperBound = 0;
-	}
 
 	public void deleteFirst() { PageElements.remove(0); }
 
