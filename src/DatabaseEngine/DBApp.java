@@ -55,32 +55,31 @@ public class DBApp {
 		//CREATE TABLE TEST PASSED!
 		Hashtable table = new Hashtable<String, String>();
 		table.put("ID","java.lang.Integer");
-		//table.put("name","java.lang.String");
-		//table.put("isAdult","java.lang.Boolean");
-		//table.put("nationality","java.lang.String");
-		//table.put("birthdate","java.util.Date");
-		//table.put("gpa","java.lang.Double");
+		table.put("name","java.lang.String");
+		table.put("isAdult","java.lang.Boolean");
+		table.put("nationality","java.lang.String");
+		table.put("birthdate","java.util.Date");
+		table.put("gpa","java.lang.Double");
 		DBApp d = new DBApp();
 		d.init();
 		try {
-			d.createTable("Test4","ID", table);
+			d.createTable("Test3","name", table);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
 
 		Hashtable<String, Object> tuple = new Hashtable<String, Object>();
 		tuple.put("ID",2);
-		tuple.put("name","Hassan");
+		tuple.put("name","Mberry");
 		tuple.put("isAdult",false);
 		tuple.put("nationality","Egypt");
 		tuple.put("birthdate",new Date(434567650));
 		tuple.put("gpa",3.0);
 
 		try {
-			d.insertIntoTable("Test3", tuple);
+			d.insertIntoTable("Test2", tuple);
 
 		} catch (DBAppException e) {
-//			 TODO Auto-generated catch block
 			System.out.println(e.getMessage());
 		}
 		
@@ -148,13 +147,12 @@ public class DBApp {
 			System.out.println(e.getMessage());
 		}*/
 
-//		try {
-//			d.createBTreeIndex("Test1", "ID");
-//		} catch (DBAppException e) {
-//			 TODO Auto-generated catch block
-//			System.out.println(e.getMessage());
-//		}
-		Table obj=Utilities.deserializeTable("Test3");
+		/*try {
+			d.createBTreeIndex("Test2", "name");
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}*/
+		Table obj=Utilities.deserializeTable("Test2");
 
 
 		for (int i = 0; i < obj.getPages().size(); i++) {
@@ -255,7 +253,7 @@ public class DBApp {
 				pageIndx=toInsertIn[0];
 				rowNumber=toInsertIn[1];
 			}
-			System.out.println(pageIndx + " "+ rowNumber);
+			//System.out.println(pageIndx + " "+ rowNumber);
 			//step 7: inserting in B+ tree and R tree indeces (if any exist).
 			//System.out.println("checking if I need to insert in a B+ tree index");
 			for (int i = 0; i <metaDataForSpecificTable.size() ; i++) {

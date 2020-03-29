@@ -124,7 +124,6 @@ public class Table implements Serializable{
 				int pageID=pagesGroup.get(middle);
 				Page currentPageInMemory=Utilities.deserializePage(pageID);
 				//determine if this is the correct page to insert tuple in
-				System.out.println("current page: " + currentPageInMemory);
 				boolean correctPage=currentPageInMemory.tupleToBePlacedInPage(indexClusteringKey, clusteringKeyValue, clusteringKeyType);
 				if(correctPage)
 				{
