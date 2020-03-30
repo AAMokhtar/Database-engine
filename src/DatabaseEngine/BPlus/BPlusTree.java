@@ -350,7 +350,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
             if (index == -1) //not a duplicate. insert into the node
                  ((BPTExternal<T>) cur).insert(value, recordPointer); //insert value
             else { //insert into an overflow page
-                Utilities.overflowInsert(name+"_"+value,recordPointer);
+                overflowPage.insert(name+"_"+value,recordPointer);
             }
 
             if (cur.getSize() > maxPerNode){ //node is full

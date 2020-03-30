@@ -13,7 +13,7 @@ public class overflowPage implements Serializable {
     private int ID;
     private String prev;
 
-    public overflowPage(overflowPage prev){ //constructor for non first pages
+    private overflowPage(overflowPage prev){ //constructor for non first pages
         this.name = prev.name;
         ID = prev.getID() + 1;
         pointers = new ArrayList<>();
@@ -22,7 +22,7 @@ public class overflowPage implements Serializable {
         prev.next = this.name +"_"+ ID;
     }
 
-    public overflowPage(String name){ //constructor for the first page
+    private overflowPage(String name){ //constructor for the first page
         this.name = name;
         ID = 0;
         pointers = new ArrayList<>();
@@ -31,7 +31,7 @@ public class overflowPage implements Serializable {
         prev= null;
     }
 
-    public void insert(Pointer p){
+    private void insert(Pointer p){
         pointers.add(p);
     } //DO NOT USE THIS METHOD TO INSERT
 
@@ -78,7 +78,7 @@ public class overflowPage implements Serializable {
         return ret;
     }
 
-    public void removeIndex(int index){ //remove an pointer from the page using its index in the array
+    public void removeIndex(int index){ //remove a pointer from the page using its index in the array
         pointers.remove(index);
         if (this.size() == 0) this.destroy();
     }
@@ -111,7 +111,7 @@ public class overflowPage implements Serializable {
         return next;
     }
 
-    public void setID(int ID) {
+    private void setID(int ID) {
         this.ID = ID;
     }
 
@@ -119,5 +119,85 @@ public class overflowPage implements Serializable {
         Queue<Pointer> ret = new LinkedList<>();
         ret.addAll(pointers);
         return ret;
+    }
+
+    //insert a value at the end of the overflow pages
+    public static void insert(String treeName_value, Pointer recordPointer){
+
+        //get the maximum number of tuples per page:
+        int N = 0;
+        try {
+            N = Utilities.readNodeSize("config//DBApp.properties");
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            System.out.println("insertion failed");
+            e.printStackTrace();
+            return;
+        }
+
+        //the first overflow page does not exist
+        String path = "data//overflow_Pages//" + "overflow_" + treeName_value + "_0.class";
+        path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+        if (!new File(path).isFile()){
+            overflowPage firstPage = new overflowPage(treeName_value);
+            firstPage.insert(recordPointer);
+            Utilities.serializeOverflow(firstPage);
+        }
+
+        //the first overflow page exists
+        else {
+            overflowPage curPage = Utilities.deserializeOverflow(treeName_value + "_0"); //get the first page
+
+            while (curPage.getNext() != null){ //a suitable page or the last page
+                if (curPage.size() < N){
+                    break;
+                }
+
+                curPage = Utilities.deserializeOverflow(curPage.getNext());
+            }
+
+            if (curPage.size() < N) { //a vacant space exists
+                curPage.insert(recordPointer);
+            }
+
+            else { //create new page
+                overflowPage lastPage = new overflowPage(curPage);
+                lastPage.insert(recordPointer);
+                Utilities.serializeOverflow(lastPage);
+            }
+            Utilities.serializeOverflow(curPage);
+        }
+    }
+
+    //remove all overflow pages for a value
+    public static void destroyAllPages(String treeName_value){
+
+        //first page path
+        String path = "data//overflow_Pages//" + "overflow_" + treeName_value + "_0.class";
+        path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+        File curFile = new File(path);
+
+        //first page exists
+        if (curFile.isFile()){
+
+            overflowPage curPage =  Utilities.deserializeOverflow(treeName_value + "_0");
+
+            while (true) {
+
+                //delete page
+                if (!curFile.delete())
+                    System.out.println("Failed to delete file: " + treeName_value + "_0");
+
+                //last page
+                if (curPage.getNext() == null) break;
+
+                //get next page
+                path = "data//overflow_Pages//" + "overflow_" + curPage.getNext() + ".class";
+                curFile = new File(path);
+                curPage = Utilities.deserializeOverflow(curPage.getNext());
+            }
+        }
+
     }
 }
