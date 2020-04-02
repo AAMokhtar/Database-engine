@@ -402,11 +402,69 @@ public class DBApp {
 		}
 
 	}
-
 	public void deleteFromTable(String strTableName, Hashtable<String, Object> htblColNameValue) throws DBAppException {
 		Table t = Utilities.deserializeTable(strTableName);
-		t.delete(htblColNameValue);
+		Hashtable<String, Hashtable<String, index>> indices = Utilities.loadIndices();
+		
+//		t.delete(htblColNameValue);
+		SQLTerm[] arrSQLTerms;
+		arrSQLTerms = new SQLTerm[htblColNameValue.size()];
+//		SQLTerm[] arrSQLTerms;
+//		arrSQLTerms = new SQLTerm[2];
+//		arrSQLTerms[0]._strTableName = "Student";
+//		arrSQLTerms[0]._strColumnName= "name";
+//		arrSQLTerms[0]._strOperator = "=";
+//		arrSQLTerms[0]._objValue = "John Noor"; 
+		
+		Set<String> keys = htblColNameValue.keySet();
+		int z = 0;
+		for(String key : keys) {
+			arrSQLTerms[z]._strTableName = strTableName;
+			arrSQLTerms[z]._strColumnName = key;
+			arrSQLTerms[z]._strOperator = "=";
+			arrSQLTerms[z]._objValue = htblColNameValue.get(key);
+		}
+		String[]strarrOperators = new String[arrSQLTerms.length-1];
+		for(int i = 0; i< strarrOperators.length;i++) {
+			strarrOperators[i] = "AND"; 
+		}
+	BSet<BPointer> pointers =	Utilities.selectPointers(indices, arrSQLTerms, strarrOperators);
+	Iterator<Vector<Object>> rows = Utilities.getPointerRecords(pointers);
 
+	if(indices.containsKey(strTableName)) {
+	
+		ArrayList<String[]> metaData = Utilities.readMetaDataForSpecificTable(strTableName);
+		Hashtable<String, index> columnTreeIndices = indices.get(strTableName);
+		Hashtable<String,ArrayList> columnIndexWithinTable = new Hashtable<String, ArrayList>();
+		for(int i = 0; i <metaData.size(); i++) {
+			for(String key: columnTreeIndices.keySet()) {
+				ArrayList temp = new ArrayList();
+				if(metaData.get(i)[1]==key) {
+					temp.add(0,i);
+					temp.add(1, metaData.get(i)[2]);
+					columnIndexWithinTable.put(key, temp);
+					break;
+				}
+			}
+		}
+		
+		Iterator pointerItr = pointers.iterator();
+		while(rows.hasNext()) {
+			BPointer p = (BPointer) pointerItr.next();
+			Vector row = rows.next();
+			for(String key: columnTreeIndices.keySet()) {
+		Comparable value=	(Comparable) row.get(((int)columnIndexWithinTable.get(key).get(0)));
+		String type = (String)columnIndexWithinTable.get(key).get(1);
+		if(!(type.equals("java.awt.Polygon"))) {
+			
+			((BPlusTree)	columnTreeIndices.get(key)).delete(value,p,type);
+			
+		}
+		}
+	}
+		
+		
+	}
 		//TODO: use Utilities.selectPointers(indices, SQLTerm[] arrSQLTerms, String[] strarrOperators) for your
 		// select queries. For the first argument just pass the hashtable "indices" (the instance variable)
 

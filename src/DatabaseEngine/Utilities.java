@@ -1358,7 +1358,7 @@ public class Utilities {
 	}
 
 	//select that returns pointers instead of records
-	public Iterator selectPointers(Hashtable<String, Hashtable<String, index>> indices,
+	public static BSet<BPointer> selectPointers(Hashtable<String, Hashtable<String, index>> indices,
 								   SQLTerm[] arrSQLTerms, String[] strarrOperators) throws DBAppException{
 		//----=not enough operators=-----
 		if (strarrOperators.length != arrSQLTerms.length - 1)
@@ -1429,7 +1429,7 @@ public class Utilities {
 
 		} //repeat for all SQL terms
 
-		return resultPointers.iterator(); //return an iterator containing the records extracted from resultPointers
+		return resultPointers; //return an iterator containing the records extracted from resultPointers
 	}
 
 	//---------------------------====================OVERFLOW PAGES=====================--------------------------------

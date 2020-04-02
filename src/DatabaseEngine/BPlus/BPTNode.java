@@ -66,4 +66,5 @@ public abstract class BPTNode<T extends Comparable<T>> implements Serializable {
 
     public abstract BPTNode<T> split(); //split node
 
+    public abstract void delete(T value,BPointer p,String name);
 }

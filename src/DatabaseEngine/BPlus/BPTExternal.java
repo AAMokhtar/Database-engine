@@ -1,8 +1,12 @@
 package DatabaseEngine.BPlus;
 
+import DatabaseEngine.Pointer;
 import DatabaseEngine.Utilities;
+import DatabaseEngine.overflowPage;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Queue;
 
 public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
 
@@ -75,4 +79,45 @@ public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
 
         return newNode; //node to be inserted as a pointer one level up the tree
     }
+    
+	public void delete(T value, BPointer temp,String name) {
+		boolean flag = false;
+		int	key = Utilities.selectiveBinarySearch(this.getValues(), value, "=");
+		if(key != -1) {
+			if(getPointers().get(key).compareTo(temp) == 0) {
+				getValues().remove(key);
+				pointers.remove(key);
+	            if (new File("data//BPlus//overflow_Pages//" + "overflow_" + name + value + "_0.class").isFile()){ //has overflow pages
+	                overflowPage curPage = Utilities.deserializeOverflow(name + value + "_0"); //get the first page
+	           		getPointers().add(key,(BPointer)curPage.poll());
+            		getValues().add(key, value);
+            		Utilities.serializeOverflow(curPage);   
+	            }			
+			}
+				
+			else if (new File("data//BPlus//overflow_Pages//" + "overflow_" + name + value + "_0.class").isFile()){ //has overflow pages
+                overflowPage curPage = Utilities.deserializeOverflow(name + value + "_0"); //get the first page
+
+                while (curPage != null){ //loop over all overflow pages
+
+                    Queue<Pointer> pointersQ = curPage.getPointers(); //get all pointers
+
+                    while (!pointersQ.isEmpty()){ //for each pointer in page
+                        BPointer p = (BPointer) pointersQ.poll();
+
+                        if (p.compareTo(temp) == 0 ) {
+                           curPage.deletePointer(p);
+                           Utilities.serializeOverflow(curPage);  
+                           flag = true;    
+                           break;
+                    }
+                    }
+                    if(flag) {
+                    	break;
+                    }
+                    curPage = Utilities.deserializeOverflow(curPage.getNext()); //next page
+                }
+            }
+		}	
+	}
 }

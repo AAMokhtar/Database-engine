@@ -58,4 +58,46 @@ public class BPTInternal<T extends Comparable<T>> extends BPTNode<T> { // non le
 
         return newNode; //node to be inserted as a pointer one level up the tree
     }
+	public void delete(T value, BPointer p, String name) {
+		int key = Utilities.selectiveBinarySearch(this.getValues(), value, "<="); // find place in array (greatest index
+																					// less than or equal value)
+		int valueKey = key;
+		if (valueKey == -1)
+			valueKey = 0;
+
+		BPTNode<T> childnode = (Utilities.deserializeNode(((BPTInternal<T>) this).getPointers().get(key + 1)));
+		if (childnode instanceof BPTInternal)
+			((BPTInternal) childnode).delete(value, p, name);
+		else
+			((BPTExternal) childnode).delete(value, p, name);
+
+		if (childnode.getValues().size() >= this.getMinPerNodes()) {
+			if (key != -1) {
+				this.getValues().set(valueKey, Utilities.findLeaf(childnode, null, true).getValues().get(0));
+				Utilities.serializeNode(this);
+			}
+		} else {
+
+			if (key + 1 < this.getPointers().size() - 1 && key + 1 > 0) { // it has left and right siblings
+				BPTNode<T> leftnode = (Utilities.deserializeNode(((BPTInternal<T>) this).getPointers().get(key)));
+				if (childnode.getValues().size() + leftnode.getValues().size() >= 2 * getMinPerNodes())
+					BPlusTree.borrowFromLeft(this, childnode, leftnode, valueKey);
+				else
+					BPlusTree.mergeWithLeft(this, childnode, leftnode, valueKey);
+			} else if (key + 1 < this.getPointers().size() - 1) {
+				BPTNode<T> rightnode = (Utilities.deserializeNode(((BPTInternal<T>) this).getPointers().get(key + 2)));
+				if (childnode.getValues().size() + rightnode.getValues().size() >= 2 * getMinPerNodes())
+					BPlusTree.borrowFromRight(this, childnode, rightnode, valueKey);
+				else
+					BPlusTree.mergeWithRight(this, childnode, rightnode, valueKey);
+			} else if (key + 1 > 0) {
+				BPTNode<T> leftnode = (Utilities.deserializeNode(((BPTInternal<T>) this).getPointers().get(key)));
+				if (childnode.getValues().size() + leftnode.getValues().size() >= 2 * getMinPerNodes())
+					BPlusTree.borrowFromLeft(this, childnode, leftnode, key);
+				else
+					BPlusTree.mergeWithLeft(this, childnode, leftnode, key);
+			}
+
+		}
+	}
 }
