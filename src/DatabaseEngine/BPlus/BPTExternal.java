@@ -75,7 +75,6 @@ public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
 
         //linked list pointer assignment
         newNode.setNext(this.next);
-//        this.setNext(newNode.getID());
 
         return newNode; //node to be inserted as a pointer one level up the tree
     }

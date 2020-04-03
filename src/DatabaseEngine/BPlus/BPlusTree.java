@@ -414,6 +414,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                 else { //non root: split and take step back in the recursion tree
                     BPTNode<T> node = cur.split(); //return node after assigning its ID
                     node.setID(name +"_"+ nodeID++);
+                    ((BPTExternal<T>) cur).setNext(node.getID());
                     Utilities.serializeNode(node); //save node
                     Utilities.serializeNode(cur); //save node
                     return node;
