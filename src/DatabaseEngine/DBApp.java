@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import DatabaseEngine.BPlus.BPlusTree;
 import DatabaseEngine.BPlus.BPointer;
+import javafx.scene.shape.Polygon;
 import javafx.util.Pair;
 
 import java.text.ParseException;
@@ -53,20 +54,21 @@ public class DBApp {
 //	}
 		public static void main(String args[]) {
 		//CREATE TABLE TEST PASSED!
-//		Hashtable table = new Hashtable<String, String>();
-//		table.put("ID","java.lang.Integer");
+		Hashtable table = new Hashtable<String, String>();
+		table.put("ID","java.lang.Integer");
 //		table.put("name","java.lang.String");
 //		table.put("isAdult","java.lang.Boolean");
 //		table.put("nationality","java.lang.String");
 //		table.put("birthdate","java.util.Date");
 //		table.put("gpa","java.lang.Double");
+		table.put("shape", "java.awt.Polygon");
 		DBApp d = new DBApp();
 		d.init();
-//		try {
-//			d.createTable("Test1","ID", table);
-//		} catch (DBAppException e) {
-//			System.out.println(e.getMessage());
-//		}
+		try {
+			d.createTable("Test1","ID", table);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
 
 		Hashtable<String, Object> tuple = new Hashtable<String, Object>();
 		tuple.put("ID",3);
@@ -75,6 +77,7 @@ public class DBApp {
 //		tuple.put("nationality","Egypt");
 //		tuple.put("birthdate",new Date(434567650));
 //		tuple.put("gpa",3.0);
+		tuple.put("shape", new java.awt.Polygon());
 
 		try {
 			d.insertIntoTable("Test1", tuple);
@@ -147,11 +150,11 @@ public class DBApp {
 			System.out.println(e.getMessage());
 		}*/
 
-//		try {
-//			d.createBTreeIndex("Test1", "ID");
-//		} catch (DBAppException e) {
-//			System.out.println(e.getMessage());
-//		}
+		try {
+			d.createBTreeIndex("Test1", "ID");
+			} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
 		Table obj=Utilities.deserializeTable("Test1");
 
 
@@ -579,14 +582,20 @@ public class DBApp {
 			}
 			if(metaDataForIndexedColumn==null)
 			{
-				//column name doesnt exist in meta data
+				//column name doesn't exist in meta data
 				throw new DBAppException("Column " + strColName +" in table " + strTableName + " does not exist. Cannot create index for nonexistent column.");
 			}
 			else
 			{
 				//System.out.println("Column exists");
-				//determining column type to create appropriate BTree
 				String type=metaDataForIndexedColumn[2];
+				//check that column is not of type polygon
+				if(type.equals("java.awt.Polygon"))
+				{
+					throw new DBAppException("Cannot create B+ tree index on type polygon");
+				}
+				//all is well. I can now create the appropriate B+ tree 
+				//determining column type to create appropriate BTree
 				//System.out.println("Tree should be of type " + type);
 				//creating appropriate Btree
 				//System.out.println("creating Btree");
@@ -662,6 +671,9 @@ public class DBApp {
 				//modify metaData
 				Utilities.updateMetaData(strTableName, strColName);
 				//System.out.println("Metadata modified");
+				//add to hashtable
+				Utilities.loadIndices();
+				System.out.println("Index has been successfuly created");
 			}
 		}
 		
