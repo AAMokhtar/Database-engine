@@ -2,6 +2,7 @@ package DatabaseEngine;
 
 import DatabaseEngine.BPlus.BPTExternal;
 import DatabaseEngine.BPlus.BPlusTree;
+import DatabaseEngine.BPlus.BPointer;
 
 import java.awt.*;
 import java.io.File;
@@ -17,15 +18,11 @@ public class treeTesting {
         //CORRECT NODES ON DISK: PASSED
         //POINTER SHIFTING ON INSERTION: PASSED
         //OVERFLOW PAGES: PASSED
-//        BPlusTree<Date> tree = new BPlusTree<>("tree",2);
-//        Date val = new SimpleDateFormat("YYYY-MM-DD").parse("1988-07-30");
-//        tree.insert(val,new pointer(3,1),false);
-//        tree.insert(val,new pointer(3,1),false);
-//        tree.insert(val,new pointer(3,1),false);
-//        tree.insert(val,new pointer(3,1),false);
-//        tree.insert(val,new pointer(3,1),false);
-//        tree.insert(val,new pointer(3,1),false);
-//        tree.insert(val,new pointer(3,1),false);
+//        DBApp a = new DBApp();
+//        a.init();
+//        tree.insert(5,new BPointer(3,1),false);
+//        tree.insert(6,new BPointer(3,1),false);
+//        tree.insert(7,new BPointer(3,1),false);
 //        tree.insert(val,new pointer(3,1),false);
 //        tree.insert(val,new pointer(3,1),false);
 //        tree.insert(val,new pointer(3,1),false);

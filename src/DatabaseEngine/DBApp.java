@@ -53,31 +53,31 @@ public class DBApp {
 //	}
 		public static void main(String args[]) {
 		//CREATE TABLE TEST PASSED!
-		Hashtable table = new Hashtable<String, String>();
-		table.put("ID","java.lang.Integer");
-		table.put("name","java.lang.String");
-		table.put("isAdult","java.lang.Boolean");
-		table.put("nationality","java.lang.String");
-		table.put("birthdate","java.util.Date");
-		table.put("gpa","java.lang.Double");
+//		Hashtable table = new Hashtable<String, String>();
+//		table.put("ID","java.lang.Integer");
+//		table.put("name","java.lang.String");
+//		table.put("isAdult","java.lang.Boolean");
+//		table.put("nationality","java.lang.String");
+//		table.put("birthdate","java.util.Date");
+//		table.put("gpa","java.lang.Double");
 		DBApp d = new DBApp();
 		d.init();
-		try {
-			d.createTable("Test3","name", table);
-		} catch (DBAppException e) {
-			System.out.println(e.getMessage());
-		}
+//		try {
+//			d.createTable("Test1","ID", table);
+//		} catch (DBAppException e) {
+//			System.out.println(e.getMessage());
+//		}
 
 		Hashtable<String, Object> tuple = new Hashtable<String, Object>();
-		tuple.put("ID",2);
-		tuple.put("name","Mberry");
-		tuple.put("isAdult",false);
-		tuple.put("nationality","Egypt");
-		tuple.put("birthdate",new Date(434567650));
-		tuple.put("gpa",3.0);
+		tuple.put("ID",3);
+//		tuple.put("name","Mberry");
+//		tuple.put("isAdult",false);
+//		tuple.put("nationality","Egypt");
+//		tuple.put("birthdate",new Date(434567650));
+//		tuple.put("gpa",3.0);
 
 		try {
-			d.insertIntoTable("Test2", tuple);
+			d.insertIntoTable("Test1", tuple);
 
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
@@ -147,12 +147,12 @@ public class DBApp {
 			System.out.println(e.getMessage());
 		}*/
 
-		/*try {
-			d.createBTreeIndex("Test2", "name");
-		} catch (DBAppException e) {
-			System.out.println(e.getMessage());
-		}*/
-		Table obj=Utilities.deserializeTable("Test2");
+//		try {
+//			d.createBTreeIndex("Test1", "ID");
+//		} catch (DBAppException e) {
+//			System.out.println(e.getMessage());
+//		}
+		Table obj=Utilities.deserializeTable("Test1");
 
 
 		for (int i = 0; i < obj.getPages().size(); i++) {

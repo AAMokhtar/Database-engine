@@ -1002,14 +1002,15 @@ public class Utilities {
 
 
 
-	public static <T extends Comparable<T>> Pair<HashMap<Integer,HashMap<Integer, BPointer>>, ArrayList<overflowPage>>
-	getAllBPointers(BPlusTree<T> tree){
+	public static <T extends Comparable<T>> Object[] getAllBPointers(BPlusTree<T> tree){
 		HashMap<Integer,HashMap<Integer, BPointer>> ret1 = new HashMap<>();
 		ArrayList<overflowPage> ret2 = new ArrayList<>();
+		ArrayList<BPTExternal<T>> ret3 = new ArrayList<>();
 
 		BPTExternal<T> cur = Utilities.findLeaf(tree.getRoot(),null,true); //get the leftmost leaf
 
 		while (cur != null){ //for all leaves
+			ret3.add(cur);
 			ArrayList<BPointer> pointers = cur.getPointers();
 			ArrayList<T> values = cur.getValues();
 
@@ -1043,17 +1044,13 @@ public class Utilities {
 
 			cur = (BPTExternal<T>) Utilities.deserializeNode(cur.getNext());
 		}
-		return new Pair<>(ret1,ret2);
+		return new Object[] {ret1,ret2,ret3};
 	}
 
-	public static <T extends Comparable<T>> void serializeAll(BPlusTree<T> tree, ArrayList<overflowPage> pages) {
-		BPTExternal<T> cur = Utilities.findLeaf(tree.getRoot(), null, true); //get the leftmost leaf
-
+	public static <T extends Comparable<T>> void serializeAll(ArrayList<BPTExternal<T>> leaves, ArrayList<overflowPage> pages) {
 		//save all the leaves
-		while (cur != null) {
-			Utilities.serializeNode(cur);
-			cur = (BPTExternal<T>) Utilities.deserializeNode(cur.getNext());
-		}
+		for(BPTExternal<T> cur: leaves) Utilities.serializeNode(cur);
+
 		//save all pverflow pages
 		for (overflowPage p : pages) Utilities.serializeOverflow(p);
 	}

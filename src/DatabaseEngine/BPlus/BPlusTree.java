@@ -472,7 +472,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
     }
 
     //shift pointers left or right
-    public void decrementPointersAt(int pageNum, int vecIndex){
+    private void decrementPointersAt(int pageNum, int vecIndex){
         BPointer temp = new BPointer(pageNum,vecIndex); //to compare with other pointers
 
         BPTExternal<T> cur = Utilities.findLeaf(root,null,true); //get the leftmost leaf
@@ -518,11 +518,12 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
         }
     }
 
-    public void incrementPointersAt(int pageNum, int vecIndex){
-        Pair<HashMap<Integer,HashMap<Integer, BPointer>>,ArrayList<overflowPage>> temp =
-                Utilities.getAllBPointers(this);
-        HashMap<Integer,HashMap<Integer, BPointer>> pointers = temp.getKey(); //all the pointers of the tree
-        ArrayList<overflowPage> overflow = temp.getValue(); //all the overflow pages of the tree
+    private void incrementPointersAt(int pageNum, int vecIndex){
+        Object[] temp = Utilities.getAllBPointers(this);
+        HashMap<Integer,HashMap<Integer, BPointer>> pointers =
+                (HashMap<Integer, HashMap<Integer, BPointer>>) temp[0]; //all the pointers of the tree
+        ArrayList<overflowPage> overflow = (ArrayList<overflowPage>) temp[1]; //all the overflow pages of the tree
+        ArrayList<BPTExternal<T>> leaves = (ArrayList<BPTExternal<T>>) temp[2];
 
         //table page Ids
         Vector<Integer> pageIds = Utilities.deserializeTable(table).getPages();
@@ -555,37 +556,9 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
             i++;
             j = 0;
         }
-        Utilities.serializeAll(this,overflow);
+        Utilities.serializeAll(leaves,overflow);
     }
 
-    public String leavesToString(){
-        StringBuilder ret = new StringBuilder();
-
-        BPTExternal cur = Utilities.findLeaf(root,null,true);
-
-        while (cur != null){
-            ret.append("[");
-
-            int i = 0;
-            for(Object val : cur.getValues()){
-                ret.append(" " + val.toString());
-
-                if (i != maxPerNode - 1) ret.append(" |");
-            }
-
-            while (i < maxPerNode - 1){
-                ret.append("    |");
-            }
-            ret.append("    ");
-
-            if (cur.getNext() != null) ret.append("] -> ");
-            else ret.append("]");
-
-            cur = (BPTExternal) Utilities.deserializeNode(cur.getNext());
-        }
-        return ret.toString();
-    }
-    
 	public static void borrowFromLeft(BPTInternal bptInternal, BPTNode childnode, BPTNode leftnode, int key) {
 		if(childnode instanceof BPTExternal) {
 			BPTExternal child = (BPTExternal) childnode;
@@ -612,35 +585,6 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 		Utilities.serializeNode(leftnode);
 		Utilities.serializeNode(bptInternal);
 	}
-	
-	public static void mergeWithLeft(BPTInternal bptInternal, BPTNode childnode, BPTNode leftnode, int key) {
-		if(childnode instanceof BPTExternal) {
-			BPTExternal child = (BPTExternal) childnode;
-			BPTExternal left = (BPTExternal) leftnode;
-			while(!(child.getValues().isEmpty())) {
-			left.getValues().add(child.getValues().remove(0));
-			left.getPointers().add(child.getPointers().remove(0));
-			}
-			bptInternal.getValues().remove(key);
-			bptInternal.getPointers().remove(key+1);
-		}
-		else {
-			BPTInternal child = (BPTInternal) childnode;
-			BPTInternal left = (BPTInternal) leftnode;
-			left.getValues().add(Utilities.findLeaf(child, null, true).getValues().get(0));
-			left.getPointers().add(child.getPointers().remove(0));
-			while(!(child.getValues().isEmpty())) {
-				left.getValues().add(child.getValues().remove(0));
-				left.getPointers().add(child.getPointers().remove(0));		
-			}
-			bptInternal.getValues().remove(key);
-			bptInternal.getPointers().remove(key+1);
-		}
-		Utilities.serializeNode(childnode);
-		Utilities.serializeNode(leftnode);
-		Utilities.serializeNode(bptInternal);
-	}
-
 
 	public static void borrowFromRight(BPTInternal bptInternal, BPTNode childnode,BPTNode rightnode, int key) {
 		if(childnode instanceof BPTExternal) {
@@ -669,6 +613,33 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 		Utilities.serializeNode(bptInternal);
 	}
 
+    public static void mergeWithLeft(BPTInternal bptInternal, BPTNode childnode, BPTNode leftnode, int key) {
+        if(childnode instanceof BPTExternal) {
+            BPTExternal child = (BPTExternal) childnode;
+            BPTExternal left = (BPTExternal) leftnode;
+            while(!(child.getValues().isEmpty())) {
+                left.getValues().add(child.getValues().remove(0));
+                left.getPointers().add(child.getPointers().remove(0));
+            }
+            bptInternal.getValues().remove(key);
+            bptInternal.getPointers().remove(key+1);
+        }
+        else {
+            BPTInternal child = (BPTInternal) childnode;
+            BPTInternal left = (BPTInternal) leftnode;
+            left.getValues().add(Utilities.findLeaf(child, null, true).getValues().get(0));
+            left.getPointers().add(child.getPointers().remove(0));
+            while(!(child.getValues().isEmpty())) {
+                left.getValues().add(child.getValues().remove(0));
+                left.getPointers().add(child.getPointers().remove(0));
+            }
+            bptInternal.getValues().remove(key);
+            bptInternal.getPointers().remove(key+1);
+        }
+        Utilities.serializeNode(childnode);
+        Utilities.serializeNode(leftnode);
+        Utilities.serializeNode(bptInternal);
+    }
 
 	public static void mergeWithRight(BPTInternal bptInternal, BPTNode childnode, BPTNode rightnode,int key) {
 
@@ -698,5 +669,33 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 		Utilities.serializeNode(rightnode);
 		Utilities.serializeNode(bptInternal);
 	}
+
+    public String leavesToString(){
+        StringBuilder ret = new StringBuilder();
+
+        BPTExternal cur = Utilities.findLeaf(root,null,true);
+
+        while (cur != null){
+            ret.append("[");
+
+            int i = 0;
+            for(Object val : cur.getValues()){
+                ret.append(" " + val.toString());
+
+                if (i != maxPerNode - 1) ret.append(" |");
+            }
+
+            while (i < maxPerNode - 1){
+                ret.append("    |");
+            }
+            ret.append("    ");
+
+            if (cur.getNext() != null) ret.append("] -> ");
+            else ret.append("]");
+
+            cur = (BPTExternal) Utilities.deserializeNode(cur.getNext());
+        }
+        return ret.toString();
+    }
     
 }
