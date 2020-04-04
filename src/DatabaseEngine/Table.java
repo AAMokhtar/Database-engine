@@ -449,45 +449,46 @@ public class Table implements Serializable{
 		return ans;*/
 	}
 
-	public void delete(Hashtable<String, Object> htblColNameValue) throws DBAppException{
+	public void delete(int pageID, int offset) throws DBAppException{
 		// checking if the entered hashtable has columns matching the table and
 		// populating Hashtable with integers for keys for later usage
 		// and checking if all requested columns for delete are valid
-		ArrayList<String[]> data = Utilities.readMetaDataForSpecificTable(tableName);
-		Hashtable<Integer, Object> keyValue = new Hashtable<Integer, Object>();
-		Set<String> keys = htblColNameValue.keySet();
-		for (String key : keys) {
-			for (int i = 0; i < data.size(); i++) {
-				if (data.get(i)[1].equals(key)) {
-					if(htblColNameValue.get(key) instanceof Polygon){
-						myPolygon poly = new myPolygon((Polygon)htblColNameValue.get(key));
-						keyValue.put(i,poly);
-					}
-					else{
-						keyValue.put(i, htblColNameValue.get(key));
-					}
-				}
-			}
-		}
-		if (keyValue.size() != htblColNameValue.size()) {
-			throw new DBAppException("Invalid Columns");
-		}
-
+//		ArrayList<String[]> data = Utilities.readMetaDataForSpecificTable(tableName);
+//		Hashtable<Integer, Object> keyValue = new Hashtable<Integer, Object>();
+//		Set<String> keys = htblColNameValue.keySet();
+//		for (String key : keys) {
+//			for (int i = 0; i < data.size(); i++) {
+//				if (data.get(i)[1].equals(key)) {
+//					if(htblColNameValue.get(key) instanceof Polygon){
+//						myPolygon poly = new myPolygon((Polygon)htblColNameValue.get(key));
+//						keyValue.put(i,poly);
+//					}
+//					else{
+//						keyValue.put(i, htblColNameValue.get(key));
+//					}
+//				}
+//			}
+//		}
+//		if (keyValue.size() != htblColNameValue.size()) {
+//			throw new DBAppException("Invalid Columns");
+//		}
+//
 		// Looping on all the pages to check for the elements to be deleted
 		// Deleting all the matching elements
 		// Checking if the page is empty, if it is, deleting the page
-		for (int i = 0; i < pagesGroup.size(); i++) {
-			Page p = Utilities.deserializePage(pagesGroup.get(i));
-			p.deleteByValue(keyValue);
-			if (p.getPageElements().size() == 0) {
-				pagesGroup.remove(i);
-				i--;
+//		for (int i = 0; i < pagesGroup.size(); i++) {
+//			p.deleteByValue(keyValue);
+		Page p = Utilities.deserializePage(pageID);
+		p.delete(offset);
+		if (p.getPageElements().size() == 0) {
+
+			pagesGroup.removeElement(pageID);
 				deletePage(p);
 			} else {
 				Utilities.serializePage(p);
 			}
 	
-		}
+		
 		Utilities.serializeTable(this);
 
 		
@@ -522,7 +523,7 @@ public class Table implements Serializable{
 	public void deletePage(Page P) {
 		int pageID = P.getID();
 		try {
-			File f = new File("data//" + "page_" + pageID + ".class");
+			File f = new File("data//" + "page_" + pageID + ".class");		
 			f.delete();
 		} catch (Exception e) {
 			e.printStackTrace();

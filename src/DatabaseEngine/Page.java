@@ -349,31 +349,36 @@ public class Page implements Serializable {
 	 * the vector pageElements (due to deleted tuple)
 	 */
 
-	public void deleteByValue(Hashtable<Integer,Object> keyValue) {
-
-		Set<Integer> indexedKeys= keyValue.keySet();
-
-		for (int i = 0 ; i<PageElements.size();i++) {
-			boolean match = true;
-			Vector<Object> v = PageElements.get(i);
-				for(int key: indexedKeys) {
-				if(keyValue.get(key) instanceof myPolygon) {
-					myPolygon poly = (myPolygon) keyValue.get(key);  
-					myPolygon poly1 = (myPolygon) v.get(key);
-					if(!poly.equals(poly1)){
-						match = false;
-					}
-				}else {
-				if(!(v.get(key).equals(keyValue.get(key)))){
-					match = false;
-				}}
-			}
-			if(match) {
-				PageElements.removeElementAt(i);
-				i--;
-				count--;
-			}
-		}
+//	public void deleteByValue(Hashtable<Integer,Object> keyValue) {
+//
+//		Set<Integer> indexedKeys= keyValue.keySet();
+//
+//		for (int i = 0 ; i<PageElements.size();i++) {
+//			boolean match = true;
+//			Vector<Object> v = PageElements.get(i);
+//				for(int key: indexedKeys) {
+//				if(keyValue.get(key) instanceof myPolygon) {
+//					myPolygon poly = (myPolygon) keyValue.get(key);  
+//					myPolygon poly1 = (myPolygon) v.get(key);
+//					if(!poly.equals(poly1)){
+//						match = false;
+//					}
+//				}else {
+//				if(!(v.get(key).equals(keyValue.get(key)))){
+//					match = false;
+//				}}
+//			}
+//			if(match) {
+//				PageElements.removeElementAt(i);
+//				i--;
+//				count--;
+//			}
+//		}
+//	}
+	
+	public void delete(int offset) {
+		PageElements.removeElementAt(offset);
+		count--;
 	}
 }
 

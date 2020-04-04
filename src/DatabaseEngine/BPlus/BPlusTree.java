@@ -339,8 +339,10 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 			if (root.getValues().size() == 0) {
 				BPTNode child = Utilities.deserializeNode((String) ((BPTInternal) root).getPointers().get(0));
 				if (child instanceof BPTInternal) {
+					root.deleteNode();
 					root = (BPTInternal) (child);
 				} else {
+					root.deleteNode();
 					root = (BPTExternal) (child);
 				}
 			}
@@ -414,7 +416,6 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                 else { //non root: split and take step back in the recursion tree
                     BPTNode<T> node = cur.split(); //return node after assigning its ID
                     node.setID(name +"_"+ nodeID++);
-                    ((BPTExternal<T>) cur).setNext(node.getID());
                     Utilities.serializeNode(node); //save node
                     Utilities.serializeNode(cur); //save node
                     return node;
@@ -471,7 +472,120 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
             return null; //value added without splitting
         }
     }
+	public static void borrowFromLeft(BPTInternal bptInternal, BPTNode childnode, BPTNode leftnode, int key) {
+		if(childnode instanceof BPTExternal) {
+			BPTExternal child = (BPTExternal) childnode;
+			BPTExternal left = (BPTExternal) leftnode;
+			while(child.getValues().size()<child.getMinPerNodes()) {
+				child.getValues().add(0,left.getValues().remove(left.getValues().size()-1));
+				child.getPointers().add(0,left.getPointers().remove(left.getPointers().size()-1));
+			}
+			bptInternal.getValues().set(key,child.getValues().get(0));
+		}
+		else {
+			BPTInternal child = (BPTInternal) childnode;
+			BPTInternal left = (BPTInternal) leftnode;
+			while(child.getValues().size()<child.getMinPerNodes()) {
+				
+				child.getValues().add(0,Utilities.findLeaf(child, null, true).getValues().get(0));
+				left.getValues().remove(left.getValues().size()-1);
+				child.getPointers().add(0,left.getPointers().remove(left.getPointers().size()-1));
+	
+			}
+			bptInternal.getValues().set(key, Utilities.findLeaf(child, null, true).getValues().get(0));
+		}
+		Utilities.serializeNode(childnode);
+		Utilities.serializeNode(leftnode);
+		Utilities.serializeNode(bptInternal);
+	}
 
+	public static void borrowFromRight(BPTInternal bptInternal, BPTNode childnode,BPTNode rightnode, int key) {
+		if(childnode instanceof BPTExternal) {
+			BPTExternal child = (BPTExternal) childnode;
+			BPTExternal right = (BPTExternal) rightnode;
+			while(child.getValues().size()<child.getMinPerNodes()) {
+				child.getValues().add(right.getValues().remove(0));
+				child.getPointers().add(right.getPointers().remove(0));
+			}
+			bptInternal.getValues().set(key, right.getValues().get(0));
+		}
+		else {
+			BPTInternal child = (BPTInternal) childnode;
+			BPTInternal right = (BPTInternal) rightnode;
+			while(child.getValues().size()<child.getMinPerNodes()) {
+				
+				child.getValues().add(Utilities.findLeaf(right, null, true).getValues().get(0));
+				right.getValues().remove(0);
+				child.getPointers().add(right.getPointers().remove(0));
+	
+			}
+			bptInternal.getValues().set(key, Utilities.findLeaf(right, null, true).getValues().get(0));
+		}
+		Utilities.serializeNode(childnode);
+		Utilities.serializeNode(rightnode);
+		Utilities.serializeNode(bptInternal);
+	}
+
+    public static void mergeWithLeft(BPTInternal bptInternal, BPTNode childnode, BPTNode leftnode, int key) {
+        if(childnode instanceof BPTExternal) {
+            BPTExternal child = (BPTExternal) childnode;
+            BPTExternal left = (BPTExternal) leftnode;
+            while(!(child.getValues().isEmpty())) {
+                left.getValues().add(child.getValues().remove(0));
+                left.getPointers().add(child.getPointers().remove(0));
+                left.setNext(child.getNext());
+            }
+            child.deleteNode();
+            bptInternal.getValues().remove(key);
+            bptInternal.getPointers().remove(key+1);
+        }
+        else {
+            BPTInternal child = (BPTInternal) childnode;
+            BPTInternal left = (BPTInternal) leftnode;
+            left.getValues().add(Utilities.findLeaf(child, null, true).getValues().get(0));
+            left.getPointers().add(child.getPointers().remove(0));
+            while(!(child.getValues().isEmpty())) {
+                left.getValues().add(child.getValues().remove(0));
+                left.getPointers().add(child.getPointers().remove(0));
+            }
+            child.deleteNode();
+            bptInternal.getValues().remove(key);
+            bptInternal.getPointers().remove(key+1);
+        }
+        Utilities.serializeNode(leftnode);
+        Utilities.serializeNode(bptInternal);
+    }
+
+	public static void mergeWithRight(BPTInternal bptInternal, BPTNode childnode, BPTNode rightnode,int key) {
+
+		if(childnode instanceof BPTExternal) {
+			BPTExternal child = (BPTExternal) childnode;
+			BPTExternal right = (BPTExternal) rightnode;
+			while(!(right.getValues().isEmpty())) {
+				child.getValues().add(right.getValues().remove(0));
+				child.getPointers().add(right.getPointers().remove(0));
+				child.setNext(right.getNext());
+			}
+			right.deleteNode();
+			bptInternal.getValues().remove(key);
+			bptInternal.getPointers().remove(key+1);
+		}
+		else {
+			BPTInternal child = (BPTInternal) childnode;
+			BPTInternal right = (BPTInternal) rightnode;
+			child.getValues().add(Utilities.findLeaf(right, null, true).getValues().get(0));
+			child.getPointers().add(right.getPointers().remove(0));
+			while(!(right.getValues().isEmpty())) {
+				child.getValues().add(right.getValues().remove(0));
+				child.getPointers().add(right.getPointers().remove(0));
+			}
+			right.deleteNode();
+			bptInternal.getValues().remove(key);
+			bptInternal.getValues().remove(key+1);
+		}
+		Utilities.serializeNode(childnode);
+		Utilities.serializeNode(bptInternal);
+	}
     //shift pointers left or right
     private void decrementPointersAt(int pageNum, int vecIndex){
         BPointer temp = new BPointer(pageNum,vecIndex); //to compare with other pointers
@@ -560,116 +674,6 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
         Utilities.serializeAll(leaves,overflow);
     }
 
-	public static void borrowFromLeft(BPTInternal bptInternal, BPTNode childnode, BPTNode leftnode, int key) {
-		if(childnode instanceof BPTExternal) {
-			BPTExternal child = (BPTExternal) childnode;
-			BPTExternal left = (BPTExternal) leftnode;
-			while(child.getValues().size()<child.getMinPerNodes()) {
-				child.getValues().add(0,left.getValues().remove(left.getValues().size()-1));
-				child.getPointers().add(0,left.getPointers().remove(left.getPointers().size()-1));
-			}
-			bptInternal.getValues().set(key,child.getValues().get(0));
-		}
-		else {
-			BPTInternal child = (BPTInternal) childnode;
-			BPTInternal left = (BPTInternal) leftnode;
-			while(child.getValues().size()<child.getMinPerNodes()) {
-				
-				child.getValues().add(0,Utilities.findLeaf(child, null, true).getValues().get(0));
-				left.getValues().remove(left.getValues().size()-1);
-				child.getPointers().add(0,left.getPointers().remove(left.getPointers().size()-1));
-	
-			}
-			bptInternal.getValues().set(key, Utilities.findLeaf(child, null, true).getValues().get(0));
-		}
-		Utilities.serializeNode(childnode);
-		Utilities.serializeNode(leftnode);
-		Utilities.serializeNode(bptInternal);
-	}
-
-	public static void borrowFromRight(BPTInternal bptInternal, BPTNode childnode,BPTNode rightnode, int key) {
-		if(childnode instanceof BPTExternal) {
-			BPTExternal child = (BPTExternal) childnode;
-			BPTExternal right = (BPTExternal) rightnode;
-			while(child.getValues().size()<child.getMinPerNodes()) {
-				child.getValues().add(right.getValues().remove(0));
-				child.getPointers().add(right.getPointers().remove(0));
-			}
-			bptInternal.getValues().set(key, right.getValues().get(0));
-		}
-		else {
-			BPTInternal child = (BPTInternal) childnode;
-			BPTInternal right = (BPTInternal) rightnode;
-			while(child.getValues().size()<child.getMinPerNodes()) {
-				
-				child.getValues().add(Utilities.findLeaf(right, null, true).getValues().get(0));
-				right.getValues().remove(0);
-				child.getPointers().add(right.getPointers().remove(0));
-	
-			}
-			bptInternal.getValues().set(key, Utilities.findLeaf(right, null, true).getValues().get(0));
-		}
-		Utilities.serializeNode(childnode);
-		Utilities.serializeNode(rightnode);
-		Utilities.serializeNode(bptInternal);
-	}
-
-    public static void mergeWithLeft(BPTInternal bptInternal, BPTNode childnode, BPTNode leftnode, int key) {
-        if(childnode instanceof BPTExternal) {
-            BPTExternal child = (BPTExternal) childnode;
-            BPTExternal left = (BPTExternal) leftnode;
-            while(!(child.getValues().isEmpty())) {
-                left.getValues().add(child.getValues().remove(0));
-                left.getPointers().add(child.getPointers().remove(0));
-            }
-            bptInternal.getValues().remove(key);
-            bptInternal.getPointers().remove(key+1);
-        }
-        else {
-            BPTInternal child = (BPTInternal) childnode;
-            BPTInternal left = (BPTInternal) leftnode;
-            left.getValues().add(Utilities.findLeaf(child, null, true).getValues().get(0));
-            left.getPointers().add(child.getPointers().remove(0));
-            while(!(child.getValues().isEmpty())) {
-                left.getValues().add(child.getValues().remove(0));
-                left.getPointers().add(child.getPointers().remove(0));
-            }
-            bptInternal.getValues().remove(key);
-            bptInternal.getPointers().remove(key+1);
-        }
-        Utilities.serializeNode(childnode);
-        Utilities.serializeNode(leftnode);
-        Utilities.serializeNode(bptInternal);
-    }
-
-	public static void mergeWithRight(BPTInternal bptInternal, BPTNode childnode, BPTNode rightnode,int key) {
-
-		if(childnode instanceof BPTExternal) {
-			BPTExternal child = (BPTExternal) childnode;
-			BPTExternal right = (BPTExternal) rightnode;
-			while(!(right.getValues().isEmpty())) {
-				child.getValues().add(right.getValues().remove(0));
-				child.getPointers().add(right.getPointers().remove(0));
-			}
-			bptInternal.getValues().remove(key);
-			bptInternal.getValues().remove(key+1);
-		}
-		else {
-			BPTInternal child = (BPTInternal) childnode;
-			BPTInternal right = (BPTInternal) rightnode;
-			child.getValues().add(Utilities.findLeaf(right, null, true).getValues().get(0));
-			child.getPointers().add(right.getPointers().remove(0));
-			while(!(right.getValues().isEmpty())) {
-				child.getValues().add(right.getValues().remove(0));
-				child.getPointers().add(right.getPointers().remove(0));
-			}
-			bptInternal.getValues().remove(key);
-			bptInternal.getValues().remove(key+1);
-		}
-		Utilities.serializeNode(childnode);
-		Utilities.serializeNode(rightnode);
-		Utilities.serializeNode(bptInternal);
-	}
 
     public String leavesToString(){
         StringBuilder ret = new StringBuilder();

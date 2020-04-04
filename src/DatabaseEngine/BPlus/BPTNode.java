@@ -1,5 +1,6 @@
 package DatabaseEngine.BPlus;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -67,4 +68,15 @@ public abstract class BPTNode<T extends Comparable<T>> implements Serializable {
     public abstract BPTNode<T> split(); //split node
 
     public abstract void delete(T value,BPointer p,String name);
+    
+    public void deleteNode() {
+
+		try {
+			String path =  "data//BPlus//B+_Nodes//" + "Node_" + ID + ".class";
+			File f = new File(path);
+			f.delete();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
 }

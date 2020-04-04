@@ -426,6 +426,8 @@ public class Utilities {
 			fileAccess = new FileOutputStream(file);
 			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
 			objectAccess.writeObject(P);
+			objectAccess.close();
+			fileAccess.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Failed to serialize page.");
@@ -932,6 +934,8 @@ public class Utilities {
 			fileAccess = new FileOutputStream(file);
 			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
 			objectAccess.writeObject(N);
+			objectAccess.close();
+			fileAccess.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Failed to serialize node.");
@@ -972,6 +976,8 @@ public class Utilities {
 			fileAccess = new FileOutputStream(file);
 			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
 			objectAccess.writeObject(tree);
+			objectAccess.close();
+			fileAccess.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Failed to serialize tree.");

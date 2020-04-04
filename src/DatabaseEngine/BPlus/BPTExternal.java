@@ -83,7 +83,7 @@ public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
 		boolean flag = false;
 		int	key = Utilities.selectiveBinarySearch(this.getValues(), value, "=");
 		if(key != -1) {
-			if(getPointers().get(key).compareTo(temp) == 0) {
+			if(getPointers().get(key).equals(temp)) {
 				getValues().remove(key);
 				pointers.remove(key);
 	            if (new File("data//BPlus//overflow_Pages//" + "overflow_" + name + value + "_0.class").isFile()){ //has overflow pages
@@ -91,7 +91,8 @@ public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
 	           		getPointers().add(key,(BPointer)curPage.poll());
             		getValues().add(key, value);
             		Utilities.serializeOverflow(curPage);   
-	            }			
+	            }
+        		Utilities.serializeNode(this);
 			}
 				
 			else if (new File("data//BPlus//overflow_Pages//" + "overflow_" + name + value + "_0.class").isFile()){ //has overflow pages
@@ -119,4 +120,5 @@ public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
             }
 		}	
 	}
+
 }

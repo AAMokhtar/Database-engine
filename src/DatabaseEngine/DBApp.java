@@ -405,10 +405,11 @@ public class DBApp {
 		}
 
 	}
+
+
 	public void deleteFromTable(String strTableName, Hashtable<String, Object> htblColNameValue) throws DBAppException {
 		Table t = Utilities.deserializeTable(strTableName);
 		Hashtable<String, Hashtable<String, index>> indices = Utilities.loadIndices();
-		
 //		t.delete(htblColNameValue);
 		SQLTerm[] arrSQLTerms;
 		arrSQLTerms = new SQLTerm[htblColNameValue.size()];
@@ -418,15 +419,17 @@ public class DBApp {
 //		arrSQLTerms[0]._strColumnName= "name";
 //		arrSQLTerms[0]._strOperator = "=";
 //		arrSQLTerms[0]._objValue = "John Noor"; 
-		
 		Set<String> keys = htblColNameValue.keySet();
 		int z = 0;
 		for(String key : keys) {
-			arrSQLTerms[z]._strTableName = strTableName;
-			arrSQLTerms[z]._strColumnName = key;
-			arrSQLTerms[z]._strOperator = "=";
-			arrSQLTerms[z]._objValue = htblColNameValue.get(key);
-		}
+			SQLTerm term = new SQLTerm();
+			term._strTableName = strTableName;
+			term._strColumnName = key;
+			term._strOperator = "=";
+			term._objValue = htblColNameValue.get(key);
+			arrSQLTerms[z] = term;
+			z++;
+			}
 		String[]strarrOperators = new String[arrSQLTerms.length-1];
 		for(int i = 0; i< strarrOperators.length;i++) {
 			strarrOperators[i] = "AND"; 
@@ -442,7 +445,7 @@ public class DBApp {
 		for(int i = 0; i <metaData.size(); i++) {
 			for(String key: columnTreeIndices.keySet()) {
 				ArrayList temp = new ArrayList();
-				if(metaData.get(i)[1]==key) {
+				if(((String)metaData.get(i)[1]).equals(key)) {
 					temp.add(0,i);
 					temp.add(1, metaData.get(i)[2]);
 					columnIndexWithinTable.put(key, temp);
@@ -451,28 +454,60 @@ public class DBApp {
 			}
 		}
 		
-		Iterator pointerItr = pointers.iterator();
+		ArrayList<BPointer> pointersArray = new ArrayList<BPointer>();
+		for(BPointer point: pointers) {
+			pointersArray.add(point);
+			}
+		int itr = 0;
 		while(rows.hasNext()) {
-			BPointer p = (BPointer) pointerItr.next();
+			BPointer p = pointersArray.get(itr++);
 			Vector row = rows.next();
+			
 			for(String key: columnTreeIndices.keySet()) {
 		Comparable value=	(Comparable) row.get(((int)columnIndexWithinTable.get(key).get(0)));
 		String type = (String)columnIndexWithinTable.get(key).get(1);
 		if(!(type.equals("java.awt.Polygon"))) {
-			
 			((BPlusTree)	columnTreeIndices.get(key)).delete(value,p,type);
 			
 		}
+		else {
+			// Call the Rtree's delete
 		}
-	}
+		}
+			t.delete(p.getPage(), p.getOffset());
+			
+		for(int i = itr;i<pointersArray.size();i++) {
+			BPointer temp = pointersArray.get(i);
+			if (temp.compareTo(p) >= 0 && p.getPage() == temp.getPage())
+			{
+				temp.setOffset(temp.getOffset() - 1);			
+				pointersArray.set(i, temp);
+			}
+				
+		}
 		
-		
+	}	}
+	else {
+		ArrayList<BPointer> pointersArray = new ArrayList<BPointer>();
+		for(BPointer point: pointers) {
+			pointersArray.add(point);
+			}
+		for(int itr =0; itr <pointersArray.size();itr++) {
+			BPointer temp = pointersArray.get(itr);
+			for(int i = itr+1;i<pointersArray.size();i++) {
+				BPointer p = pointersArray.get(i);
+				if (p.compareTo(temp) >= 0 && p.getPage() == temp.getPage())
+				{
+				p.setOffset(p.getOffset() - 1);			
+				pointersArray.set(i, p);
+				}
+				}	
+		}
 	}
 		//TODO: use Utilities.selectPointers(indices, SQLTerm[] arrSQLTerms, String[] strarrOperators) for your
 		// select queries. For the first argument just pass the hashtable "indices" (the instance variable)
 
 	}
-
 	//----------------------------------M2------------------------------------------
 	public Iterator selectFromTable(SQLTerm[] arrSQLTerms, String[] strarrOperators) throws DBAppException{
 		//----=not enough operators=-----
