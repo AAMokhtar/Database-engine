@@ -56,106 +56,42 @@ public class DBApp {
 		//CREATE TABLE TEST PASSED!
 		Hashtable table = new Hashtable<String, String>();
 		table.put("ID","java.lang.Integer");
-//		table.put("name","java.lang.String");
-//		table.put("isAdult","java.lang.Boolean");
-//		table.put("nationality","java.lang.String");
-//		table.put("birthdate","java.util.Date");
-//		table.put("gpa","java.lang.Double");
-		table.put("shape", "java.awt.Polygon");
+		//table.put("name","java.lang.String");
+		//table.put("isAdult","java.lang.Boolean");
+		//table.put("nationality","java.lang.String");
+		//table.put("birthdate","java.util.Date");
+		//table.put("gpa","java.lang.Double");
 		DBApp d = new DBApp();
 		d.init();
 		try {
-			d.createTable("Test1","ID", table);
+			d.createTable("Test4","ID", table);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
 
 		Hashtable<String, Object> tuple = new Hashtable<String, Object>();
-		tuple.put("ID",3);
-//		tuple.put("name","Mberry");
-//		tuple.put("isAdult",false);
-//		tuple.put("nationality","Egypt");
-//		tuple.put("birthdate",new Date(434567650));
-//		tuple.put("gpa",3.0);
-		tuple.put("shape", new java.awt.Polygon());
-
-		try {
-			d.insertIntoTable("Test1", tuple);
-
-		} catch (DBAppException e) {
-			System.out.println(e.getMessage());
-		}
+		tuple.put("ID",6);
+		//tuple.put("name","Ismail");
+		//tuple.put("isAdult",true);
+		//tuple.put("nationality","China");
+		//tuple.put("birthdate",new Date(434567650));
+		//tuple.put("gpa",1.0);
 		
-		/*tuple = new Hashtable<>();
-		tuple.put("ID",0);
-		tuple.put("name","Ali");
-		tuple.put("isAdult",true);
-		tuple.put("nationality","Uganda");
-		tuple.put("birthdate",new Date(2));
-		tuple.put("gpa",-1.0);
 
 		try {
-			d.insertIntoTable("Test1", tuple);
+			d.insertIntoTable("Test4", tuple);
+			//d.deleteFromTable("Test4", tuple);
 
 		} catch (DBAppException e) {
-			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
 		}
 
-		tuple = new Hashtable<>();
-		tuple.put("ID",-1);
-		tuple.put("name","Mayar");
-		tuple.put("isAdult",false);
-		tuple.put("nationality","Niger");
-		tuple.put("birthdate",new Date(2));
-		tuple.put("gpa",1234.5);
-
-		try {
-			d.insertIntoTable("Test1", tuple);
-
-		} catch (DBAppException e) {
-			// TODO Auto-generated catch block
-			System.out.println(e.getMessage());
-		}
-
-		tuple = new Hashtable<>();
-		tuple.put("ID",-1);
-		tuple.put("name","Saeed");
-		tuple.put("isAdult",true);
-		tuple.put("nationality","happy land");
-		tuple.put("birthdate",new Date(2));
-		tuple.put("gpa",0.0001);
-
-		try {
-			d.insertIntoTable("Test3", tuple);
-
-		} catch (DBAppException e) {
-			// TODO Auto-generated catch block
-			System.out.println(e.getMessage());
-		}
-
-		tuple = new Hashtable<>();
-		tuple.put("ID",13);
-		tuple.put("name","Basant");
-		tuple.put("isAdult",true);
-		tuple.put("nationality","India");
-		tuple.put("birthdate",new Date(2));
-		tuple.put("gpa",420.360);
-
-		try {
-			d.insertIntoTable("Test3", tuple);
-
-		} catch (DBAppException e) {
-			// TODO Auto-generated catch block
-			System.out.println(e.getMessage());
-		}*/
-
-		try {
-			d.createBTreeIndex("Test1", "ID");
+		/*try {
+			d.createBTreeIndex("Test3", "ID");
 			} catch (DBAppException e) {
 			System.out.println(e.getMessage());
-		}
-		Table obj=Utilities.deserializeTable("Test1");
+		}*/
+		Table obj=Utilities.deserializeTable("Test4");
 
 
 		for (int i = 0; i < obj.getPages().size(); i++) {
