@@ -21,7 +21,11 @@ public class overflowPage implements Serializable {
         this.prev = prev.name +"_"+ prev.getID();
         prev.next = this.name +"_"+ ID;
     }
-
+public void addPointer(Pointer e) {
+	pointers.add(e);
+}
+ 
+    
     private overflowPage(String name){ //constructor for the first page
         this.name = name;
         ID = 0;
@@ -46,7 +50,7 @@ public class overflowPage implements Serializable {
 
 
     public void destroy(){ //deletes the page and fixes the pointers to the previous and next pages
-        File file = new File("data//overflow_Pages//" + "overflow_" + name + ".class");
+        File file = new File("data//overflow_Pages//" + "overflow_" + name+"_"+ID + ".class");
 
         if (ID == 0){ //if we are deleting the first page
             if(next != null){ //make the next page the first
@@ -68,13 +72,15 @@ public class overflowPage implements Serializable {
         }
 
         if(!file.delete())
-            System.out.println("Failed to delete file!");
-
+{			
+        	System.out.println("Failed to delete file!");
+}
     }
 
     public Pointer poll() { //remove first element and return it
         Pointer ret = pointers.remove(0);
-        if (this.size() == 0) this.destroy();
+        if (this.size() == 0) 
+        	this.destroy();
         return ret;
     }
 

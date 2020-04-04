@@ -1449,6 +1449,8 @@ public class Utilities {
 			fileAccess = new FileOutputStream(file);
 			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
 			objectAccess.writeObject(p);
+			fileAccess.close();
+			objectAccess.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Failed to serialize page.");

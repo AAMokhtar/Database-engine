@@ -87,31 +87,40 @@ public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
 				getValues().remove(key);
 				pointers.remove(key);
 				decSize();
-	            if (new File("data//overflow_Pages//" + "overflow_" + name + value + "_0.class").isFile()){ //has overflow pages
-	                overflowPage curPage = Utilities.deserializeOverflow(name + value + "_0"); //get the first page
-	           		getPointers().add(key,(BPointer)curPage.poll());
+	            if (new File("data//overflow_Pages//" + "overflow_" + name +"_" +value + "_0.class").isFile()){ //has overflow pages
+					overflowPage curPage = Utilities.deserializeOverflow(name + "_"+value + "_0"); //get the first page
+
+	            	getPointers().add(key,(BPointer)curPage.poll());
             		getValues().add(key, value);
             		Utilities.serializeOverflow(curPage);   
+
 	            }
         		Utilities.serializeNode(this);
 			}
 				
-			else if (new File("data//overflow_Pages//" + "overflow_" + name + value + "_0.class").isFile()){ //has overflow pages
-                overflowPage curPage = Utilities.deserializeOverflow(name + value + "_0"); //get the first page
+			else if (new File("data//overflow_Pages//" + "overflow_" + name+"_" + value + "_0.class").isFile()){
+				//has overflow pages
+                overflowPage curPage = Utilities.deserializeOverflow(name + "_"+value + "_0"); //get the first page
+
 
                 while (curPage != null){ //loop over all overflow pages
 
-                    Queue<Pointer> pointersQ = curPage.getPointers(); //get all pointers
-
-                    while (!pointersQ.isEmpty()){ //for each pointer in page
-                        BPointer p = (BPointer) pointersQ.poll();
+                    int size = curPage.size();
+                    while (size>0){ //for each pointer in page
+                        BPointer p = (BPointer) curPage.poll();
 
                         if (p.compareTo(temp) == 0 ) {
-                           curPage.deletePointer(p);
-                           Utilities.serializeOverflow(curPage);  
+        					  size--;
+                        	if(curPage.size()!=0)
+                        		Utilities.serializeOverflow(curPage);  
                            flag = true;    
+
                            break;
                     }
+                        else {
+                        	size--;
+                        	curPage.addPointer(p);
+                        }
                     }
                     if(flag) {
                     	break;
