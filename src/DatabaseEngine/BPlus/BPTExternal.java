@@ -86,7 +86,8 @@ public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
 			if(getPointers().get(key).equals(temp)) {
 				getValues().remove(key);
 				pointers.remove(key);
-	            if (new File("data//BPlus//overflow_Pages//" + "overflow_" + name + value + "_0.class").isFile()){ //has overflow pages
+				decSize();
+	            if (new File("data//overflow_Pages//" + "overflow_" + name + value + "_0.class").isFile()){ //has overflow pages
 	                overflowPage curPage = Utilities.deserializeOverflow(name + value + "_0"); //get the first page
 	           		getPointers().add(key,(BPointer)curPage.poll());
             		getValues().add(key, value);
@@ -95,7 +96,7 @@ public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
         		Utilities.serializeNode(this);
 			}
 				
-			else if (new File("data//BPlus//overflow_Pages//" + "overflow_" + name + value + "_0.class").isFile()){ //has overflow pages
+			else if (new File("data//overflow_Pages//" + "overflow_" + name + value + "_0.class").isFile()){ //has overflow pages
                 overflowPage curPage = Utilities.deserializeOverflow(name + value + "_0"); //get the first page
 
                 while (curPage != null){ //loop over all overflow pages
