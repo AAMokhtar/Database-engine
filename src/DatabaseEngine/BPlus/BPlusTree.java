@@ -479,6 +479,8 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 			while(child.getValues().size()<child.getMinPerNodes()) {
 				child.getValues().add(0,left.getValues().remove(left.getValues().size()-1));
 				child.getPointers().add(0,left.getPointers().remove(left.getPointers().size()-1));
+				child.incSize();
+				left.decSize();
 			}
 			bptInternal.getValues().set(key,child.getValues().get(0));
 		}
@@ -490,7 +492,8 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 				child.getValues().add(0,Utilities.findLeaf(child, null, true).getValues().get(0));
 				left.getValues().remove(left.getValues().size()-1);
 				child.getPointers().add(0,left.getPointers().remove(left.getPointers().size()-1));
-	
+				child.incSize();
+				left.decSize();
 			}
 			bptInternal.getValues().set(key, Utilities.findLeaf(child, null, true).getValues().get(0));
 		}
@@ -506,6 +509,8 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 			while(child.getValues().size()<child.getMinPerNodes()) {
 				child.getValues().add(right.getValues().remove(0));
 				child.getPointers().add(right.getPointers().remove(0));
+				child.incSize();
+				right.decSize();
 			}
 			bptInternal.getValues().set(key, right.getValues().get(0));
 		}
@@ -517,7 +522,8 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 				child.getValues().add(Utilities.findLeaf(right, null, true).getValues().get(0));
 				right.getValues().remove(0);
 				child.getPointers().add(right.getPointers().remove(0));
-	
+				child.incSize();
+				right.decSize();
 			}
 			bptInternal.getValues().set(key, Utilities.findLeaf(right, null, true).getValues().get(0));
 		}
@@ -534,10 +540,13 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                 left.getValues().add(child.getValues().remove(0));
                 left.getPointers().add(child.getPointers().remove(0));
                 left.setNext(child.getNext());
+                left.incSize();
+                child.decSize();
             }
             child.deleteNode();
             bptInternal.getValues().remove(key);
             bptInternal.getPointers().remove(key+1);
+            bptInternal.decSize();
         }
         else {
             BPTInternal child = (BPTInternal) childnode;
@@ -547,10 +556,13 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
             while(!(child.getValues().isEmpty())) {
                 left.getValues().add(child.getValues().remove(0));
                 left.getPointers().add(child.getPointers().remove(0));
+                left.incSize();
+                child.decSize();
             }
             child.deleteNode();
             bptInternal.getValues().remove(key);
             bptInternal.getPointers().remove(key+1);
+            bptInternal.decSize();
         }
         Utilities.serializeNode(leftnode);
         Utilities.serializeNode(bptInternal);
@@ -565,10 +577,13 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 				child.getValues().add(right.getValues().remove(0));
 				child.getPointers().add(right.getPointers().remove(0));
 				child.setNext(right.getNext());
+				child.incSize();
+				right.decSize();
 			}
 			right.deleteNode();
 			bptInternal.getValues().remove(key);
 			bptInternal.getPointers().remove(key+1);
+			bptInternal.decSize();
 		}
 		else {
 			BPTInternal child = (BPTInternal) childnode;
@@ -578,10 +593,13 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 			while(!(right.getValues().isEmpty())) {
 				child.getValues().add(right.getValues().remove(0));
 				child.getPointers().add(right.getPointers().remove(0));
+				child.incSize();
+				right.decSize();
 			}
 			right.deleteNode();
 			bptInternal.getValues().remove(key);
-			bptInternal.getValues().remove(key+1);
+			bptInternal.getPointers().remove(key+1);
+			bptInternal.decSize();
 		}
 		Utilities.serializeNode(childnode);
 		Utilities.serializeNode(bptInternal);

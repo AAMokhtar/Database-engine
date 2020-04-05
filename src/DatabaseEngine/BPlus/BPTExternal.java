@@ -92,6 +92,7 @@ public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
 
 	            	getPointers().add(key,(BPointer)curPage.poll());
             		getValues().add(key, value);
+            		incSize();
             		if(curPage.size()!=0)
             		Utilities.serializeOverflow(curPage);   
 
