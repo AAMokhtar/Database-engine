@@ -247,7 +247,7 @@ public class DBApp {
 		}
 		//Step 9:serialize table again
 		Utilities.serializeTable(tableToInsertIn);
-		
+		this.indices = Utilities.loadIndices();
 		
 	}
 
@@ -339,7 +339,7 @@ public class DBApp {
 			Utilities.serializeTable(t);
 
 		}
-
+		this.indices = Utilities.loadIndices();
 	}
 
 
@@ -437,12 +437,10 @@ public class DBApp {
 				p.setOffset(p.getOffset() - 1);			
 				pointersArray.set(i, p);
 				}
-				}	
+				}
 		}
 	}
-		//TODO: use Utilities.selectPointers(indices, SQLTerm[] arrSQLTerms, String[] strarrOperators) for your
-		// select queries. For the first argument just pass the hashtable "indices" (the instance variable)
-
+		this.indices = Utilities.loadIndices();
 	}
 	//----------------------------------M2------------------------------------------
 	public Iterator selectFromTable(SQLTerm[] arrSQLTerms, String[] strarrOperators) throws DBAppException{
@@ -643,8 +641,7 @@ public class DBApp {
 				Utilities.updateMetaData(strTableName, strColName);
 				//System.out.println("Metadata modified");
 				//add to hashtable
-				Utilities.loadIndices();
-				System.out.println("Index has been successfuly created");
+				indices = Utilities.loadIndices();
 			}
 		}
 		

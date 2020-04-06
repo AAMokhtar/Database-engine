@@ -59,6 +59,8 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
             incrementPointersAt(recordPointer.getPage(), recordPointer.getOffset()); //if you inserted a new record as well
 
         insertHelp(value, recordPointer, root); //the actual insertion
+        Utilities.serializeBPT(this);
+
     }
 
     //Search
@@ -312,28 +314,6 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 
     //Delete
 	public void delete(T value, BPointer p, String type) {
-//    	if(type.equals("java.lang.Integer")) {
-//			Integer v = (Integer) value;
-//			root.delete((T) v,p);
-//			}
-//		else if(type.equals("java.lang.String")) {
-//			String v = (String) value;
-//			root.delete((T)v,p);
-//		}
-//		else if(type.equals("java.util.Date")) {
-//			Date v = (Date) value;
-//			root.delete((T)v,p);
-//		}
-//
-//		else if(type.equals("java.lang.Boolean")) {
-//			Boolean v = (Boolean) value;
-//			root.delete((T)v,p);
-//		}
-//		else if(type.equals("java.lang.Double")) {
-//			Double v = (Double) value;
-//			root.delete((T)v,p);
-//		}    	
-
 		if (root instanceof BPTInternal) {
 			((BPTInternal) root).delete(value, p, name);
 			if (root.getValues().size() == 0) {
@@ -348,6 +328,11 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 			}
 		} else if (root instanceof BPTExternal) {
 			((BPTExternal) root).delete(value, p, name);
+
+			if (root.getSize() == 0){
+                root.deleteNode();
+                root = null;
+            }
 		}
 		decrementPointersAt(p.getPage(), p.getOffset());
 		Utilities.serializeBPT(this);
@@ -416,6 +401,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                 else { //non root: split and take step back in the recursion tree
                     BPTNode<T> node = cur.split(); //return node after assigning its ID
                     node.setID(name +"_"+ nodeID++);
+                    ((BPTExternal<T>) cur).setNext(node.getID());
                     Utilities.serializeNode(node); //save node
                     Utilities.serializeNode(cur); //save node
                     return node;
@@ -494,6 +480,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 				child.getPointers().add(0,left.getPointers().remove(left.getPointers().size()-1));
 				child.incSize();
 				left.decSize();
+
 			}
 			bptInternal.getValues().set(key, Utilities.findLeaf(child, null, true).getValues().get(0));
 		}
@@ -539,11 +526,11 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
             while(!(child.getValues().isEmpty())) {
                 left.getValues().add(child.getValues().remove(0));
                 left.getPointers().add(child.getPointers().remove(0));
-                left.setNext(child.getNext());
                 left.incSize();
                 child.decSize();
             }
             child.deleteNode();
+            left.setNext(child.getNext());
             bptInternal.getValues().remove(key);
             bptInternal.getPointers().remove(key+1);
             bptInternal.decSize();
@@ -553,6 +540,8 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
             BPTInternal left = (BPTInternal) leftnode;
             left.getValues().add(Utilities.findLeaf(child, null, true).getValues().get(0));
             left.getPointers().add(child.getPointers().remove(0));
+            left.incSize();
+            child.decSize();
             while(!(child.getValues().isEmpty())) {
                 left.getValues().add(child.getValues().remove(0));
                 left.getPointers().add(child.getPointers().remove(0));
@@ -576,12 +565,12 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 			while(!(right.getValues().isEmpty())) {
 				child.getValues().add(right.getValues().remove(0));
 				child.getPointers().add(right.getPointers().remove(0));
-				child.setNext(right.getNext());
 				child.incSize();
 				right.decSize();
 			}
 			right.deleteNode();
-			bptInternal.getValues().remove(key);
+            child.setNext(right.getNext());
+            bptInternal.getValues().remove(key);
 			bptInternal.getPointers().remove(key+1);
 			bptInternal.decSize();
 		}
@@ -590,6 +579,8 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 			BPTInternal right = (BPTInternal) rightnode;
 			child.getValues().add(Utilities.findLeaf(right, null, true).getValues().get(0));
 			child.getPointers().add(right.getPointers().remove(0));
+            child.incSize();
+            right.decSize();
 			while(!(right.getValues().isEmpty())) {
 				child.getValues().add(right.getValues().remove(0));
 				child.getPointers().add(right.getPointers().remove(0));

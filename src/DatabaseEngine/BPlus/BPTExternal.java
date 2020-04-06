@@ -104,29 +104,11 @@ public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
 				//has overflow pages
                 overflowPage curPage = Utilities.deserializeOverflow(name + "_"+value + "_0"); //get the first page
 
-
                 while (curPage != null){ //loop over all overflow pages
+                    int prevsize = curPage.size();
+                    curPage.deletePointer(temp);
+                    if (curPage.size() < prevsize) break;
 
-                    int size = curPage.size();
-                    while (size>0){ //for each pointer in page
-                        BPointer p = (BPointer) curPage.poll();
-
-                        if (p.compareTo(temp) == 0 ) {
-        					  size--;
-                        	if(curPage.size()!=0)
-                        		Utilities.serializeOverflow(curPage);  
-                           flag = true;    
-
-                           break;
-                    }
-                        else {
-                        	size--;
-                        	curPage.addPointer(p);
-                        }
-                    }
-                    if(flag) {
-                    	break;
-                    }
                     curPage = Utilities.deserializeOverflow(curPage.getNext()); //next page
                 }
             }

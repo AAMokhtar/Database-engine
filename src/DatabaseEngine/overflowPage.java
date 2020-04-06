@@ -20,12 +20,16 @@ public class overflowPage implements Serializable {
         next = null; //i know that it's already null, it looks nicer that way.
         this.prev = prev.name +"_"+ prev.getID();
         prev.next = this.name +"_"+ ID;
+        Utilities.serializeOverflow(this);
+        Utilities.serializeOverflow(prev);
+
+
     }
 public void addPointer(Pointer e) {
-	pointers.add(e);
-}
- 
-    
+        pointers.add(e);
+    }
+
+
     private overflowPage(String name){ //constructor for the first page
         this.name = name;
         ID = 0;
@@ -33,6 +37,7 @@ public void addPointer(Pointer e) {
         next = null;
         prev = null;
         prev= null;
+        Utilities.serializeOverflow(this);
     }
 
     private void insert(Pointer p){
@@ -41,6 +46,8 @@ public void addPointer(Pointer e) {
 
     public void deletePointer(Pointer p){ //deletes a pointer value
         pointers.remove(p);
+        if (this.size() == 0) this.destroy();
+        else Utilities.serializeOverflow(this);
     }
 
     public int size(){
@@ -50,11 +57,17 @@ public void addPointer(Pointer e) {
 
 
     public void destroy(){ //deletes the page and fixes the pointers to the previous and next pages
-        File file = new File("data//overflow_Pages//" + "overflow_" + name+"_"+ID + ".class");
+        File thisFile = new File("data//overflow_Pages//" + "overflow_" + name+"_"+ID + ".class");
+
+        if(!thisFile.delete()) System.out.println("Failed to delete file!");
 
         if (ID == 0){ //if we are deleting the first page
             if(next != null){ //make the next page the first
                 overflowPage nextPage = Utilities.deserializeOverflow(next);
+
+                File nextFile = new File("data//overflow_Pages//" + "overflow_" + next + ".class");
+                if(!nextFile.delete()) System.out.println("Failed to delete file!");
+
                 nextPage.setPrev(null);
                 nextPage.setID(0);
                 Utilities.serializeOverflow(nextPage);
@@ -71,22 +84,22 @@ public void addPointer(Pointer e) {
             Utilities.serializeOverflow(prevPage);
         }
 
-        if(!file.delete())
-{			
-        	System.out.println("Failed to delete file!");
-}
     }
 
     public Pointer poll() { //remove first element and return it
         Pointer ret = pointers.remove(0);
-        if (this.size() == 0) 
-        	this.destroy();
+
+        if (this.size() == 0) this.destroy();
+        else Utilities.serializeOverflow(this);
+
         return ret;
     }
 
     public void removeIndex(int index){ //remove a pointer from the page using its index in the array
         pointers.remove(index);
         if (this.size() == 0) this.destroy();
+        else Utilities.serializeOverflow(this);
+
     }
 
     public int getID() {
