@@ -22,6 +22,10 @@ import java.util.Hashtable;
 import java.util.*;
 
 import DatabaseEngine.BPlus.*;
+import DatabaseEngine.R.RExternal;
+import DatabaseEngine.R.RInternal;
+import DatabaseEngine.R.RNode;
+import DatabaseEngine.R.RTree;
 import javafx.util.Pair;
 
 public class Utilities {
@@ -802,7 +806,10 @@ public class Utilities {
 				}
 
 				if (info[4].charAt(0) == 'T') {
-					ret.get(info[0]).put(info[1], deserializeBPT(info[0]+"_"+info[1]));
+					if (info[2].equals("java.awt.Polygon")) ret.get(info[0]).put(info[1],
+							deserializeRTree(info[0]+"_"+info[1]));
+
+					else ret.get(info[0]).put(info[1], deserializeBPT(info[0]+"_"+info[1]));
 				}
 
 			}
@@ -991,7 +998,7 @@ public class Utilities {
 			String path =  "data//BPlus//Trees//" + "BPlusTree_" + name+ ".class";
 			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
 
-			FileInputStream readFromFile = new FileInputStream("data//BPlus//Trees//" + "BPlusTree_" + name+ ".class");
+			FileInputStream readFromFile = new FileInputStream(path);
 			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
 			BPlusTree<T> k = (BPlusTree<T>) readObject.readObject();
 			readObject.close();
@@ -1162,9 +1169,8 @@ public class Utilities {
 	public static BSet<BPointer> indexedQuery(Class colType, index tree, SQLTerm cur){
 		BSet<BPointer> queryResult = new BSet<>(); //output
 
-		if (colType.getName().equals("DatabaseEngine.myPolygon")){ //use R tree
-			//TODO: R tree query
-			//turn R pointers into BPointers
+		if (colType.getName().equals("java.awt.Polygon")){ //use R tree
+			queryResult =  ((RTree) tree).search((myPolygon) cur._objValue, cur._strOperator);
 		}
 
 		else { //use B+ trees
@@ -1477,5 +1483,179 @@ public class Utilities {
 			System.out.println("Failed to deserialize page. Return value: NULL");
 		}
 		return null;
+	}
+
+	//---------------------------===================="R"_TREES=====================--------------------------------
+
+	//check equality IN TERMS OF POINTS
+	public static boolean polygonsEqual(Polygon A, Polygon B) {
+		if(A.npoints == B.npoints) {
+			for (int i = 0; i < A.npoints; i++) {
+				if (A.xpoints[i]!=B.xpoints[i]) {
+					return false;
+				}
+			}
+
+			for (int i = 0; i < A.npoints; i++) {
+				if (A.ypoints[i]!=B.ypoints[i]) {
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	public static void serializeRNode(RNode N) { //copy pasted from Basant's (thx XD)
+
+		try {
+
+			String path =  "data//R//R_Nodes//" + "Node_" + N.getID() + ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+			File file = new File(path);
+			FileOutputStream fileAccess;
+			fileAccess = new FileOutputStream(file);
+			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
+			objectAccess.writeObject(N);
+			objectAccess.close();
+			fileAccess.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Failed to serialize node.");
+		}
+	}
+
+	public static RNode deserializeRNode(String nodeID) {
+		if (nodeID == null) return null;
+
+		try {
+
+			String path =  "data//R//R_Nodes//" + "Node_" + nodeID + ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+			FileInputStream readFromFile = new FileInputStream(path);
+			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
+			RNode k = (RNode) readObject.readObject();
+			readObject.close();
+			readFromFile.close();
+			return k;
+		}
+		catch(Exception E) {
+			System.out.println("Failed to deserialize node. Return value: NULL");
+		}
+
+		return null;
+	}
+
+	public static void serializeRTree(RTree tree) {
+
+		try {
+
+			String path =  "data//R//Trees//" + "RTree_" +tree.getName() + ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+			File file = new File(path);
+			FileOutputStream fileAccess;
+			fileAccess = new FileOutputStream(file);
+			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
+			objectAccess.writeObject(tree);
+			objectAccess.close();
+			fileAccess.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Failed to serialize tree.");
+		}
+	}
+
+	public static RTree deserializeRTree(String name) {
+		//read from file (deserialize)
+		try {
+
+			String path =  "data//R//Trees//" + "RTree_" + name+ ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+			FileInputStream readFromFile = new FileInputStream(path);
+			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
+			RTree k = (RTree) readObject.readObject();
+			readObject.close();
+			readFromFile.close();
+			return k;
+
+		}
+
+		catch(Exception E) {
+			System.out.println(name);
+			System.out.println("Failed to deserialize tree. Return value: NULL");
+		}
+		return null;
+	}
+
+	public static RExternal findLeaf(RNode cur, myPolygon value, boolean firstNode){
+
+		if (cur instanceof RInternal){
+			int key = -1;
+			if (!firstNode)
+				key = selectiveBinarySearch(cur.getValues(), value, "<="); //find place in array (greatest index less than or equal value)
+
+			return findLeaf(Utilities.deserializeRNode(((RInternal) cur).getPointers().get(key + 1)),value, firstNode); //down the tree
+		}
+
+		return (RExternal) cur;
+	}
+
+	public static Object[] getAllRPointers(RTree tree){
+		HashMap<Integer,HashMap<Integer, BPointer>> ret1 = new HashMap<>();
+		ArrayList<overflowPage> ret2 = new ArrayList<>();
+		ArrayList<RExternal> ret3 = new ArrayList<>();
+
+		RExternal cur = Utilities.findLeaf(tree.getRoot(),null,true); //get the leftmost leaf
+
+		while (cur != null){ //for all leaves
+			ret3.add(cur);
+			ArrayList<BPointer> pointers = cur.getPointers();
+			ArrayList<myPolygon> values = cur.getValues();
+
+			for(BPointer p: pointers){
+				if (!ret1.containsKey(p.getPage())) ret1.put(p.getPage(),new HashMap<>());
+				ret1.get(p.getPage()).put(p.getOffset(),p);
+			}
+
+
+			for(myPolygon v: values) { //get the overflow pages of every value
+				String path = "data//overflow_Pages//" + "overflow_" + tree.getName() +"_"+ v + "_0.class";
+				path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+				if (new File(path).isFile()) { //has overflow pages
+					overflowPage curPage = Utilities.deserializeOverflow(tree.getName() +"_"+ v + "_0"); //get the first page
+
+					while (curPage != null) { //loop over all overflow pages
+
+						Queue<Pointer> pointersQ = curPage.getPointers(); //get all pointers
+
+						while (!pointersQ.isEmpty()){ //for each pointer in page
+							BPointer curPointer = (BPointer) pointersQ.poll();
+							if (!ret1.containsKey(curPointer.getPage())) ret1.put(curPointer.getPage(),new HashMap<>());
+							ret1.get(curPointer.getPage()).put(curPointer.getOffset(), curPointer);
+						}
+						ret2.add(curPage);
+						curPage = Utilities.deserializeOverflow(curPage.getNext()); //next page
+					}
+				}
+			}
+
+			cur = (RExternal) Utilities.deserializeRNode(cur.getNext());
+		}
+		return new Object[] {ret1,ret2,ret3};
+	}
+
+	public static  void serializeAllR(ArrayList<RExternal> leaves, ArrayList<overflowPage> pages) {
+		//save all the leaves
+		for(RExternal cur: leaves) Utilities.serializeRNode(cur);
+
+		//save all pverflow pages
+		for (overflowPage p : pages) Utilities.serializeOverflow(p);
 	}
 }

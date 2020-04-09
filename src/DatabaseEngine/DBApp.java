@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import DatabaseEngine.BPlus.BPlusTree;
 import DatabaseEngine.BPlus.BPointer;
+import DatabaseEngine.R.RTree;
 import javafx.scene.shape.Polygon;
 import javafx.util.Pair;
 
@@ -230,7 +231,7 @@ public class DBApp {
 					Utilities.serializeBPT(tree);
 					//System.out.println("Serializing tree");
 				}
-				else
+				else if (temp[4].equals("True"))
 				{
 					//Rtree
 					// fetch tree
@@ -648,7 +649,82 @@ public class DBApp {
 	}
 
 	public void createRTreeIndex(String strTableName, String strColName) throws DBAppException{
-		//TODO
+		//load metadata of table
+		//System.out.println("Fetching metadata");
+		ArrayList<String[]> metaData=Utilities.readMetaDataForSpecificTable(strTableName);
+		//System.out.println("MetaData: " + metaData);
+		if(metaData.isEmpty())
+		{
+			//table doesn't exist in meta data
+			throw new DBAppException("Table " + strTableName + " has not been initialized. Cannot create index for uninitialized table.");
+		}
+		else
+		{
+			//System.out.println("Table exists");
+			String[] metaDataForIndexedColumn=null;
+			int locationOfIndexedColumn=0;
+			for (int i = 0; i < metaData.size(); i++) {
+				String[] temp=metaData.get(i);
+				if(temp[1].equals(strColName))
+				{
+					if(temp[4].equals("True"))
+					{
+						throw new DBAppException("R tree index already exists for this column");
+					}
+					locationOfIndexedColumn=i;
+					metaDataForIndexedColumn=temp;
+					//System.out.println("metaDataForIndexedColumn" + Arrays.toString(metaDataForIndexedColumn));
+					break;
+
+				}
+			}
+			if(metaDataForIndexedColumn==null)
+			{
+				//column name doesn't exist in meta data
+				throw new DBAppException("Column " + strColName +" in table " + strTableName + " does not exist. Cannot create index for nonexistent column.");
+			}
+			else
+			{
+				//System.out.println("Column exists");
+				String type=metaDataForIndexedColumn[2];
+				//check that column is not of type polygon
+				if(!type.equals("java.awt.Polygon"))
+				{
+					throw new DBAppException("Cannot create R tree index on type " + type);
+				}
+				//all is well. I can now create the appropriate B+ tree
+				//determining column type to create appropriate BTree
+				//System.out.println("Tree should be of type " + type);
+				//creating appropriate Rtree
+				//System.out.println("creating Rtree");
+				RTree tree= new RTree(strTableName, strColName);
+
+				//System.out.println("Deserializing table");
+				Table t= Utilities.deserializeTable(strTableName);
+				for (int i = 0; i < t.getPages().size(); i++) {
+					//System.out.println("deserializing page");
+					Page p= Utilities.deserializePage(t.getPages().get(i));
+					//System.out.println("Page: " + p);
+					for (int j = 0; j < p.getPageElements().size(); j++) {
+						Vector<Object> tuple=p.getTupleFromPage(j);
+						Object value=tuple.get(locationOfIndexedColumn);
+
+						tree.insert((myPolygon) value, new BPointer(t.getPages().get(i), j), false);
+					}
+					Utilities.serializePage(p);
+					//System.out.println("serialized page");
+				}
+				Utilities.serializeTable(t);
+				//System.out.println("serializing table");
+				Utilities.serializeRTree(tree);
+				//System.out.println("Serializing tree");
+				//modify metaData
+				Utilities.updateMetaData(strTableName, strColName);
+				//System.out.println("Metadata modified");
+				//add to hashtable
+				indices = Utilities.loadIndices();
+			}
+		}
 	}
 
 }

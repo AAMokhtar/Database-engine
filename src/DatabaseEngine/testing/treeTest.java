@@ -5,6 +5,9 @@ import DatabaseEngine.BPlus.BPTExternal;
 import DatabaseEngine.BPlus.BPTInternal;
 import DatabaseEngine.BPlus.BPlusTree;
 import DatabaseEngine.BPlus.BPointer;
+import DatabaseEngine.R.RExternal;
+import DatabaseEngine.R.RInternal;
+import DatabaseEngine.R.RTree;
 import org.junit.*;
 import org.junit.runners.MethodSorters;
 
@@ -50,6 +53,18 @@ public class treeTest {
                 file.delete();
 
         dir = new File("data//BPlus//Trees"); //delete BPlus trees
+
+        for(File file: dir.listFiles())
+            if (!file.isDirectory())
+                file.delete();
+
+        dir = new File("data//R//Trees"); //delete BPlus trees
+
+        for(File file: dir.listFiles())
+            if (!file.isDirectory())
+                file.delete();
+
+        dir = new File("data//R//R_Nodes"); //delete all BPlus tree nodes
 
         for(File file: dir.listFiles())
             if (!file.isDirectory())
@@ -1174,8 +1189,6 @@ public class treeTest {
         assertTrue(fourVals.get(0) == 25,"incorrect value");
 
 
-
-
         //pointers are correct
         assertTrue(onePointers.get(0).getPage() == 1 && onePointers.get(0).getOffset() == 0,"incorrect pointer");
         assertTrue(onePointers.get(1).getPage() == 1 && onePointers.get(1).getOffset() == 1,"incorrect pointer");
@@ -1381,7 +1394,7 @@ public class treeTest {
         DB.createBTreeIndex("TreeTesting","String");
         DB.createBTreeIndex("TreeTesting","Date");
         DB.createBTreeIndex("TreeTesting","Boolean");
-//        DB.createRTreeIndex("TreeTesting","Polygon");
+        DB.createRTreeIndex("TreeTesting","Polygon");
 
         //trees exist
         assertTrue(new File("data//BPlus//Trees//BPlusTree_TreeTesting_Integer.class").isFile());
@@ -1389,7 +1402,7 @@ public class treeTest {
         assertTrue(new File("data//BPlus//Trees//BPlusTree_TreeTesting_String.class").isFile());
         assertTrue(new File("data//BPlus//Trees//BPlusTree_TreeTesting_Date.class").isFile());
         assertTrue(new File("data//BPlus//Trees//BPlusTree_TreeTesting_Boolean.class").isFile());
-//        assertTrue(new File(Polygon).isFile());
+        assertTrue(new File("data//R//Trees//RTree_TreeTesting_Polygon.class").isFile());
     }
 
     @Test
@@ -1835,7 +1848,329 @@ public class treeTest {
     }
 
     @Test
-    public void v_deleteAllOverflow(){
+    public void V_testPolygon(){
+        RTree treePoly = Utilities.deserializeRTree("TreeTesting_Polygon");
+        RInternal root = (RInternal) treePoly.getRoot();
+        ArrayList<String> rootPointers = root.getPointers();
+
+        RInternal  left = (RInternal) Utilities.deserializeRNode(rootPointers.get(0));
+        RInternal  right = (RInternal) Utilities.deserializeRNode(rootPointers.get(1));
+
+        ArrayList<myPolygon> rootVals = root.getValues();
+        ArrayList<myPolygon> leftVals = left.getValues();
+        ArrayList<myPolygon> rightVals = right.getValues();
+
+        ArrayList<String> leftPointers = left.getPointers();
+        ArrayList<String> rightPointers = right.getPointers();
+
+        RExternal one = (RExternal) Utilities.deserializeRNode(leftPointers.get(0));
+        RExternal  two = (RExternal) Utilities.deserializeRNode(leftPointers.get(1));
+        RExternal  three = (RExternal) Utilities.deserializeRNode(leftPointers.get(2));
+
+        RExternal  four = (RExternal) Utilities.deserializeRNode(rightPointers.get(0));
+        RExternal  five = (RExternal) Utilities.deserializeRNode(rightPointers.get(1));
+
+        ArrayList<myPolygon> oneVals = one.getValues();
+        ArrayList<myPolygon> twoVals = two.getValues();
+        ArrayList<myPolygon> threeVals = three.getValues();
+        ArrayList<myPolygon> fourVals = four.getValues();
+        ArrayList<myPolygon> fiveVals = five.getValues();
+
+        ArrayList<BPointer> onePointers = one.getPointers();
+        ArrayList<BPointer> twoPointers = two.getPointers();
+        ArrayList<BPointer> threePointers = three.getPointers();
+        ArrayList<BPointer> fourPointers = four.getPointers();
+        ArrayList<BPointer> fivePointers = five.getPointers();
+
+
+        //correct sizes
+        assertTrue(root.getSize() == 1,"incorrect node size");
+        assertTrue(rootVals.size() == 1,"incorrect node size");
+        assertTrue(rootPointers.size() == 2,"incorrect node size");
+
+        assertTrue(left.getSize() == 2,"incorrect node size");
+        assertTrue(leftVals.size() == 2,"incorrect node size");
+        assertTrue(leftPointers.size() == 3,"incorrect node size");
+
+        assertTrue(right.getSize() == 1,"incorrect node size");
+        assertTrue(rightVals.size() == 1,"incorrect node size");
+        assertTrue(rightPointers.size() == 2,"incorrect node size");
+
+        assertTrue(one.getSize() == 2,"incorrect node size");
+        assertTrue(oneVals.size() == 2,"incorrect node size");
+        assertTrue(onePointers.size() == 2,"incorrect node size");
+
+        assertTrue(two.getSize() == 2,"incorrect node size");
+        assertTrue(twoVals.size() == 2,"incorrect node size");
+        assertTrue( twoPointers.size() == 2,"incorrect node size");
+
+        assertTrue(three.getSize() == 2,"incorrect node size");
+        assertTrue(threeVals.size() == 2,"incorrect node size");
+        assertTrue(threePointers.size() == 2,"incorrect node size");
+
+        assertTrue(four.getSize() == 2,"incorrect node size");
+        assertTrue(fourVals.size() == 2,"incorrect node size");
+        assertTrue(fourPointers.size() == 2,"incorrect node size");
+
+        assertTrue(five.getSize() == 3,"incorrect node size");
+        assertTrue(fiveVals.size() == 3,"incorrect node size");
+        assertTrue(fivePointers.size() == 3,"incorrect node size");
+
+
+        //nodes are linked correctly
+        assertTrue(one.getNext().equals(leftPointers.get(1)),"leaves are linked incorrectly");
+        assertTrue(two.getNext().equals(leftPointers.get(2)),"leaves are linked incorrectly");
+        assertTrue(three.getNext().equals(rightPointers.get(0)),"leaves are linked incorrectly");
+        assertTrue(four.getNext().equals(rightPointers.get(1)),"leaves are linked incorrectly");
+        assertTrue(five.getNext() == null);
+
+
+        //values are correct
+        assertTrue(Utilities.polygonsEqual(square(13),rootVals.get(0)),"incorrect value");
+
+        assertTrue(Utilities.polygonsEqual(square(9),leftVals.get(0)),"incorrect value");
+        assertTrue(Utilities.polygonsEqual(square(11),leftVals.get(1)),"incorrect value");
+
+        assertTrue(Utilities.polygonsEqual(square(16),rightVals.get(0)),"incorrect value");
+
+        assertTrue(Utilities.polygonsEqual(square(1),oneVals.get(0)),"incorrect value");
+        assertTrue(Utilities.polygonsEqual(square(4),oneVals.get(1)),"incorrect value");
+
+        assertTrue(Utilities.polygonsEqual(square(9),twoVals.get(0)),"incorrect value");
+        assertTrue(Utilities.polygonsEqual(square(10),twoVals.get(1)),"incorrect value");
+
+        assertTrue(Utilities.polygonsEqual(square(11),threeVals.get(0)),"incorrect value");
+        assertTrue(Utilities.polygonsEqual(square(12),threeVals.get(1)),"incorrect value");
+
+        assertTrue(Utilities.polygonsEqual(square(13),fourVals.get(0)),"incorrect value");
+        assertTrue(Utilities.polygonsEqual(square(15),fourVals.get(1)),"incorrect value");
+
+        assertTrue(Utilities.polygonsEqual(square(16),fiveVals.get(0)),"incorrect value");
+        assertTrue(Utilities.polygonsEqual(square(20),fiveVals.get(1)),"incorrect value");
+        assertTrue(Utilities.polygonsEqual(square(25),fiveVals.get(2)),"incorrect value");
+
+
+
+        //pointers are correct
+        assertTrue(onePointers.get(0).getPage() == 8 && onePointers.get(0).getOffset() == 0,"incorrect pointer");
+        assertTrue(onePointers.get(1).getPage() == 8 && onePointers.get(1).getOffset() == 1,"incorrect pointer");
+
+        assertTrue(twoPointers.get(0).getPage() == 8 && twoPointers.get(0).getOffset() == 2,"incorrect pointer");
+        assertTrue(twoPointers.get(1).getPage() == 9 && twoPointers.get(1).getOffset() == 0,"incorrect pointer");
+
+        assertTrue(threePointers.get(0).getPage() == 9 && threePointers.get(0).getOffset() == 1,"incorrect pointer");
+        assertTrue(threePointers.get(1).getPage() == 9 && threePointers.get(1).getOffset() == 2,"incorrect pointer");
+
+        assertTrue(fourPointers.get(0).getPage() == 10 && fourPointers.get(0).getOffset() == 0,"incorrect pointer");
+        assertTrue(fourPointers.get(1).getPage() == 10 && fourPointers.get(1).getOffset() == 1,"incorrect pointer");
+
+        assertTrue(fivePointers.get(0).getPage() == 10 && fivePointers.get(0).getOffset() == 2,"incorrect pointer");
+        assertTrue(fivePointers.get(1).getPage() == 11 && fivePointers.get(1).getOffset() == 0,"incorrect pointer");
+        assertTrue(fivePointers.get(2).getPage() == 11 && fivePointers.get(2).getOffset() == 1,"incorrect pointer");
+    }
+
+    @Test
+    public void W_testPolygonDelete13_15_16_20() throws DBAppException {
+        Hashtable<String, Object> tuple = new Hashtable<>();
+        tuple.put("Integer",13);
+        DB.deleteFromTable("TreeTesting", tuple);
+
+        tuple.put("Integer",15);
+        DB.deleteFromTable("TreeTesting", tuple);
+
+        tuple.put("Integer",16);
+        DB.deleteFromTable("TreeTesting", tuple);
+
+        tuple.put("Integer",20);
+        DB.deleteFromTable("TreeTesting", tuple);
+
+        //----------------------------------TREE_STRUCTURE--------------------------------------
+
+        RTree treePoly = Utilities.deserializeRTree("TreeTesting_Polygon");
+        RInternal root = (RInternal) treePoly.getRoot();
+        ArrayList<String> rootPointers = root.getPointers();
+
+        RInternal  left = (RInternal) Utilities.deserializeRNode(rootPointers.get(0));
+        RInternal  right = (RInternal) Utilities.deserializeRNode(rootPointers.get(1));
+
+        ArrayList<myPolygon> rootVals = root.getValues();
+        ArrayList<myPolygon> leftVals = left.getValues();
+        ArrayList<myPolygon> rightVals = right.getValues();
+
+        ArrayList<String> leftPointers = left.getPointers();
+        ArrayList<String> rightPointers = right.getPointers();
+
+        RExternal one = (RExternal) Utilities.deserializeRNode(leftPointers.get(0));
+        RExternal  two = (RExternal) Utilities.deserializeRNode(leftPointers.get(1));
+
+        RExternal  three = (RExternal) Utilities.deserializeRNode(rightPointers.get(0));
+        RExternal  four = (RExternal) Utilities.deserializeRNode(rightPointers.get(1));
+
+        ArrayList<myPolygon> oneVals = one.getValues();
+        ArrayList<myPolygon> twoVals = two.getValues();
+        ArrayList<myPolygon> threeVals = three.getValues();
+        ArrayList<myPolygon> fourVals = four.getValues();
+
+        ArrayList<BPointer> onePointers = one.getPointers();
+        ArrayList<BPointer> twoPointers = two.getPointers();
+        ArrayList<BPointer> threePointers = three.getPointers();
+        ArrayList<BPointer> fourPointers = four.getPointers();
+
+
+        //correct sizes
+        assertTrue(root.getSize() == 1,"incorrect node size");
+        assertTrue(rootVals.size() == 1,"incorrect node size");
+        assertTrue(rootPointers.size() == 2,"incorrect node size");
+
+        assertTrue(left.getSize() == 1,"incorrect node size");
+        assertTrue(leftVals.size() == 1,"incorrect node size");
+        assertTrue(leftPointers.size() == 2,"incorrect node size");
+
+        assertTrue(right.getSize() == 1,"incorrect node size");
+        assertTrue(rightVals.size() == 1,"incorrect node size");
+        assertTrue(rightPointers.size() == 2,"incorrect node size");
+
+        assertTrue(one.getSize() == 2,"incorrect node size");
+        assertTrue(oneVals.size() == 2,"incorrect node size");
+        assertTrue(onePointers.size() == 2,"incorrect node size");
+
+        assertTrue(two.getSize() == 2,"incorrect node size");
+        assertTrue(twoVals.size() == 2,"incorrect node size");
+        assertTrue( twoPointers.size() == 2,"incorrect node size");
+
+        assertTrue(three.getSize() == 2,"incorrect node size");
+        assertTrue(threeVals.size() == 2,"incorrect node size");
+        assertTrue(threePointers.size() == 2,"incorrect node size");
+
+        assertTrue(four.getSize() == 1,"incorrect node size");
+        assertTrue(fourVals.size() == 1,"incorrect node size");
+        assertTrue(fourPointers.size() == 1,"incorrect node size");
+
+
+        //nodes are linked correctly
+        assertTrue(one.getNext().equals(leftPointers.get(1)),"leaves are linked incorrectly");
+        assertTrue(two.getNext().equals(rightPointers.get(0)),"leaves are linked incorrectly");
+        assertTrue(three.getNext().equals(rightPointers.get(1)),"leaves are linked incorrectly");
+        assertTrue(four.getNext() == null);
+
+
+        //values are correct
+        assertTrue(Utilities.polygonsEqual(square(11),rootVals.get(0)),"incorrect value");
+
+        assertTrue(Utilities.polygonsEqual(square(9),leftVals.get(0)),"incorrect value");
+
+        assertTrue(Utilities.polygonsEqual(square(25),rightVals.get(0)),"incorrect value");
+
+        assertTrue(Utilities.polygonsEqual(square(1),oneVals.get(0)),"incorrect value");
+        assertTrue(Utilities.polygonsEqual(square(4),oneVals.get(1)),"incorrect value");
+
+        assertTrue(Utilities.polygonsEqual(square(9),twoVals.get(0)),"incorrect value");
+        assertTrue(Utilities.polygonsEqual(square(10),twoVals.get(1)),"incorrect value");
+
+        assertTrue(Utilities.polygonsEqual(square(11),threeVals.get(0)),"incorrect value");
+        assertTrue(Utilities.polygonsEqual(square(12),threeVals.get(1)),"incorrect value");
+
+        assertTrue(Utilities.polygonsEqual(square(25),fourVals.get(0)),"incorrect value");
+
+        //pointers are correct
+        assertTrue(onePointers.get(0).getPage() == 8 && onePointers.get(0).getOffset() == 0,"incorrect pointer");
+        assertTrue(onePointers.get(1).getPage() == 8 && onePointers.get(1).getOffset() == 1,"incorrect pointer");
+
+        assertTrue(twoPointers.get(0).getPage() == 8 && twoPointers.get(0).getOffset() == 2,"incorrect pointer");
+        assertTrue(twoPointers.get(1).getPage() == 9 && twoPointers.get(1).getOffset() == 0,"incorrect pointer");
+
+        assertTrue(threePointers.get(0).getPage() == 9 && threePointers.get(0).getOffset() == 1,"incorrect pointer");
+        assertTrue(threePointers.get(1).getPage() == 9 && threePointers.get(1).getOffset() == 2,"incorrect pointer");
+
+        assertTrue(fourPointers.get(0).getPage() == 11 && fourPointers.get(0).getOffset() == 0,"incorrect pointer");
+
+    }
+
+    @Test
+    public void X_testPolygonDelete11_12_10_25_9() throws DBAppException {
+        Hashtable<String, Object> tuple = new Hashtable<>();
+        tuple.put("Integer",11);
+        DB.deleteFromTable("TreeTesting", tuple);
+
+        tuple.put("Integer",12);
+        DB.deleteFromTable("TreeTesting", tuple);
+
+        tuple.put("Integer",10);
+        DB.deleteFromTable("TreeTesting", tuple);
+
+        tuple.put("Integer",25);
+        DB.deleteFromTable("TreeTesting", tuple);
+
+        tuple.put("Integer",9);
+        DB.deleteFromTable("TreeTesting", tuple);
+
+        //----------------------------------TREE_STRUCTURE--------------------------------------
+
+        RTree treePoly = Utilities.deserializeRTree("TreeTesting_Polygon");
+        RInternal root = (RInternal) treePoly.getRoot();
+        ArrayList<String> rootPointers = root.getPointers();
+
+        RExternal  left = (RExternal) Utilities.deserializeRNode(rootPointers.get(0));
+        RExternal  right = (RExternal) Utilities.deserializeRNode(rootPointers.get(1));
+
+        ArrayList<myPolygon> rootVals = root.getValues();
+        ArrayList<myPolygon> leftVals = left.getValues();
+        ArrayList<myPolygon> rightVals = right.getValues();
+
+        ArrayList<BPointer> leftPointers = left.getPointers();
+        ArrayList<BPointer> rightPointers = right.getPointers();
+
+        //correct sizes
+        assertTrue(root.getSize() == 1,"incorrect node size");
+        assertTrue(rootVals.size() == 1,"incorrect node size");
+        assertTrue(rootPointers.size() == 2,"incorrect node size");
+
+        assertTrue(left.getSize() == 1,"incorrect node size");
+        assertTrue(leftVals.size() == 1,"incorrect node size");
+        assertTrue(leftPointers.size() == 1,"incorrect node size");
+
+
+        assertTrue(right.getSize() == 1,"incorrect node size");
+        assertTrue(rightVals.size() == 1,"incorrect node size");
+        assertTrue(rightPointers.size() == 1,"incorrect node size");
+
+
+        //nodes are linked correctly
+        assertTrue(left.getNext().equals(rootPointers.get(1)),"leaves are linked incorrectly");
+        assertTrue(right.getNext() == null,"leaves are linked incorrectly");
+
+
+        //values are correct
+        assertTrue(Utilities.polygonsEqual(square(4),rootVals.get(0)),"incorrect value");
+
+        assertTrue(Utilities.polygonsEqual(square(1),leftVals.get(0)),"incorrect value");
+
+        assertTrue(Utilities.polygonsEqual(square(4),rightVals.get(0)),"incorrect value");
+
+        //pointers are correct
+        assertTrue(leftPointers.get(0).getPage() == 8 && leftPointers.get(0).getOffset() == 0,"incorrect pointer");
+
+        assertTrue(rightPointers.get(0).getPage() == 8 && rightPointers.get(0).getOffset() == 1,"incorrect pointer");
+
+    }
+
+    @Test
+    public void Y_testPolygonTreeEmpty() throws DBAppException {
+        Hashtable<String, Object> tuple = new Hashtable<>();
+        tuple.put("Integer",4);
+        DB.deleteFromTable("TreeTesting", tuple);
+
+        tuple.put("Integer",1);
+        DB.deleteFromTable("TreeTesting", tuple);
+
+        //----------------------------------TREE_STRUCTURE--------------------------------------
+
+        RTree treePoly = Utilities.deserializeRTree("TreeTesting_Polygon");
+        assertEquals(null,treePoly.getRoot(),"tree root should be null");
+    }
+
+    @Test
+    public void Z_deleteAllOverflow(){
         File dir = new File("data//overflow_Pages");
 
         for(File file: dir.listFiles()) //clear pages from before
@@ -1936,6 +2271,18 @@ public class treeTest {
             if (!file.isDirectory())
                 file.delete();
 
+        dir = new File("data//R//Trees"); //delete BPlus trees
+
+        for(File file: dir.listFiles())
+            if (!file.isDirectory())
+                file.delete();
+
+        dir = new File("data//R//R_Nodes"); //delete all BPlus tree nodes
+
+        for(File file: dir.listFiles())
+            if (!file.isDirectory())
+                file.delete();
+
 
         dir = new File("data//overflow_Pages//.gitkeep");
         dir.createNewFile();
@@ -1943,7 +2290,20 @@ public class treeTest {
         dir.createNewFile();
         dir = new File("data//BPlus//Trees//.gitkeep");
         dir.createNewFile();
+        dir = new File("data//R//R_Nodes//.gitkeep");
+        dir.createNewFile();
+        dir = new File("data//R//Trees//.gitkeep");
+        dir.createNewFile();
 
+    }
+
+    @Ignore
+    public static myPolygon square(int side){
+        Polygon temp = new Polygon(); //square with side length 1
+        temp.addPoint(0,0);temp.addPoint(side,0);temp.addPoint(0,side);
+        temp.addPoint(side,side);
+
+        return new myPolygon(temp);
     }
 
 

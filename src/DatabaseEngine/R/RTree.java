@@ -1,15 +1,18 @@
-package DatabaseEngine.BPlus;
+package DatabaseEngine.R;
 
 import DatabaseEngine.*;
-import com.sun.jdi.Value;
+import DatabaseEngine.BPlus.BPTExternal;
+import DatabaseEngine.BPlus.BPointer;
 import javafx.util.Pair;
 
-import java.awt.*;
 import java.io.File;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Queue;
+import java.util.Vector;
 
-public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializable {
+public class RTree implements index<myPolygon>, Serializable {
 
     private  String name; // tree filename (tablename + column name)
     private  String table; // table name (needed for shifting)
@@ -17,9 +20,9 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
     private int maxPerNode; //max elements per node
     private long nodeID; //don't tell me there's not enough IDs!!!
     private int minPerNode; // min elements per node
-    private BPTNode<T> root; //root node
+    private RNode root; //root node
 
-    public BPlusTree(String table,String column) {
+    public RTree(String table, String column) {
         this.column = column;
         this.table = table;
         this.name = table +"_"+ column;
@@ -37,7 +40,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
         return maxPerNode;
     }
 
-    public BPTNode<T> getRoot() { return root; }
+    public RNode getRoot() { return root; }
 
     public long getNodeID(){
         return nodeID;
@@ -56,46 +59,58 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
     //-------------BASE METHODS-------------
 
     //Insert
-    public void insert(T value, BPointer recordPointer, boolean changeOldPointers) throws DBAppException {
+    public void insert(myPolygon value, BPointer recordPointer, boolean changeOldPointers) throws DBAppException {
         if (changeOldPointers)
             incrementPointersAt(recordPointer.getPage(), recordPointer.getOffset()); //if you inserted a new record as well
 
         insertHelp(value, recordPointer, root); //the actual insertion
-        Utilities.serializeBPT(this);
+        Utilities.serializeRTree(this);
 
     }
 
     //Search
-    public BSet<BPointer> search(T value, String operator){
+    public BSet<BPointer> search(myPolygon polygon, String operator){
 
         BSet<BPointer> ret = new BSet<>(); //output array
-        BPTExternal<T> curNode;
+        RExternal curNode;
         int index;
 
         switch (operator){
 
             case "=":
-                curNode = Utilities.findLeaf(root, value, false); //find node of value
-                index = Utilities.selectiveBinarySearch(curNode.getValues(), value, "="); //find the index of value
+                curNode = Utilities.findLeaf(root, polygon, false); //find node of value
+                index = Utilities.selectiveBinarySearch(curNode.getValues(), polygon, "="); //find the index of value
 
                 if (curNode != null && index != -1){ // find all records = value
-                       ret.add(curNode.getPointers().get(index)); //add pointer to output
 
-                    String path = "data//overflow_Pages//" + "overflow_" + name +"_"+ value + "_0.class";
+                    if (Utilities.polygonsEqual(polygon, curNode.getValues().get(index)))
+                        ret.add(curNode.getPointers().get(index)); //add pointer to output
+
+                    String path = "data//overflow_Pages//" + "overflow_" + name +"_"+ polygon + "_0.class";
                     path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
 
                     if (new File(path).isFile()){
-                        overflowPage curPage = Utilities.deserializeOverflow(name +"_"+ value + "_0"); //get the first page
+                        overflowPage curPage = Utilities.deserializeOverflow(name +"_"+ polygon + "_0"); //get the first page
 
                         while (curPage != null){ //loop over all overflow pages
-
                             Queue<Pointer> pointers = curPage.getPointers();
-                            while (!pointers.isEmpty()) ret.add((BPointer) pointers.poll()); //add all pointers in page
+
+                            while (!pointers.isEmpty()){
+                                BPointer curPointer = (BPointer) pointers.poll(); //tuple pointer
+
+                                Vector tuple = Utilities.deserializePage(curPointer.getPage()) //get the tuple
+                                        .getPageElements().get(curPointer.getOffset());
+
+                                Pair<String[], Integer> column = Utilities.getColumnFromMetadata(
+                                        this.column,Utilities.readMetaDataForSpecificTable(this.table)); //column metadata
+
+                                if (Utilities.polygonsEqual(polygon,(myPolygon) tuple.get(column.getValue())))
+                                    ret.add(curPointer); //add pointer to output
+                            }
 
                             curPage = Utilities.deserializeOverflow(curPage.getNext()); //get next page
 
                         }
-
                     }
                 }
 
@@ -105,18 +120,18 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 
             case "!=":
 
-                curNode = Utilities.findLeaf(root, value, true); //first node
+                curNode = Utilities.findLeaf(root, null, true); //first node
                 index = 0;
 
                 while (curNode != null){ // find all records != value
 
                     if (index == curNode.getValues().size()){ //next node
-                        curNode = (BPTExternal<T>) Utilities.deserializeNode(curNode.getNext());
+                        curNode = (RExternal) Utilities.deserializeRNode(curNode.getNext());
                         index = 0;
 
                     }
 
-                    else if (curNode.getValues().get(index) != value){
+                    if (!Utilities.polygonsEqual(curNode.getValues().get(index),polygon))
                         ret.add(curNode.getPointers().get(index)); // add to output
 
                         String path = "data//overflow_Pages//" + "overflow_" + name +"_"+ curNode.getValues().get(index) + "_0.class";
@@ -126,17 +141,24 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                             overflowPage curPage = Utilities.deserializeOverflow(name +"_"+ curNode.getValues().get(index) + "_0"); //get the first page
 
                             while (curPage != null){ //loop over all overflow pages
-
                                 Queue<Pointer> pointers = curPage.getPointers();
-                                while (!pointers.isEmpty()) ret.add((BPointer) pointers.poll()); //add pointers
 
+                                while (!pointers.isEmpty()) {
+                                    BPointer curPointer = (BPointer) pointers.poll(); //tuple pointer
+
+                                    Vector tuple = Utilities.deserializePage(curPointer.getPage()) //get the tuple
+                                            .getPageElements().get(curPointer.getOffset());
+
+                                    Pair<String[], Integer> column = Utilities.getColumnFromMetadata(
+                                            this.column, Utilities.readMetaDataForSpecificTable(this.table)); //column metadata
+
+                                    if (!Utilities.polygonsEqual(polygon, (myPolygon) tuple.get(column.getValue())))
+                                        ret.add(curPointer); //add pointer to output
+                                }
                                 curPage = Utilities.deserializeOverflow(curPage.getNext()); //next page
-
                             }
-
                         }
                         index++;
-                    }
                 }
 
                 break;
@@ -145,13 +167,13 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 
             case ">=":
 
-                curNode = Utilities.findLeaf(root, value, false); //find node
-                index = Utilities.selectiveBinarySearch(curNode.getValues(), value, "<") + 1; //filter <
+                curNode = Utilities.findLeaf(root, polygon, false); //find node
+                index = Utilities.selectiveBinarySearch(curNode.getValues(), polygon, "<") + 1; //filter <
 
                 while (curNode != null){ // find all records >= value
 
                     if (index == curNode.getValues().size()){ //next node
-                        curNode = (BPTExternal<T>) Utilities.deserializeNode(curNode.getNext());
+                        curNode = (RExternal) Utilities.deserializeRNode(curNode.getNext());
                         index = 0;
 
                     }
@@ -184,13 +206,13 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 
             case ">":
 
-                curNode = Utilities.findLeaf(root, value, false); //get node that contains value
-                index = Utilities.selectiveBinarySearch(curNode.getValues(), value, "<=") + 1; //filter <=
+                curNode = Utilities.findLeaf(root, polygon, false); //get node that contains value
+                index = Utilities.selectiveBinarySearch(curNode.getValues(), polygon, "<=") + 1; //filter <=
 
                 while (curNode != null){ // find all records < value
 
                     if (index == curNode.getValues().size()){ //next node
-                        curNode = (BPTExternal<T>) Utilities.deserializeNode(curNode.getNext());
+                        curNode = (RExternal) Utilities.deserializeRNode(curNode.getNext());
                         index = 0;
 
                     }
@@ -223,18 +245,18 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 
             case "<=":
 
-                curNode = Utilities.findLeaf(root, value, true); //first node
+                curNode = Utilities.findLeaf(root, polygon, true); //first node
                 index = 0;
 
                 while (curNode != null){ // find all records <= value
 
                     if (index == curNode.getValues().size()){ //next node
-                        curNode = (BPTExternal<T>) Utilities.deserializeNode(curNode.getNext());
+                        curNode = (RExternal) Utilities.deserializeRNode(curNode.getNext());
                         index = 0;
 
                     }
 
-                    else if (curNode.getValues().get(index).compareTo(value) > 0){ //record greater than value
+                    else if (curNode.getValues().get(index).compareTo(polygon) > 0){ //record greater than value
                         break;
                     }
 
@@ -267,18 +289,18 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 
             case "<":
 
-                curNode = Utilities.findLeaf(root, value, true); //first element
+                curNode = Utilities.findLeaf(root, polygon, true); //first element
                 index = 0;
 
                 while (curNode != null){ // find all records < value
 
                     if (index == curNode.getValues().size()){ //next mode
-                        curNode = (BPTExternal<T>) Utilities.deserializeNode(curNode.getNext());
+                        curNode = (RExternal) Utilities.deserializeRNode(curNode.getNext());
                         index = 0;
 
                     }
 
-                    else if (curNode.getValues().get(index).compareTo(value) >= 0){ // record > value
+                    else if (curNode.getValues().get(index).compareTo(polygon) >= 0){ // record > value
                         break;
                     }
                     else {
@@ -314,24 +336,22 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
         return ret;
     }
 
-
-
     //Delete
-	public void delete(T value, BPointer p, String type) {
-		if (root instanceof BPTInternal) {
-			((BPTInternal) root).delete(value, p, name);
+	public void delete(myPolygon value, BPointer p, String type) {
+		if (root instanceof RInternal) {
+			((RInternal) root).delete(value, p, name);
 			if (root.getValues().size() == 0) {
-				BPTNode child = Utilities.deserializeNode((String) ((BPTInternal) root).getPointers().get(0));
-				if (child instanceof BPTInternal) {
+				RNode child = Utilities.deserializeRNode((String) ((RInternal) root).getPointers().get(0));
+				if (child instanceof RInternal) {
 					root.deleteNode();
-					root = (BPTInternal) (child);
+					root = (RInternal) (child);
 				} else {
 					root.deleteNode();
-					root = (BPTExternal) (child);
+					root = (RExternal) (child);
 				}
 			}
-		} else if (root instanceof BPTExternal) {
-			((BPTExternal) root).delete(value, p, name);
+		} else if (root instanceof RExternal) {
+			((RExternal) root).delete(value, p, name);
 
 			if (root.getSize() == 0){
                 root.deleteNode();
@@ -339,32 +359,32 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
             }
 		}
 		decrementPointersAt(p.getPage(), p.getOffset());
-		Utilities.serializeBPT(this);
+		Utilities.serializeRTree(this);
 	}
 
 
 
     //-------------HELPERS-------------
-    private BPTNode<T> insertHelp(T value, BPointer recordPointer, BPTNode<T> cur){
+    private RNode insertHelp(myPolygon value, BPointer recordPointer, RNode cur){
 
         //create root (empty tree)
         if (cur == null){
-            root = new BPTExternal<>(maxPerNode, name +"_"+ nodeID++); //new leaf (also root)
-            ((BPTExternal<T>) root).insert(value, recordPointer);  //insert in leaf
-            Utilities.serializeNode(root); //save root
+            root = new RExternal(maxPerNode, name +"_"+ nodeID++); //new leaf (also root)
+            ((RExternal) root).insert(value, recordPointer);  //insert in leaf
+            Utilities.serializeRNode(root); //save root
             return null;
         }
         
-        ArrayList<T> values = cur.getValues(); //get node keys
-        BPTNode<T> newPointer = null; //value to be returned (only needed for recursion)
+        ArrayList<myPolygon> values = cur.getValues(); //get node keys
+        RNode newPointer = null; //value to be returned (only needed for recursion)
 
         //----------------Down the tree (searching)-----------------
 
-        if (cur instanceof BPTInternal){ //internal node (finding the leaf)
-            ArrayList<String> pointers = ((BPTInternal<T>) cur).getPointers(); //node pointers
+        if (cur instanceof RInternal){ //internal node (finding the leaf)
+            ArrayList<String> pointers = ((RInternal) cur).getPointers(); //node pointers
             
             int index = Utilities.selectiveBinarySearch(values, value, "<="); //pointer index - 1
-            BPTNode<T> dNode = Utilities.deserializeNode(pointers.get(index + 1)); //deserialize the child
+            RNode dNode = Utilities.deserializeRNode(pointers.get(index + 1)); //deserialize the child
 
             newPointer = insertHelp(value, recordPointer, dNode); //recursion (go down one level)
         }
@@ -372,12 +392,12 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
         //----------------Up the tree (inserting)-------------------
 
         //INSERTING IN LEAVES:
-        if (cur instanceof BPTExternal ) {
+        if (cur instanceof RExternal) {
 
             int index = Utilities.selectiveBinarySearch(cur.getValues(),value,"="); //search for the value inside node
 
             if (index == -1) //not a duplicate. insert into the node
-                 ((BPTExternal<T>) cur).insert(value, recordPointer); //insert value
+                 ((RExternal) cur).insert(value, recordPointer); //insert value
             else { //insert into an overflow page
                 overflowPage.insert(name+"_"+value,recordPointer);
             }
@@ -386,13 +406,13 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 
                 if (root == cur){ //we are at the root
 
-                    root = new BPTInternal<>(getMaxPerNode(),name +"_"+ nodeID++); //create root
-                    ArrayList<String> rootPointers =  ((BPTInternal<T>) root).getPointers();
+                    root = new RInternal(getMaxPerNode(),name +"_"+ nodeID++); //create root
+                    ArrayList<String> rootPointers =  ((RInternal) root).getPointers();
                     rootPointers.add(cur.getID()); // add left child
 
-                    BPTNode<T> rightChild = cur.split();
+                    RNode rightChild = cur.split();
                     rightChild.setID(name +"_"+ nodeID++); //give an ID to the new node
-                    ((BPTExternal<T>) cur).setNext(rightChild.getID()); //current node points to child
+                    ((RExternal) cur).setNext(rightChild.getID()); //current node points to child
 
                     rootPointers.add(rightChild.getID()); // add right child
 
@@ -400,20 +420,20 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                     root.getValues().add(rightChild.getValues().get(0)); //add splitting value
                     root.incSize();
 
-                    Utilities.serializeNode(rightChild); //save node
-                    Utilities.serializeNode(root); //save root
+                    Utilities.serializeRNode(rightChild); //save node
+                    Utilities.serializeRNode(root); //save root
                 }
 
                 else { //non root: split and take step back in the recursion tree
-                    BPTNode<T> node = cur.split(); //return node after assigning its ID
+                    RNode node = cur.split(); //return node after assigning its ID
                     node.setID(name +"_"+ nodeID++);
-                    ((BPTExternal<T>) cur).setNext(node.getID());
-                    Utilities.serializeNode(node); //save node
-                    Utilities.serializeNode(cur); //save node
+                    ((RExternal) cur).setNext(node.getID());
+                    Utilities.serializeRNode(node); //save node
+                    Utilities.serializeRNode(cur); //save node
                     return node;
                 }
             }
-            Utilities.serializeNode(cur); //save node
+            Utilities.serializeRNode(cur); //save node
             return null; //value added without splitting
         }
 
@@ -422,23 +442,23 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 
             if (newPointer == null) return null; //nothing to be inserted
 
-            ((BPTInternal<T>) cur).insert(newPointer.getValues().get(0), newPointer.getID()); //insert value passed from child
+            ((RInternal) cur).insert(newPointer.getValues().get(0), newPointer.getID()); //insert value passed from child
 
-            if (newPointer instanceof BPTInternal){ //if child is non leaf
+            if (newPointer instanceof RInternal){ //if child is non leaf
                 newPointer.decSize();
                 newPointer.getValues().remove(0); //remove first element from child (a duplicate index)
-                Utilities.serializeNode(newPointer); //save node
+                Utilities.serializeRNode(newPointer); //save node
             }
 
             if (cur.getSize() > maxPerNode){ //node is full after insertion
 
                 if (root == cur){ //at root
 
-                    root = new BPTInternal<>(getMaxPerNode(), name +"_"+ nodeID++); //create node
-                    ArrayList<String> rootPointers =  ((BPTInternal<T>) root).getPointers();
+                    root = new RInternal(getMaxPerNode(), name +"_"+ nodeID++); //create node
+                    ArrayList<String> rootPointers =  ((RInternal) root).getPointers();
                     rootPointers.add(cur.getID()); // add left child
 
-                    BPTNode<T> rightChild = cur.split();
+                    RNode rightChild = cur.split();
                     rightChild.setID(name +"_"+ nodeID++); //give an ID to the new node
 
                     rootPointers.add(rightChild.getID()); // add right child
@@ -448,26 +468,26 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                     rightChild.getValues().remove(0); //remove first element from child (a duplicate index)
                     rightChild.decSize();
 
-                    Utilities.serializeNode(rightChild); //save right child
-                    Utilities.serializeNode(root); //save root
+                    Utilities.serializeRNode(rightChild); //save right child
+                    Utilities.serializeRNode(root); //save root
                 }
 
                 else { //non root: split and take step back in the recursion tree
-                    BPTNode<T> node = cur.split(); //return node after assigning its ID
+                    RNode node = cur.split(); //return node after assigning its ID
                     node.setID(name +"_"+ nodeID++);
-                    Utilities.serializeNode(node); //save node
-                    Utilities.serializeNode(cur); //save node
+                    Utilities.serializeRNode(node); //save node
+                    Utilities.serializeRNode(cur); //save node
                     return node;
                 }
             }
-            Utilities.serializeNode(cur); //save node
+            Utilities.serializeRNode(cur); //save node
             return null; //value added without splitting
         }
     }
-	public static void borrowFromLeft(BPTInternal bptInternal, BPTNode childnode, BPTNode leftnode, int key) {
-		if(childnode instanceof BPTExternal) {
-			BPTExternal child = (BPTExternal) childnode;
-			BPTExternal left = (BPTExternal) leftnode;
+	public static void borrowFromLeft(RInternal bptInternal, RNode childnode, RNode leftnode, int key) {
+		if(childnode instanceof RExternal) {
+			RExternal child = (RExternal) childnode;
+			RExternal left = (RExternal) leftnode;
 			while(child.getValues().size()<child.getMinPerNodes()) {
 				child.getValues().add(0,left.getValues().remove(left.getValues().size()-1));
 				child.getPointers().add(0,left.getPointers().remove(left.getPointers().size()-1));
@@ -477,8 +497,8 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 			bptInternal.getValues().set(key,child.getValues().get(0));
 		}
 		else {
-			BPTInternal child = (BPTInternal) childnode;
-			BPTInternal left = (BPTInternal) leftnode;
+			RInternal child = (RInternal) childnode;
+			RInternal left = (RInternal) leftnode;
 			while(child.getValues().size()<child.getMinPerNodes()) {
 				
 				child.getValues().add(0,Utilities.findLeaf(child, null, true).getValues().get(0));
@@ -490,15 +510,15 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 			}
 			bptInternal.getValues().set(key, Utilities.findLeaf(child, null, true).getValues().get(0));
 		}
-		Utilities.serializeNode(childnode);
-		Utilities.serializeNode(leftnode);
-		Utilities.serializeNode(bptInternal);
+		Utilities.serializeRNode(childnode);
+		Utilities.serializeRNode(leftnode);
+		Utilities.serializeRNode(bptInternal);
 	}
 
-	public static void borrowFromRight(BPTInternal bptInternal, BPTNode childnode,BPTNode rightnode, int key) {
-		if(childnode instanceof BPTExternal) {
-			BPTExternal child = (BPTExternal) childnode;
-			BPTExternal right = (BPTExternal) rightnode;
+	public static void borrowFromRight(RInternal bptInternal, RNode childnode, RNode rightnode, int key) {
+		if(childnode instanceof RExternal) {
+			RExternal child = (RExternal) childnode;
+			RExternal right = (RExternal) rightnode;
 			while(child.getValues().size()<child.getMinPerNodes()) {
 				child.getValues().add(right.getValues().remove(0));
 				child.getPointers().add(right.getPointers().remove(0));
@@ -508,8 +528,8 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 			bptInternal.getValues().set(key, right.getValues().get(0));
 		}
 		else {
-			BPTInternal child = (BPTInternal) childnode;
-			BPTInternal right = (BPTInternal) rightnode;
+			RInternal child = (RInternal) childnode;
+			RInternal right = (RInternal) rightnode;
 			while(child.getValues().size()<child.getMinPerNodes()) {
 				
 				child.getValues().add(Utilities.findLeaf(right, null, true).getValues().get(0));
@@ -520,15 +540,15 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 			}
 			bptInternal.getValues().set(key, Utilities.findLeaf(right, null, true).getValues().get(0));
 		}
-		Utilities.serializeNode(childnode);
-		Utilities.serializeNode(rightnode);
-		Utilities.serializeNode(bptInternal);
+		Utilities.serializeRNode(childnode);
+		Utilities.serializeRNode(rightnode);
+		Utilities.serializeRNode(bptInternal);
 	}
 
-    public static void mergeWithLeft(BPTInternal bptInternal, BPTNode childnode, BPTNode leftnode, int key) {
-        if(childnode instanceof BPTExternal) {
-            BPTExternal child = (BPTExternal) childnode;
-            BPTExternal left = (BPTExternal) leftnode;
+    public static void mergeWithLeft(RInternal bptInternal, RNode childnode, RNode leftnode, int key) {
+        if(childnode instanceof RExternal) {
+            RExternal child = (RExternal) childnode;
+            RExternal left = (RExternal) leftnode;
             while(!(child.getValues().isEmpty())) {
                 left.getValues().add(child.getValues().remove(0));
                 left.getPointers().add(child.getPointers().remove(0));
@@ -542,8 +562,8 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
             bptInternal.decSize();
         }
         else {
-            BPTInternal child = (BPTInternal) childnode;
-            BPTInternal left = (BPTInternal) leftnode;
+            RInternal child = (RInternal) childnode;
+            RInternal left = (RInternal) leftnode;
             left.getValues().add(Utilities.findLeaf(child, null, true).getValues().get(0));
             left.getPointers().add(child.getPointers().remove(0));
             left.incSize();
@@ -559,15 +579,15 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
             bptInternal.getPointers().remove(key+1);
             bptInternal.decSize();
         }
-        Utilities.serializeNode(leftnode);
-        Utilities.serializeNode(bptInternal);
+        Utilities.serializeRNode(leftnode);
+        Utilities.serializeRNode(bptInternal);
     }
 
-	public static void mergeWithRight(BPTInternal bptInternal, BPTNode childnode, BPTNode rightnode,int key) {
+	public static void mergeWithRight(RInternal bptInternal, RNode childnode, RNode rightnode, int key) {
 
-		if(childnode instanceof BPTExternal) {
-			BPTExternal child = (BPTExternal) childnode;
-			BPTExternal right = (BPTExternal) rightnode;
+		if(childnode instanceof RExternal) {
+			RExternal child = (RExternal) childnode;
+			RExternal right = (RExternal) rightnode;
 			while(!(right.getValues().isEmpty())) {
 				child.getValues().add(right.getValues().remove(0));
 				child.getPointers().add(right.getPointers().remove(0));
@@ -581,8 +601,8 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 			bptInternal.decSize();
 		}
 		else {
-			BPTInternal child = (BPTInternal) childnode;
-			BPTInternal right = (BPTInternal) rightnode;
+			RInternal child = (RInternal) childnode;
+			RInternal right = (RInternal) rightnode;
 			child.getValues().add(Utilities.findLeaf(right, null, true).getValues().get(0));
 			child.getPointers().add(right.getPointers().remove(0));
             child.incSize();
@@ -598,18 +618,18 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 			bptInternal.getPointers().remove(key+1);
 			bptInternal.decSize();
 		}
-		Utilities.serializeNode(childnode);
-		Utilities.serializeNode(bptInternal);
+		Utilities.serializeRNode(childnode);
+		Utilities.serializeRNode(bptInternal);
 	}
     //shift pointers left or right
     private void decrementPointersAt(int pageNum, int vecIndex){
         BPointer temp = new BPointer(pageNum,vecIndex); //to compare with other pointers
 
-        BPTExternal<T> cur = Utilities.findLeaf(root,null,true); //get the leftmost leaf
+        RExternal cur = Utilities.findLeaf(root,null,true); //get the leftmost leaf
 
         while (cur != null){ //for all leaves
             ArrayList<BPointer> pointers = cur.getPointers();
-            ArrayList<T> values = cur.getValues();
+            ArrayList<myPolygon> values = cur.getValues();
 
             for(BPointer p: pointers){
                 //tuple's position is greater than or equal the given position and it's in the same page
@@ -617,7 +637,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                     p.setOffset(p.getOffset() - 1); //set new index
             }
 
-            for(T v: values){ //get the overflow pages of every value
+            for(myPolygon v: values){ //get the overflow pages of every value
 
                 String path = "data//overflow_Pages//" + "overflow_" + name + "_" + v + "_0.class";
                 path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
@@ -643,17 +663,17 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                 }
             }
 
-            Utilities.serializeNode(cur);
-            cur = (BPTExternal<T>) Utilities.deserializeNode(cur.getNext());
+            Utilities.serializeRNode(cur);
+            cur = (RExternal) Utilities.deserializeRNode(cur.getNext());
         }
     }
 
     private void incrementPointersAt(int pageNum, int vecIndex){
-        Object[] temp = Utilities.getAllBPointers(this);
+        Object[] temp = Utilities.getAllRPointers(this);
         HashMap<Integer,HashMap<Integer, BPointer>> pointers =
                 (HashMap<Integer, HashMap<Integer, BPointer>>) temp[0]; //all the pointers of the tree
         ArrayList<overflowPage> overflow = (ArrayList<overflowPage>) temp[1]; //all the overflow pages of the tree
-        ArrayList<BPTExternal<T>> leaves = (ArrayList<BPTExternal<T>>) temp[2];
+        ArrayList<RExternal> leaves = (ArrayList<RExternal>) temp[2];
 
         //table page Ids
         Vector<Integer> pageIds = Utilities.deserializeTable(table).getPages();
@@ -686,14 +706,14 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
             i++;
             j = 0;
         }
-        Utilities.serializeAll(leaves,overflow);
+        Utilities.serializeAllR(leaves,overflow);
     }
 
 
     public String leavesToString(){
         StringBuilder ret = new StringBuilder();
 
-        BPTExternal cur = Utilities.findLeaf(root,null,true);
+        RExternal cur = Utilities.findLeaf(root,null,true);
 
         while (cur != null){
             ret.append("[");
@@ -713,7 +733,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
             if (cur.getNext() != null) ret.append("] -> ");
             else ret.append("]");
 
-            cur = (BPTExternal) Utilities.deserializeNode(cur.getNext());
+            cur = (RExternal) Utilities.deserializeRNode(cur.getNext());
         }
         return ret.toString();
     }
