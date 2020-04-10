@@ -19,8 +19,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import static org.junit.jupiter.api.Assertions.*;
-
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
@@ -105,11 +103,11 @@ public class treeTest {
         initialScenario();
 
         BPlusTree<Integer> treeInt = Utilities.deserializeBPT("TreeTesting_Integer");
-        BPTInternal<Integer> root = (BPTInternal<Integer>) treeInt.getRoot();
+        BPTInternal<Integer> root = (BPTInternal) treeInt.getRoot();
         ArrayList<String> rootPointers = root.getPointers();
 
-        BPTExternal<Integer>  left = (BPTExternal<Integer>) Utilities.deserializeNode(rootPointers.get(0));
-        BPTExternal<Integer>  right = (BPTExternal<Integer>) Utilities.deserializeNode(rootPointers.get(1));
+        BPTExternal<Integer>  left = (BPTExternal) Utilities.deserializeNode(rootPointers.get(0));
+        BPTExternal<Integer>  right = (BPTExternal) Utilities.deserializeNode(rootPointers.get(1));
 
         ArrayList<Integer> rootVals = root.getValues();
         ArrayList<Integer> leftVals = left.getValues();
@@ -161,11 +159,11 @@ public class treeTest {
 
 
         BPlusTree<Integer> treeInt = Utilities.deserializeBPT("TreeTesting_Integer");
-        BPTInternal<Integer> root = (BPTInternal<Integer>) treeInt.getRoot();
+        BPTInternal<Integer> root = (BPTInternal) treeInt.getRoot();
         ArrayList<String> rootPointers = root.getPointers();
 
-        BPTExternal<Integer>  left = (BPTExternal<Integer>) Utilities.deserializeNode(rootPointers.get(0));
-        BPTExternal<Integer>  right = (BPTExternal<Integer>) Utilities.deserializeNode(rootPointers.get(1));
+        BPTExternal<Integer>  left = (BPTExternal) Utilities.deserializeNode(rootPointers.get(0));
+        BPTExternal<Integer>  right = (BPTExternal) Utilities.deserializeNode(rootPointers.get(1));
 
         ArrayList<Integer> rootVals = root.getValues();
         ArrayList<Integer> leftVals = left.getValues();
@@ -220,12 +218,12 @@ public class treeTest {
 
 
         BPlusTree<Integer> treeInt = Utilities.deserializeBPT("TreeTesting_Integer");
-        BPTInternal<Integer> root = (BPTInternal<Integer>) treeInt.getRoot();
+        BPTInternal<Integer> root = (BPTInternal) treeInt.getRoot();
         ArrayList<String> rootPointers = root.getPointers();
 
-        BPTExternal<Integer>  left = (BPTExternal<Integer>) Utilities.deserializeNode(rootPointers.get(0));
-        BPTExternal<Integer>  mid = (BPTExternal<Integer>) Utilities.deserializeNode(rootPointers.get(1));
-        BPTExternal<Integer>  right = (BPTExternal<Integer>) Utilities.deserializeNode(rootPointers.get(2));
+        BPTExternal<Integer>  left = (BPTExternal) Utilities.deserializeNode(rootPointers.get(0));
+        BPTExternal<Integer>  mid = (BPTExternal) Utilities.deserializeNode(rootPointers.get(1));
+        BPTExternal<Integer>  right = (BPTExternal) Utilities.deserializeNode(rootPointers.get(2));
 
         ArrayList<Integer> rootVals = root.getValues();
         ArrayList<Integer> leftVals = left.getValues();
@@ -294,12 +292,12 @@ public class treeTest {
 
 
         BPlusTree<Integer> treeInt = Utilities.deserializeBPT("TreeTesting_Integer");
-        BPTInternal<Integer> root = (BPTInternal<Integer>) treeInt.getRoot();
+        BPTInternal<Integer> root = (BPTInternal) treeInt.getRoot();
         ArrayList<String> rootPointers = root.getPointers();
 
-        BPTExternal<Integer>  left = (BPTExternal<Integer>) Utilities.deserializeNode(rootPointers.get(0));
-        BPTExternal<Integer>  mid = (BPTExternal<Integer>) Utilities.deserializeNode(rootPointers.get(1));
-        BPTExternal<Integer>  right = (BPTExternal<Integer>) Utilities.deserializeNode(rootPointers.get(2));
+        BPTExternal<Integer>  left = (BPTExternal) Utilities.deserializeNode(rootPointers.get(0));
+        BPTExternal<Integer>  mid = (BPTExternal) Utilities.deserializeNode(rootPointers.get(1));
+        BPTExternal<Integer>  right = (BPTExternal) Utilities.deserializeNode(rootPointers.get(2));
 
         ArrayList<Integer> rootVals = root.getValues();
         ArrayList<Integer> leftVals = left.getValues();
@@ -371,13 +369,13 @@ public class treeTest {
 
 
         BPlusTree<Integer> treeInt = Utilities.deserializeBPT("TreeTesting_Integer");
-        BPTInternal<Integer> root = (BPTInternal<Integer>) treeInt.getRoot();
+        BPTInternal<Integer> root = (BPTInternal) treeInt.getRoot();
         ArrayList<String> rootPointers = root.getPointers();
 
-        BPTExternal<Integer>  one = (BPTExternal<Integer>) Utilities.deserializeNode(rootPointers.get(0));
-        BPTExternal<Integer>  two = (BPTExternal<Integer>) Utilities.deserializeNode(rootPointers.get(1));
-        BPTExternal<Integer>  three = (BPTExternal<Integer>) Utilities.deserializeNode(rootPointers.get(2));
-        BPTExternal<Integer>  four = (BPTExternal<Integer>) Utilities.deserializeNode(rootPointers.get(3));
+        BPTExternal<Integer>  one = (BPTExternal) Utilities.deserializeNode(rootPointers.get(0));
+        BPTExternal<Integer>  two = (BPTExternal) Utilities.deserializeNode(rootPointers.get(1));
+        BPTExternal<Integer>  three = (BPTExternal) Utilities.deserializeNode(rootPointers.get(2));
+        BPTExternal<Integer>  four = (BPTExternal) Utilities.deserializeNode(rootPointers.get(3));
 
         ArrayList<Integer> rootVals = root.getValues();
         ArrayList<Integer> oneVals = one.getValues();
@@ -460,13 +458,13 @@ public class treeTest {
 
 
         BPlusTree<Integer> treeInt = Utilities.deserializeBPT("TreeTesting_Integer");
-        BPTInternal<Integer> root = (BPTInternal<Integer>) treeInt.getRoot();
+        BPTInternal<Integer> root = (BPTInternal) treeInt.getRoot();
         ArrayList<String> rootPointers = root.getPointers();
 
-        BPTExternal<Integer>  one = (BPTExternal<Integer>) Utilities.deserializeNode(rootPointers.get(0));
-        BPTExternal<Integer>  two = (BPTExternal<Integer>) Utilities.deserializeNode(rootPointers.get(1));
-        BPTExternal<Integer>  three = (BPTExternal<Integer>) Utilities.deserializeNode(rootPointers.get(2));
-        BPTExternal<Integer>  four = (BPTExternal<Integer>) Utilities.deserializeNode(rootPointers.get(3));
+        BPTExternal<Integer>  one = (BPTExternal) Utilities.deserializeNode(rootPointers.get(0));
+        BPTExternal<Integer>  two = (BPTExternal) Utilities.deserializeNode(rootPointers.get(1));
+        BPTExternal<Integer>  three = (BPTExternal) Utilities.deserializeNode(rootPointers.get(2));
+        BPTExternal<Integer>  four = (BPTExternal) Utilities.deserializeNode(rootPointers.get(3));
 
         ArrayList<Integer> rootVals = root.getValues();
         ArrayList<Integer> oneVals = one.getValues();
@@ -550,11 +548,11 @@ public class treeTest {
         insert(12,12.49,"F", "2020-03-12", true, 12);
 
         BPlusTree<Integer> treeInt = Utilities.deserializeBPT("TreeTesting_Integer");
-        BPTInternal<Integer> root = (BPTInternal<Integer>) treeInt.getRoot();
+        BPTInternal<Integer> root = (BPTInternal) treeInt.getRoot();
         ArrayList<String> rootPointers = root.getPointers();
 
-        BPTInternal<Integer>  left = (BPTInternal<Integer>) Utilities.deserializeNode(rootPointers.get(0));
-        BPTInternal<Integer>  right = (BPTInternal<Integer>) Utilities.deserializeNode(rootPointers.get(1));
+        BPTInternal<Integer>  left = (BPTInternal) Utilities.deserializeNode(rootPointers.get(0));
+        BPTInternal<Integer>  right = (BPTInternal) Utilities.deserializeNode(rootPointers.get(1));
 
         ArrayList<Integer> rootVals = root.getValues();
         ArrayList<Integer> leftVals = left.getValues();
@@ -563,12 +561,12 @@ public class treeTest {
         ArrayList<String> leftPointers = left.getPointers();
         ArrayList<String> rightPointers = right.getPointers();
 
-        BPTExternal<Integer>  one = (BPTExternal<Integer>) Utilities.deserializeNode(leftPointers.get(0));
-        BPTExternal<Integer>  two = (BPTExternal<Integer>) Utilities.deserializeNode(leftPointers.get(1));
-        BPTExternal<Integer>  three = (BPTExternal<Integer>) Utilities.deserializeNode(leftPointers.get(2));
+        BPTExternal<Integer>  one = (BPTExternal) Utilities.deserializeNode(leftPointers.get(0));
+        BPTExternal<Integer>  two = (BPTExternal) Utilities.deserializeNode(leftPointers.get(1));
+        BPTExternal<Integer>  three = (BPTExternal) Utilities.deserializeNode(leftPointers.get(2));
 
-        BPTExternal<Integer>  four = (BPTExternal<Integer>) Utilities.deserializeNode(rightPointers.get(0));
-        BPTExternal<Integer>  five = (BPTExternal<Integer>) Utilities.deserializeNode(rightPointers.get(1));
+        BPTExternal<Integer>  four = (BPTExternal) Utilities.deserializeNode(rightPointers.get(0));
+        BPTExternal<Integer>  five = (BPTExternal) Utilities.deserializeNode(rightPointers.get(1));
 
         ArrayList<Integer> oneVals = one.getValues();
         ArrayList<Integer> twoVals = two.getValues();
@@ -716,11 +714,11 @@ public class treeTest {
         //-------------------------tree structure------------------------------
 
         BPlusTree<Integer> treeInt = Utilities.deserializeBPT("TreeTesting_Integer");
-        BPTInternal<Integer> root = (BPTInternal<Integer>) treeInt.getRoot();
+        BPTInternal<Integer> root = (BPTInternal) treeInt.getRoot();
         ArrayList<String> rootPointers = root.getPointers();
 
-        BPTInternal<Integer>  left = (BPTInternal<Integer>) Utilities.deserializeNode(rootPointers.get(0));
-        BPTInternal<Integer>  right = (BPTInternal<Integer>) Utilities.deserializeNode(rootPointers.get(1));
+        BPTInternal<Integer>  left = (BPTInternal) Utilities.deserializeNode(rootPointers.get(0));
+        BPTInternal<Integer>  right = (BPTInternal) Utilities.deserializeNode(rootPointers.get(1));
 
         ArrayList<Integer> rootVals = root.getValues();
         ArrayList<Integer> leftVals = left.getValues();
@@ -729,12 +727,12 @@ public class treeTest {
         ArrayList<String> leftPointers = left.getPointers();
         ArrayList<String> rightPointers = right.getPointers();
 
-        BPTExternal<Integer>  one = (BPTExternal<Integer>) Utilities.deserializeNode(leftPointers.get(0));
-        BPTExternal<Integer>  two = (BPTExternal<Integer>) Utilities.deserializeNode(leftPointers.get(1));
-        BPTExternal<Integer>  three = (BPTExternal<Integer>) Utilities.deserializeNode(leftPointers.get(2));
+        BPTExternal<Integer>  one = (BPTExternal) Utilities.deserializeNode(leftPointers.get(0));
+        BPTExternal<Integer>  two = (BPTExternal) Utilities.deserializeNode(leftPointers.get(1));
+        BPTExternal<Integer>  three = (BPTExternal) Utilities.deserializeNode(leftPointers.get(2));
 
-        BPTExternal<Integer>  four = (BPTExternal<Integer>) Utilities.deserializeNode(rightPointers.get(0));
-        BPTExternal<Integer>  five = (BPTExternal<Integer>) Utilities.deserializeNode(rightPointers.get(1));
+        BPTExternal<Integer>  four = (BPTExternal) Utilities.deserializeNode(rightPointers.get(0));
+        BPTExternal<Integer>  five = (BPTExternal) Utilities.deserializeNode(rightPointers.get(1));
 
         ArrayList<Integer> oneVals = one.getValues();
         ArrayList<Integer> twoVals = two.getValues();
@@ -850,11 +848,11 @@ public class treeTest {
         //----------------------------------TREE_STRUCTURE--------------------------------------
 
         BPlusTree<Integer> treeInt = Utilities.deserializeBPT("TreeTesting_Integer");
-        BPTInternal<Integer> root = (BPTInternal<Integer>) treeInt.getRoot();
+        BPTInternal<Integer> root = (BPTInternal) treeInt.getRoot();
         ArrayList<String> rootPointers = root.getPointers();
 
-        BPTInternal<Integer>  left = (BPTInternal<Integer>) Utilities.deserializeNode(rootPointers.get(0));
-        BPTInternal<Integer>  right = (BPTInternal<Integer>) Utilities.deserializeNode(rootPointers.get(1));
+        BPTInternal<Integer>  left = (BPTInternal) Utilities.deserializeNode(rootPointers.get(0));
+        BPTInternal<Integer>  right = (BPTInternal) Utilities.deserializeNode(rootPointers.get(1));
 
         ArrayList<Integer> rootVals = root.getValues();
         ArrayList<Integer> leftVals = left.getValues();
@@ -863,12 +861,12 @@ public class treeTest {
         ArrayList<String> leftPointers = left.getPointers();
         ArrayList<String> rightPointers = right.getPointers();
 
-        BPTExternal<Integer>  one = (BPTExternal<Integer>) Utilities.deserializeNode(leftPointers.get(0));
-        BPTExternal<Integer>  two = (BPTExternal<Integer>) Utilities.deserializeNode(leftPointers.get(1));
-        BPTExternal<Integer>  three = (BPTExternal<Integer>) Utilities.deserializeNode(leftPointers.get(2));
+        BPTExternal<Integer>  one = (BPTExternal) Utilities.deserializeNode(leftPointers.get(0));
+        BPTExternal<Integer>  two = (BPTExternal) Utilities.deserializeNode(leftPointers.get(1));
+        BPTExternal<Integer>  three = (BPTExternal) Utilities.deserializeNode(leftPointers.get(2));
 
-        BPTExternal<Integer>  four = (BPTExternal<Integer>) Utilities.deserializeNode(rightPointers.get(0));
-        BPTExternal<Integer>  five = (BPTExternal<Integer>) Utilities.deserializeNode(rightPointers.get(1));
+        BPTExternal<Integer>  four = (BPTExternal) Utilities.deserializeNode(rightPointers.get(0));
+        BPTExternal<Integer>  five = (BPTExternal) Utilities.deserializeNode(rightPointers.get(1));
 
         ArrayList<Integer> oneVals = one.getValues();
         ArrayList<Integer> twoVals = two.getValues();
@@ -978,11 +976,11 @@ public class treeTest {
         //----------------------------------TREE_STRUCTURE--------------------------------------
 
         BPlusTree<Integer> treeInt = Utilities.deserializeBPT("TreeTesting_Integer");
-        BPTInternal<Integer> root = (BPTInternal<Integer>) treeInt.getRoot();
+        BPTInternal<Integer> root = (BPTInternal) treeInt.getRoot();
         ArrayList<String> rootPointers = root.getPointers();
 
-        BPTInternal<Integer>  left = (BPTInternal<Integer>) Utilities.deserializeNode(rootPointers.get(0));
-        BPTInternal<Integer>  right = (BPTInternal<Integer>) Utilities.deserializeNode(rootPointers.get(1));
+        BPTInternal<Integer>  left = (BPTInternal) Utilities.deserializeNode(rootPointers.get(0));
+        BPTInternal<Integer>  right = (BPTInternal) Utilities.deserializeNode(rootPointers.get(1));
 
         ArrayList<Integer> rootVals = root.getValues();
         ArrayList<Integer> leftVals = left.getValues();
@@ -991,12 +989,12 @@ public class treeTest {
         ArrayList<String> leftPointers = left.getPointers();
         ArrayList<String> rightPointers = right.getPointers();
 
-        BPTExternal<Integer>  one = (BPTExternal<Integer>) Utilities.deserializeNode(leftPointers.get(0));
-        BPTExternal<Integer>  two = (BPTExternal<Integer>) Utilities.deserializeNode(leftPointers.get(1));
-        BPTExternal<Integer>  three = (BPTExternal<Integer>) Utilities.deserializeNode(leftPointers.get(2));
+        BPTExternal<Integer>  one = (BPTExternal) Utilities.deserializeNode(leftPointers.get(0));
+        BPTExternal<Integer>  two = (BPTExternal) Utilities.deserializeNode(leftPointers.get(1));
+        BPTExternal<Integer>  three = (BPTExternal) Utilities.deserializeNode(leftPointers.get(2));
 
-        BPTExternal<Integer>  four = (BPTExternal<Integer>) Utilities.deserializeNode(rightPointers.get(0));
-        BPTExternal<Integer>  five = (BPTExternal<Integer>) Utilities.deserializeNode(rightPointers.get(1));
+        BPTExternal<Integer>  four = (BPTExternal) Utilities.deserializeNode(rightPointers.get(0));
+        BPTExternal<Integer>  five = (BPTExternal) Utilities.deserializeNode(rightPointers.get(1));
 
         ArrayList<Integer> oneVals = one.getValues();
         ArrayList<Integer> twoVals = two.getValues();
@@ -1105,11 +1103,11 @@ public class treeTest {
         //----------------------------------TREE_STRUCTURE--------------------------------------
 
         BPlusTree<Integer> treeInt = Utilities.deserializeBPT("TreeTesting_Integer");
-        BPTInternal<Integer> root = (BPTInternal<Integer>) treeInt.getRoot();
+        BPTInternal<Integer> root = (BPTInternal) treeInt.getRoot();
         ArrayList<String> rootPointers = root.getPointers();
 
-        BPTInternal<Integer>  left = (BPTInternal<Integer>) Utilities.deserializeNode(rootPointers.get(0));
-        BPTInternal<Integer>  right = (BPTInternal<Integer>) Utilities.deserializeNode(rootPointers.get(1));
+        BPTInternal<Integer>  left = (BPTInternal) Utilities.deserializeNode(rootPointers.get(0));
+        BPTInternal<Integer>  right = (BPTInternal) Utilities.deserializeNode(rootPointers.get(1));
 
         ArrayList<Integer> rootVals = root.getValues();
         ArrayList<Integer> leftVals = left.getValues();
@@ -1118,11 +1116,11 @@ public class treeTest {
         ArrayList<String> leftPointers = left.getPointers();
         ArrayList<String> rightPointers = right.getPointers();
 
-        BPTExternal<Integer>  one = (BPTExternal<Integer>) Utilities.deserializeNode(leftPointers.get(0));
-        BPTExternal<Integer>  two = (BPTExternal<Integer>) Utilities.deserializeNode(leftPointers.get(1));
+        BPTExternal<Integer>  one = (BPTExternal) Utilities.deserializeNode(leftPointers.get(0));
+        BPTExternal<Integer>  two = (BPTExternal) Utilities.deserializeNode(leftPointers.get(1));
 
-        BPTExternal<Integer>  three = (BPTExternal<Integer>) Utilities.deserializeNode(rightPointers.get(0));
-        BPTExternal<Integer>  four = (BPTExternal<Integer>) Utilities.deserializeNode(rightPointers.get(1));
+        BPTExternal<Integer>  three = (BPTExternal) Utilities.deserializeNode(rightPointers.get(0));
+        BPTExternal<Integer>  four = (BPTExternal) Utilities.deserializeNode(rightPointers.get(1));
 
         ArrayList<Integer> oneVals = one.getValues();
         ArrayList<Integer> twoVals = two.getValues();
@@ -1215,12 +1213,12 @@ public class treeTest {
         //----------------------------------TREE_STRUCTURE--------------------------------------
 
         BPlusTree<Integer> treeInt = Utilities.deserializeBPT("TreeTesting_Integer");
-        BPTInternal<Integer> root = (BPTInternal<Integer>) treeInt.getRoot();
+        BPTInternal<Integer> root = (BPTInternal) treeInt.getRoot();
         ArrayList<String> rootPointers = root.getPointers();
 
-        BPTExternal<Integer>  left = (BPTExternal<Integer>) Utilities.deserializeNode(rootPointers.get(0));
-        BPTExternal<Integer>  mid = (BPTExternal<Integer>) Utilities.deserializeNode(rootPointers.get(1));
-        BPTExternal<Integer>  right = (BPTExternal<Integer>) Utilities.deserializeNode(rootPointers.get(2));
+        BPTExternal<Integer>  left = (BPTExternal) Utilities.deserializeNode(rootPointers.get(0));
+        BPTExternal<Integer>  mid = (BPTExternal) Utilities.deserializeNode(rootPointers.get(1));
+        BPTExternal<Integer>  right = (BPTExternal) Utilities.deserializeNode(rootPointers.get(2));
 
         ArrayList<Integer> rootVals = root.getValues();
         ArrayList<Integer> leftVals = left.getValues();
@@ -1295,11 +1293,11 @@ public class treeTest {
         //----------------------------------TREE_STRUCTURE--------------------------------------
 
         BPlusTree<Integer> treeInt = Utilities.deserializeBPT("TreeTesting_Integer");
-        BPTInternal<Integer> root = (BPTInternal<Integer>) treeInt.getRoot();
+        BPTInternal<Integer> root = (BPTInternal) treeInt.getRoot();
         ArrayList<String> rootPointers = root.getPointers();
 
-        BPTExternal<Integer>  left = (BPTExternal<Integer>) Utilities.deserializeNode(rootPointers.get(0));
-        BPTExternal<Integer>  right = (BPTExternal<Integer>) Utilities.deserializeNode(rootPointers.get(1));
+        BPTExternal<Integer>  left = (BPTExternal) Utilities.deserializeNode(rootPointers.get(0));
+        BPTExternal<Integer>  right = (BPTExternal) Utilities.deserializeNode(rootPointers.get(1));
 
         ArrayList<Integer> rootVals = root.getValues();
         ArrayList<Integer> leftVals = left.getValues();
@@ -1352,7 +1350,7 @@ public class treeTest {
         //----------------------------------TREE_STRUCTURE--------------------------------------
 
         BPlusTree<Integer> treeInt = Utilities.deserializeBPT("TreeTesting_Integer");
-        BPTExternal<Integer> root = (BPTExternal<Integer>) treeInt.getRoot();
+        BPTExternal<Integer> root = (BPTExternal) treeInt.getRoot();
         ArrayList<BPointer> rootPointers = root.getPointers();
         ArrayList<Integer> rootVals = root.getValues();
 
@@ -1408,11 +1406,11 @@ public class treeTest {
     @Test
     public void R_testDouble(){
         BPlusTree<Double> treeDouble = Utilities.deserializeBPT("TreeTesting_Double");
-        BPTInternal<Double> root = (BPTInternal<Double>) treeDouble.getRoot();
+        BPTInternal<Double> root = (BPTInternal) treeDouble.getRoot();
         ArrayList<String> rootPointers = root.getPointers();
 
-        BPTInternal<Double>  left = (BPTInternal<Double>) Utilities.deserializeNode(rootPointers.get(0));
-        BPTInternal<Double>  right = (BPTInternal<Double>) Utilities.deserializeNode(rootPointers.get(1));
+        BPTInternal<Double>  left = (BPTInternal) Utilities.deserializeNode(rootPointers.get(0));
+        BPTInternal<Double>  right = (BPTInternal) Utilities.deserializeNode(rootPointers.get(1));
 
         ArrayList<Double> rootVals = root.getValues();
         ArrayList<Double> leftVals = left.getValues();
@@ -1421,12 +1419,12 @@ public class treeTest {
         ArrayList<String> leftPointers = left.getPointers();
         ArrayList<String> rightPointers = right.getPointers();
 
-        BPTExternal<Double>  one = (BPTExternal<Double>) Utilities.deserializeNode(leftPointers.get(0));
-        BPTExternal<Double>  two = (BPTExternal<Double>) Utilities.deserializeNode(leftPointers.get(1));
-        BPTExternal<Double>  three = (BPTExternal<Double>) Utilities.deserializeNode(leftPointers.get(2));
+        BPTExternal<Double>  one = (BPTExternal) Utilities.deserializeNode(leftPointers.get(0));
+        BPTExternal<Double>  two = (BPTExternal) Utilities.deserializeNode(leftPointers.get(1));
+        BPTExternal<Double>  three = (BPTExternal) Utilities.deserializeNode(leftPointers.get(2));
 
-        BPTExternal<Double>  four = (BPTExternal<Double>) Utilities.deserializeNode(rightPointers.get(0));
-        BPTExternal<Double>  five = (BPTExternal<Double>) Utilities.deserializeNode(rightPointers.get(1));
+        BPTExternal<Double>  four = (BPTExternal) Utilities.deserializeNode(rightPointers.get(0));
+        BPTExternal<Double>  five = (BPTExternal) Utilities.deserializeNode(rightPointers.get(1));
 
         ArrayList<Double> oneVals = one.getValues();
         ArrayList<Double> twoVals = two.getValues();
@@ -1530,11 +1528,11 @@ public class treeTest {
     @Test
     public void S_testString(){
         BPlusTree<String> treeString = Utilities.deserializeBPT("TreeTesting_String");
-        BPTInternal<String> root = (BPTInternal<String>) treeString.getRoot();
+        BPTInternal<String> root = (BPTInternal) treeString.getRoot();
         ArrayList<String> rootPointers = root.getPointers();
 
-        BPTInternal<String>  left = (BPTInternal<String>) Utilities.deserializeNode(rootPointers.get(0));
-        BPTInternal<String>  right = (BPTInternal<String>) Utilities.deserializeNode(rootPointers.get(1));
+        BPTInternal<String>  left = (BPTInternal) Utilities.deserializeNode(rootPointers.get(0));
+        BPTInternal<String>  right = (BPTInternal) Utilities.deserializeNode(rootPointers.get(1));
 
         ArrayList<String> rootVals = root.getValues();
         ArrayList<String> leftVals = left.getValues();
@@ -1543,12 +1541,12 @@ public class treeTest {
         ArrayList<String> leftPointers = left.getPointers();
         ArrayList<String> rightPointers = right.getPointers();
 
-        BPTExternal<String>  one = (BPTExternal<String>) Utilities.deserializeNode(leftPointers.get(0));
-        BPTExternal<String>  two = (BPTExternal<String>) Utilities.deserializeNode(leftPointers.get(1));
-        BPTExternal<String>  three = (BPTExternal<String>) Utilities.deserializeNode(leftPointers.get(2));
+        BPTExternal<String>  one = (BPTExternal) Utilities.deserializeNode(leftPointers.get(0));
+        BPTExternal<String>  two = (BPTExternal) Utilities.deserializeNode(leftPointers.get(1));
+        BPTExternal<String>  three = (BPTExternal) Utilities.deserializeNode(leftPointers.get(2));
 
-        BPTExternal<String>  four = (BPTExternal<String>) Utilities.deserializeNode(rightPointers.get(0));
-        BPTExternal<String>  five = (BPTExternal<String>) Utilities.deserializeNode(rightPointers.get(1));
+        BPTExternal<String>  four = (BPTExternal) Utilities.deserializeNode(rightPointers.get(0));
+        BPTExternal<String>  five = (BPTExternal) Utilities.deserializeNode(rightPointers.get(1));
 
         ArrayList<String> oneVals = one.getValues();
         ArrayList<String> twoVals = two.getValues();
@@ -1652,11 +1650,11 @@ public class treeTest {
     @Test
     public void T_testDate() throws ParseException {
         BPlusTree<Date> treeDouble = Utilities.deserializeBPT("TreeTesting_Date");
-        BPTInternal<Date> root = (BPTInternal<Date>) treeDouble.getRoot();
+        BPTInternal<Date> root = (BPTInternal) treeDouble.getRoot();
         ArrayList<String> rootPointers = root.getPointers();
 
-        BPTInternal<Date>  left = (BPTInternal<Date>) Utilities.deserializeNode(rootPointers.get(0));
-        BPTInternal<Date>  right = (BPTInternal<Date>) Utilities.deserializeNode(rootPointers.get(1));
+        BPTInternal<Date>  left = (BPTInternal) Utilities.deserializeNode(rootPointers.get(0));
+        BPTInternal<Date>  right = (BPTInternal) Utilities.deserializeNode(rootPointers.get(1));
 
         ArrayList<Date> rootVals = root.getValues();
         ArrayList<Date> leftVals = left.getValues();
@@ -1665,12 +1663,12 @@ public class treeTest {
         ArrayList<String> leftPointers = left.getPointers();
         ArrayList<String> rightPointers = right.getPointers();
 
-        BPTExternal<Date>  one = (BPTExternal<Date>) Utilities.deserializeNode(leftPointers.get(0));
-        BPTExternal<Date>  two = (BPTExternal<Date>) Utilities.deserializeNode(leftPointers.get(1));
-        BPTExternal<Date>  three = (BPTExternal<Date>) Utilities.deserializeNode(leftPointers.get(2));
+        BPTExternal<Date>  one = (BPTExternal) Utilities.deserializeNode(leftPointers.get(0));
+        BPTExternal<Date>  two = (BPTExternal) Utilities.deserializeNode(leftPointers.get(1));
+        BPTExternal<Date>  three = (BPTExternal) Utilities.deserializeNode(leftPointers.get(2));
 
-        BPTExternal<Date>  four = (BPTExternal<Date>) Utilities.deserializeNode(rightPointers.get(0));
-        BPTExternal<Date>  five = (BPTExternal<Date>) Utilities.deserializeNode(rightPointers.get(1));
+        BPTExternal<Date>  four = (BPTExternal) Utilities.deserializeNode(rightPointers.get(0));
+        BPTExternal<Date>  five = (BPTExternal) Utilities.deserializeNode(rightPointers.get(1));
 
         ArrayList<Date> oneVals = one.getValues();
         ArrayList<Date> twoVals = two.getValues();
@@ -1775,7 +1773,7 @@ public class treeTest {
     public void U_testBoolean(){
         BPlusTree<Boolean> treeBoolean = Utilities.deserializeBPT("TreeTesting_Boolean");
 
-        BPTExternal<Boolean> root = (BPTExternal<Boolean>) treeBoolean.getRoot();
+        BPTExternal<Boolean> root = (BPTExternal) treeBoolean.getRoot();
         ArrayList<Boolean> rootVals = root.getValues();
         ArrayList<BPointer> rootPointers = root.getPointers();
 
