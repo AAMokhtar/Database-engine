@@ -55,43 +55,43 @@ public class DBApp {
 		public static void main(String args[]) {
 		//CREATE TABLE TEST PASSED!
 		Hashtable table = new Hashtable<String, String>();
-		table.put("ID","java.lang.Integer");
-		//table.put("name","java.lang.String");
+		//table.put("ID","java.lang.Integer");
+		table.put("name","java.lang.String");
 		//table.put("isAdult","java.lang.Boolean");
 		//table.put("nationality","java.lang.String");
-		//table.put("birthdate","java.util.Date");
+		table.put("birthdate","java.util.Date");
 		//table.put("gpa","java.lang.Double");
 		DBApp d = new DBApp();
 		d.init();
 		try {
-			d.createTable("Test4","ID", table);
+			d.createTable("Test5","birthdate", table);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
 
 		Hashtable<String, Object> tuple = new Hashtable<String, Object>();
-		tuple.put("ID",6);
-		//tuple.put("name","Ismail");
+		//tuple.put("ID",6);
+		tuple.put("name","Ismail");
 		//tuple.put("isAdult",true);
 		//tuple.put("nationality","China");
-		//tuple.put("birthdate",new Date(434567650));
+		tuple.put("birthdate",new Date(2000,06,02));
 		//tuple.put("gpa",1.0);
 		
 
 		try {
-			d.insertIntoTable("Test4", tuple);
-			//d.deleteFromTable("Test4", tuple);
+			//d.insertIntoTable("Test5", tuple);
+			d.deleteFromTable("Test5", tuple);
 
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
 
 		/*try {
-			d.createBTreeIndex("Test3", "ID");
+			d.createBTreeIndex("Test5", "birthdate");
 			} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}*/
-		Table obj=Utilities.deserializeTable("Test4");
+		Table obj=Utilities.deserializeTable("Test5");
 
 
 		for (int i = 0; i < obj.getPages().size(); i++) {
