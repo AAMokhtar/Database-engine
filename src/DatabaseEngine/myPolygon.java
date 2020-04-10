@@ -14,6 +14,11 @@ public class myPolygon extends Polygon implements Comparable<myPolygon>{
     public myPolygon(Polygon s) {
         // TODO Auto-generated constructor stub
         shape=s;
+        this.npoints = shape.npoints;
+        this.xpoints = shape.xpoints;
+        this.ypoints = shape.ypoints;
+        this.bounds = shape.getBounds();
+        this.area = this.bounds.height*this.bounds.width;
         java.awt.Rectangle boundingBox=shape.getBounds();
         area=boundingBox.height*boundingBox.width;
     }

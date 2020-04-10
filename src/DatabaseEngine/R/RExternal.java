@@ -1,19 +1,19 @@
-package DatabaseEngine.BPlus;
+package DatabaseEngine.R;
 
-import DatabaseEngine.Pointer;
+import DatabaseEngine.BPlus.BPointer;
 import DatabaseEngine.Utilities;
+import DatabaseEngine.myPolygon;
 import DatabaseEngine.overflowPage;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Queue;
 
-public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
+public class RExternal extends RNode { //leaf
 
     private ArrayList<BPointer> pointers; //pointers to records
     private  String next; //next node in the linked list
 
-    public BPTExternal(int N, String ID) {
+    public RExternal(int N, String ID) {
         super(N,ID);
         pointers = new ArrayList<>();
         this.next = null;
@@ -38,7 +38,7 @@ public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
 
     //------------------------METHODS-------------------------------
 
-    public void insert(T value, BPointer newPointer) { //insert a value
+    public void insert(myPolygon value, BPointer newPointer) { //insert a value
         incSize();
 
         int insertAt = Utilities.selectiveBinarySearch(getValues(), value, ">="); //binary search for the correct place
@@ -49,9 +49,9 @@ public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
         pointers.add(insertAt,newPointer); //insert record pointer
     }
 
-    public BPTNode<T> split() {
-        BPTExternal<T> newNode = new BPTExternal<>(getMaxPerNode(),""); //last node to the right
-        ArrayList<T> newValues = new ArrayList<>(); //temp values
+    public RNode split() {
+        RExternal newNode = new RExternal(getMaxPerNode(),""); //last node to the right
+        ArrayList newValues = new ArrayList<>(); //temp values
         ArrayList<BPointer> newPointers = new ArrayList<>(); //temp pointers
 
         int splittingIndex = (getSize() - 1)/2; //split node in half
@@ -78,8 +78,8 @@ public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
 
         return newNode; //node to be inserted as a pointer one level up the tree
     }
-    
-	public void delete(T value, BPointer temp,String name) {
+
+	public void delete(myPolygon value, BPointer temp, String name) {
 		boolean flag = false;
 		int	key = Utilities.selectiveBinarySearch(this.getValues(), value, "=");
 		if(key != -1) {
@@ -97,7 +97,7 @@ public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
             		Utilities.serializeOverflow(curPage);   
 
 	            }
-        		Utilities.serializeNode(this);
+        		Utilities.serializeRNode(this);
 			}
 				
 			else if (new File("data//overflow_Pages//" + "overflow_" + name+"_" + value + "_0.class").isFile()){

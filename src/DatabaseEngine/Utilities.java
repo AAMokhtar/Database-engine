@@ -22,6 +22,10 @@ import java.util.Hashtable;
 import java.util.*;
 
 import DatabaseEngine.BPlus.*;
+import DatabaseEngine.R.RExternal;
+import DatabaseEngine.R.RInternal;
+import DatabaseEngine.R.RNode;
+import DatabaseEngine.R.RTree;
 import javafx.util.Pair;
 
 public class Utilities {
@@ -802,7 +806,10 @@ public class Utilities {
 				}
 
 				if (info[4].charAt(0) == 'T') {
-					ret.get(info[0]).put(info[1], deserializeBPT(info[0]+"_"+info[1]));
+					if (info[2].equals("java.awt.Polygon")) ret.get(info[0]).put(info[1],
+							deserializeRTree(info[0]+"_"+info[1]));
+
+					else ret.get(info[0]).put(info[1], deserializeBPT(info[0]+"_"+info[1]));
 				}
 
 			}
@@ -991,7 +998,7 @@ public class Utilities {
 			String path =  "data//BPlus//Trees//" + "BPlusTree_" + name+ ".class";
 			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
 
-			FileInputStream readFromFile = new FileInputStream("data//BPlus//Trees//" + "BPlusTree_" + name+ ".class");
+			FileInputStream readFromFile = new FileInputStream(path);
 			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
 			BPlusTree<T> k = (BPlusTree<T>) readObject.readObject();
 			readObject.close();
@@ -1162,9 +1169,8 @@ public class Utilities {
 	public static BSet<BPointer> indexedQuery(Class colType, index tree, SQLTerm cur){
 		BSet<BPointer> queryResult = new BSet<>(); //output
 
-		if (colType.getName().equals("DatabaseEngine.myPolygon")){ //use R tree
-			//TODO: R tree query
-			//turn R pointers into BPointers
+		if (colType.getName().equals("java.awt.Polygon")){ //use R tree
+			queryResult =  ((RTree) tree).search((myPolygon) cur._objValue, cur._strOperator);
 		}
 
 		else { //use B+ trees
@@ -1479,79 +1485,177 @@ public class Utilities {
 		return null;
 	}
 
-//------------------------------========================MAIN========================------------------------------------
-//	public static void main(String[] args) {
-//		try {
-	//testing returnIndex()
-//			System.out.println(returnIndex("kjhrskj","sss"));
+	//---------------------------===================="R"_TREES=====================--------------------------------
 
-	//testing updateChecker()
-//			Hashtable<String,Object> newVal = new Hashtable<String,Object>();
-//			newVal.put("gpa", "ff");
-//			newVal.put("name", "bibi");
-//			System.out.println(updateChecker("ESTUDIANTE", newVal));
+	//check equality IN TERMS OF POINTS
+	public static boolean polygonsEqual(Polygon A, Polygon B) {
+		if(A.npoints == B.npoints) {
+			for (int i = 0; i < A.npoints; i++) {
+				if (A.xpoints[i]!=B.xpoints[i]) {
+					return false;
+				}
+			}
 
-	//testing returnClustering()
-//			System.out.println(returnClustering("Table Name"));
+			for (int i = 0; i < A.npoints; i++) {
+				if (A.ypoints[i]!=B.ypoints[i]) {
+					return false;
+				}
+			}
 
-//			gpa,java.lang.Double,False,False
-//			ESTUDIANT,ID,java.lang.Integer,False,False
-//			ESTUDIANT,isAdult,java.lang.Boolean,False,False
-//			ESTUDIANT,name,java.lang.String,True,True
-//			ESTUDIANT,deathdate,j
-//			Vector<Vector> records = new Vector();
-//			Vector<Object> r1 = new Vector<Object>();
-//			r1.add(1.2);
-//			r1.add(23);
-//			r1.add(true);
-//			r1.add("bibb");
-//			r1.add(new java.util.Date(1999, 3, 7));
-//			r1.add(new java.util.Date(2003, 3, 7));
-//			records.add(r1);
-//			Vector<Object> r3 = new Vector<Object>();
-//			r3.add(2.0);
-//			r3.add(9);
-//			r3.add(true);
-//			r3.add("re");
-//			r3.add(new java.util.Date(1995, 3, 7));
-//			r3.add(new java.util.Date(2003, 3, 7));
-//			records.add(r3);
-//			Vector<Object> r4 = new Vector<Object>();
-//			r4.add(4.3);
-//			r4.add(99);
-//			r4.add(false);
-//			r4.add("re");
-//			r4.add(new java.util.Date(1985, 3, 7));
-//			r4.add(new java.util.Date(2003, 3, 7));
-//			records.add(r4);
-//			Vector<Object> r5 = new Vector<Object>();
-//			r5.add(9.3);
-//			r5.add(18);
-//			r5.add(true);
-//			r5.add("re");
-//			r5.add(new java.util.Date(1975, 3, 7));
-//			r5.add(new java.util.Date(2003, 3, 7));
-//			records.add(r5);
-//			Vector<Object> r2 = new Vector<Object>();
-//			r2.add(1.1);
-//			r2.add(13);
-//			r2.add(false);
-//			r2.add("bimb");
-//			r2.add(new java.util.Date(2009, 3, 7));
-//			r2.add(new java.util.Date(2003, 3, 7));
-//			records.add(r2);
-//			
-//			Hashtable<String, Object> newVal = new Hashtable<String,Object>();
-//			newVal.put("gpa",0.7);
-//			newVal.put("isAdult",false);
-//			System.out.println(records);
-//			binarySearchUpdate(records, 0, 4, 3, "re", "ESTUDIANT", newVal);
-//			System.out.println(records);
-//		} catch (DBAppException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
-//	}
+			return true;
+		}
 
+		return false;
+	}
+
+	public static void serializeRNode(RNode N) { //copy pasted from Basant's (thx XD)
+
+		try {
+
+			String path =  "data//R//R_Nodes//" + "Node_" + N.getID() + ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+			File file = new File(path);
+			FileOutputStream fileAccess;
+			fileAccess = new FileOutputStream(file);
+			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
+			objectAccess.writeObject(N);
+			objectAccess.close();
+			fileAccess.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Failed to serialize node.");
+		}
+	}
+
+	public static RNode deserializeRNode(String nodeID) {
+		if (nodeID == null) return null;
+
+		try {
+
+			String path =  "data//R//R_Nodes//" + "Node_" + nodeID + ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+			FileInputStream readFromFile = new FileInputStream(path);
+			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
+			RNode k = (RNode) readObject.readObject();
+			readObject.close();
+			readFromFile.close();
+			return k;
+		}
+		catch(Exception E) {
+			System.out.println("Failed to deserialize node. Return value: NULL");
+		}
+
+		return null;
+	}
+
+	public static void serializeRTree(RTree tree) {
+
+		try {
+
+			String path =  "data//R//Trees//" + "RTree_" +tree.getName() + ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+			File file = new File(path);
+			FileOutputStream fileAccess;
+			fileAccess = new FileOutputStream(file);
+			ObjectOutputStream objectAccess = new ObjectOutputStream(fileAccess);
+			objectAccess.writeObject(tree);
+			objectAccess.close();
+			fileAccess.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Failed to serialize tree.");
+		}
+	}
+
+	public static RTree deserializeRTree(String name) {
+		//read from file (deserialize)
+		try {
+
+			String path =  "data//R//Trees//" + "RTree_" + name+ ".class";
+			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+			FileInputStream readFromFile = new FileInputStream(path);
+			ObjectInputStream readObject = new ObjectInputStream(readFromFile);
+			RTree k = (RTree) readObject.readObject();
+			readObject.close();
+			readFromFile.close();
+			return k;
+
+		}
+
+		catch(Exception E) {
+			System.out.println(name);
+			System.out.println("Failed to deserialize tree. Return value: NULL");
+		}
+		return null;
+	}
+
+	public static RExternal findLeaf(RNode cur, myPolygon value, boolean firstNode){
+
+		if (cur instanceof RInternal){
+			int key = -1;
+			if (!firstNode)
+				key = selectiveBinarySearch(cur.getValues(), value, "<="); //find place in array (greatest index less than or equal value)
+
+			return findLeaf(Utilities.deserializeRNode(((RInternal) cur).getPointers().get(key + 1)),value, firstNode); //down the tree
+		}
+
+		return (RExternal) cur;
+	}
+
+	public static Object[] getAllRPointers(RTree tree){
+		HashMap<Integer,HashMap<Integer, BPointer>> ret1 = new HashMap<>();
+		ArrayList<overflowPage> ret2 = new ArrayList<>();
+		ArrayList<RExternal> ret3 = new ArrayList<>();
+
+		RExternal cur = Utilities.findLeaf(tree.getRoot(),null,true); //get the leftmost leaf
+
+		while (cur != null){ //for all leaves
+			ret3.add(cur);
+			ArrayList<BPointer> pointers = cur.getPointers();
+			ArrayList<myPolygon> values = cur.getValues();
+
+			for(BPointer p: pointers){
+				if (!ret1.containsKey(p.getPage())) ret1.put(p.getPage(),new HashMap<>());
+				ret1.get(p.getPage()).put(p.getOffset(),p);
+			}
+
+
+			for(myPolygon v: values) { //get the overflow pages of every value
+				String path = "data//overflow_Pages//" + "overflow_" + tree.getName() +"_"+ v + "_0.class";
+				path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+
+				if (new File(path).isFile()) { //has overflow pages
+					overflowPage curPage = Utilities.deserializeOverflow(tree.getName() +"_"+ v + "_0"); //get the first page
+
+					while (curPage != null) { //loop over all overflow pages
+
+						Queue<Pointer> pointersQ = curPage.getPointers(); //get all pointers
+
+						while (!pointersQ.isEmpty()){ //for each pointer in page
+							BPointer curPointer = (BPointer) pointersQ.poll();
+							if (!ret1.containsKey(curPointer.getPage())) ret1.put(curPointer.getPage(),new HashMap<>());
+							ret1.get(curPointer.getPage()).put(curPointer.getOffset(), curPointer);
+						}
+						ret2.add(curPage);
+						curPage = Utilities.deserializeOverflow(curPage.getNext()); //next page
+					}
+				}
+			}
+
+			cur = (RExternal) Utilities.deserializeRNode(cur.getNext());
+		}
+		return new Object[] {ret1,ret2,ret3};
+	}
+
+	public static  void serializeAllR(ArrayList<RExternal> leaves, ArrayList<overflowPage> pages) {
+		//save all the leaves
+		for(RExternal cur: leaves) Utilities.serializeRNode(cur);
+
+		//save all pverflow pages
+		for (overflowPage p : pages) Utilities.serializeOverflow(p);
+	}
 }
