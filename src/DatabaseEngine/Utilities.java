@@ -1089,6 +1089,9 @@ public class Utilities {
 			case "java.lang.Boolean": //final case
 				return conditionHelp((Boolean) a,(Boolean) b,condition); //do stuff
 
+			case "java.awt.Polygon":
+				return conditionHelp((myPolygon) a,(myPolygon) b,condition); //do stuff
+
 			default:break; //some other stuff
 		}
 
@@ -1108,7 +1111,8 @@ public class Utilities {
 			case "<=":
 				return a.compareTo(b) <= 0;
 			case "=":
-				return a.compareTo(b) == 0;
+				if (a instanceof Polygon) return Utilities.polygonsEqual((myPolygon ) a, (myPolygon) b);
+				else return a.compareTo(b) == 0;
 			default: break;
 		}
 
@@ -1236,8 +1240,10 @@ public class Utilities {
 								queryResult.add(new BPointer(pageIndex[0],pageIndex[1])); //add it to the result
 
 							else{
-								done = true;//for outer loop
-								break; //break since the records are sorted (the remaining records do not satisfy the condition)
+								if (!(colType.getName().equals("java.awt.Polygon") && cur._strOperator.equals("="))) {
+									done = true;//for outer loop
+									break; //break since the records are sorted (the remaining records do not satisfy the condition)
+								}
 							}
 							pageIndex[1]++; //next index
 						}
@@ -1418,7 +1424,7 @@ public class Utilities {
 				queryResult = Utilities.indexedQuery(colType,tree,cur);
 			}
 			else { //no index, search in records
-				queryResult = Utilities.recordQuery(cur,colInfo[4].charAt(0) == 'T',cur_table,colnum,colType);
+				queryResult = Utilities.recordQuery(cur,colInfo[3].charAt(0) == 'T',cur_table,colnum,colType);
 			}
 
 			//-----------perform set operation-----------

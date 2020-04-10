@@ -513,7 +513,7 @@ public class DBApp {
 					queryResult = Utilities.indexedQuery(colType,tree,cur);
 				}
 				else { //no index, search in records
-					queryResult = Utilities.recordQuery(cur,colInfo[4].charAt(0) == 'T',cur_table,colnum,colType);
+					queryResult = Utilities.recordQuery(cur,colInfo[3].charAt(0) == 'T',cur_table,colnum,colType);
 				}
 
 			//-----------perform set operation-----------
