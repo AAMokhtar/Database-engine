@@ -41,9 +41,9 @@ public class myPolygon extends Polygon implements Comparable<myPolygon>{
   			if(i<this.shape.npoints-1)
   				str +=",";
   		}
-
   		return str;
   	}
+  
 
   	//parses the string and returns a
   	//TODO: are polygons equal if they have the same size or if they have the same set of points?

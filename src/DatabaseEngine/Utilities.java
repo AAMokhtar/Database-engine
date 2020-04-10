@@ -443,7 +443,6 @@ public class Utilities {
 	public static void serializeTable(Table T) {
 		//store into file (serialize)
 		try {
-
 			String path =  "data//" + "table_" + T.getName() + ".class";
 			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
 

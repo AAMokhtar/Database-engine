@@ -60,39 +60,44 @@ public class DBApp {
 		table.put("name","java.lang.String");
 		//table.put("isAdult","java.lang.Boolean");
 		//table.put("nationality","java.lang.String");
-		table.put("birthdate","java.util.Date");
+		//table.put("birthdate","java.util.Date");
 		//table.put("gpa","java.lang.Double");
+		//table.put("shape", "java.awt.Polygon");
 		DBApp d = new DBApp();
 		d.init();
 		try {
-			d.createTable("Test5","birthdate", table);
+			d.createTable("Test2","name", table);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
-
+		//int[] x={1,2,1,2};
+		//int[] y={1,1,2,2};
+		//java.awt.Polygon poly= new java.awt.Polygon(x,y,4);
 		Hashtable<String, Object> tuple = new Hashtable<String, Object>();
 		//tuple.put("ID",6);
-		tuple.put("name","Ismail");
+		tuple.put("name","Ziad");
 		//tuple.put("isAdult",true);
 		//tuple.put("nationality","China");
-		tuple.put("birthdate",new Date(2000,06,02));
+		//tuple.put("birthdate",new Date(2000,06,02));
 		//tuple.put("gpa",1.0);
+		//tuple.put("shape",poly);
 		
 
 		try {
-			//d.insertIntoTable("Test5", tuple);
-			d.deleteFromTable("Test5", tuple);
+			d.insertIntoTable("Test2", tuple);
+			//d.deleteFromTable("Test2", tuple);
 
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
 
 		/*try {
-			d.createBTreeIndex("Test5", "birthdate");
+		  	d.createRTreeIndex("Test1", "shape");
+			//d.createBTreeIndex("Test5", "birthdate");
 			} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}*/
-		Table obj=Utilities.deserializeTable("Test5");
+		Table obj=Utilities.deserializeTable("Test2");
 
 
 		for (int i = 0; i < obj.getPages().size(); i++) {
@@ -131,9 +136,9 @@ public class DBApp {
 			//check if clustering key has an index
 			if(temp[4].equals("True") && !clusteringKeyType.equals("java.awt.Polygon"))
 			{
-			//clustering key has a B+ tree index so I should use that index to search for place	
-				// load B+ tree index
-				BPlusTree index= (BPlusTree) indices.get(strTableName).get(temp[1]);
+			//clustering key has a B+/R tree index so I should use that index to search for place	
+			// load B+/R tree index
+				index index= indices.get(strTableName).get(temp[1]);
 				if(tableToInsertIn.getPages().isEmpty())
 				{
 					//in this case we know table is still empty. So I just need to create a new page
@@ -145,7 +150,16 @@ public class DBApp {
 				else
 				{
 					// since table is not empty, we must use the index
-					BSet set=index.search((Comparable)htblColNameValue.get(clusteringKey), ">=");
+					BSet set;
+					if(clusteringKeyType.equals("java.awt.Polygon"))
+					{
+						myPolygon poly= new myPolygon((java.awt.Polygon)htblColNameValue.get(clusteringKey));
+						set=((RTree)index).search(poly, ">=");
+					}
+					else
+					{
+						set=((BPlusTree)index).search((Comparable)htblColNameValue.get(clusteringKey), ">=");
+					}
 					BPointer firstPtr=firstPtr=(BPointer)set.getMin();
 				
 					if(firstPtr==null)
@@ -235,8 +249,11 @@ public class DBApp {
 				{
 					//Rtree
 					// fetch tree
-					//insert in tree
+					RTree tree= (RTree) indices.get(strTableName).get(temp[1]);
+					//insert in tree"java.awt.Polygon"
+					tree.insert(new myPolygon((java.awt.Polygon)htblColNameValue.get(temp[1])), new BPointer(pageIndx, rowNumber), true);
 					//serialize
+					Utilities.serializeRTree(tree);
 				}
 					
 					
@@ -244,12 +261,14 @@ public class DBApp {
 			
 			//Step 8: Insert actual tuple
 			tableToInsertIn.insertRegularCase(newTuple, pageIndx, rowNumber, indexClusteringKey, htblColNameValue.get(clusteringKey), clusteringKeyType);
-			
+			//Step 9:serialize table again
+			Utilities.serializeTable(tableToInsertIn);
+			this.indices = Utilities.loadIndices();
 		}
-		//Step 9:serialize table again
-		Utilities.serializeTable(tableToInsertIn);
-		this.indices = Utilities.loadIndices();
-		
+		else
+		{
+			throw new DBAppException("Table " + strTableName + " does not exist. Cannot insert in a nonexistant table.");
+		}
 	}
 
 	//---------------------------------------------------------------------UPDATE METHOD--------------------------------------------------------------------
