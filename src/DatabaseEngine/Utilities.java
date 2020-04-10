@@ -1111,8 +1111,11 @@ public class Utilities {
 			case "<=":
 				return a.compareTo(b) <= 0;
 			case "=":
-				if (a instanceof Polygon) return Utilities.polygonsEqual((myPolygon ) a, (myPolygon) b);
+				if (a instanceof Polygon) return Utilities.polygonsEqual((myPolygon) a, (myPolygon) b);
 				else return a.compareTo(b) == 0;
+			case"!=":
+				if (a instanceof Polygon) return !Utilities.polygonsEqual((myPolygon) a, (myPolygon) b);
+				else return a.compareTo(b) != 0;
 			default: break;
 		}
 
@@ -1210,7 +1213,7 @@ public class Utilities {
 			int[] pageIndex = {-1,-1}; //{page, index}
 
 			//Get the appropriate starting position:
-			if (cur._strOperator.equals("<=") || cur._strOperator.equals("<")){ //no binary search needed
+			if (cur._strOperator.equals("<=") || cur._strOperator.equals("<") || cur._strOperator.equals("!=")){ //no binary search needed
 				pageIndex[0] = 0;
 				pageIndex[1] = 0;
 			}
@@ -1240,7 +1243,8 @@ public class Utilities {
 								queryResult.add(new BPointer(pageIndex[0],pageIndex[1])); //add it to the result
 
 							else{
-								if (!(colType.getName().equals("java.awt.Polygon") && cur._strOperator.equals("="))) {
+								if (!(colType.getName().equals("java.awt.Polygon") && cur._strOperator.equals("="))
+								&& !cur._strOperator.equals("!=")) {
 									done = true;//for outer loop
 									break; //break since the records are sorted (the remaining records do not satisfy the condition)
 								}
