@@ -79,6 +79,8 @@ public class RTree implements index<myPolygon>, Serializable {
 
             case "=":
                 curNode = Utilities.findLeaf(root, polygon, false); //find node of value
+                if(curNode!=null)
+                {
                 index = Utilities.selectiveBinarySearch(curNode.getValues(), polygon, "="); //find the index of value
 
                 if (curNode != null && index != -1){ // find all records = value
@@ -113,7 +115,7 @@ public class RTree implements index<myPolygon>, Serializable {
                         }
                     }
                 }
-
+                }
                 break;
 
             //-----------------NEXT CASE--------------------

@@ -75,6 +75,8 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 
             case "=":
                 curNode = Utilities.findLeaf(root, value, false); //find node of value
+                if(curNode!=null)
+                {
                 index = Utilities.selectiveBinarySearch(curNode.getValues(), value, "="); //find the index of value
 
                 if (curNode != null && index != -1){ // find all records = value
@@ -99,6 +101,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                 }
 
                 break;
+                }
 
             //-----------------NEXT CASE--------------------
 
