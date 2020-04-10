@@ -57,35 +57,35 @@ public class DBApp {
 		//CREATE TABLE TEST PASSED!
 		Hashtable table = new Hashtable<String, String>();
 		//table.put("ID","java.lang.Integer");
-		table.put("name","java.lang.String");
+		//table.put("name","java.lang.String");
 		//table.put("isAdult","java.lang.Boolean");
 		//table.put("nationality","java.lang.String");
 		//table.put("birthdate","java.util.Date");
 		//table.put("gpa","java.lang.Double");
-		//table.put("shape", "java.awt.Polygon");
+		table.put("shape", "java.awt.Polygon");
 		DBApp d = new DBApp();
 		d.init();
 		try {
-			d.createTable("Test2","name", table);
+			d.createTable("Test3","shape", table);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
-		//int[] x={1,2,1,2};
-		//int[] y={1,1,2,2};
-		//java.awt.Polygon poly= new java.awt.Polygon(x,y,4);
+		int[] x={1,1,1,1};
+		int[] y={1,1,1,1};
+		java.awt.Polygon poly= new java.awt.Polygon(x,y,4);
 		Hashtable<String, Object> tuple = new Hashtable<String, Object>();
 		//tuple.put("ID",6);
-		tuple.put("name","Ziad");
+		//tuple.put("name","Ziad");
 		//tuple.put("isAdult",true);
 		//tuple.put("nationality","China");
 		//tuple.put("birthdate",new Date(2000,06,02));
 		//tuple.put("gpa",1.0);
-		//tuple.put("shape",poly);
+		tuple.put("shape",poly);
 		
 
 		try {
-			d.insertIntoTable("Test2", tuple);
-			//d.deleteFromTable("Test2", tuple);
+			//d.insertIntoTable("Test3", tuple);
+			d.deleteFromTable("Test3", tuple);
 
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
@@ -97,7 +97,7 @@ public class DBApp {
 			} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}*/
-		Table obj=Utilities.deserializeTable("Test2");
+		Table obj=Utilities.deserializeTable("Test3");
 
 
 		for (int i = 0; i < obj.getPages().size(); i++) {
@@ -392,7 +392,7 @@ public class DBApp {
 		}
 	BSet<BPointer> pointers =	Utilities.selectPointers(indices, arrSQLTerms, strarrOperators);
 	Iterator<Vector<Object>> rows = Utilities.getPointerRecords(pointers);
-
+	System.out.println(pointers.size());
 	if(indices.containsKey(strTableName)) {
 	
 		ArrayList<String[]> metaData = Utilities.readMetaDataForSpecificTable(strTableName);
@@ -428,6 +428,7 @@ public class DBApp {
 		}
 		else {
 			// Call the Rtree's delete
+			((RTree)	columnTreeIndices.get(key)).delete((myPolygon)value,p,type);
 		}
 		}
 			t.delete(p.getPage(), p.getOffset());
@@ -532,7 +533,7 @@ public class DBApp {
 
 
 		} //repeat for all SQL terms
-
+		
 		return Utilities.getPointerRecords(resultPointers); //return an iterator containing the records extracted from resultPointers
 	}
 	
