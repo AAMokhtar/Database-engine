@@ -1240,7 +1240,7 @@ public class Utilities {
 
 							//if the tuple satisfies the SQL term
 							if (Utilities.condition(tuple.get(colnum), cur._objValue, colType, cur._strOperator))
-								queryResult.add(new BPointer(pageIndex[0],pageIndex[1])); //add it to the result
+								queryResult.add(new BPointer(cur_table.getPages().get(pageIndex[0]),pageIndex[1])); //add it to the result
 
 							else{
 								if (!(colType.getName().equals("java.awt.Polygon") && cur._strOperator.equals("="))
