@@ -373,7 +373,17 @@ public class DBApp {
 //		arrSQLTerms[0]._objValue = "John Noor"; 
 		Set<String> keys = htblColNameValue.keySet();
 		int z = 0;
-		for(String key : keys) {
+		for(String key : keys) { 
+			if(htblColNameValue.get(key) instanceof java.awt.Polygon)
+			{
+				SQLTerm term = new SQLTerm();
+				term._strTableName = strTableName;
+				term._strColumnName = key;
+				term._strOperator = "=";
+				term._objValue = new myPolygon((java.awt.Polygon)(htblColNameValue.get(key)));
+				arrSQLTerms[z] = term;
+				z++;	
+			}else {
 			SQLTerm term = new SQLTerm();
 			term._strTableName = strTableName;
 			term._strColumnName = key;
@@ -382,13 +392,14 @@ public class DBApp {
 			arrSQLTerms[z] = term;
 			z++;
 			}
+			}
 		String[]strarrOperators = new String[arrSQLTerms.length-1];
 		for(int i = 0; i< strarrOperators.length;i++) {
 			strarrOperators[i] = "AND"; 
 		}
 	BSet<BPointer> pointers =	Utilities.selectPointers(indices, arrSQLTerms, strarrOperators);
 	Iterator<Vector<Object>> rows = Utilities.getPointerRecords(pointers);
-	System.out.println(pointers.size());
+
 	if(indices.containsKey(strTableName)) {
 	
 		ArrayList<String[]> metaData = Utilities.readMetaDataForSpecificTable(strTableName);
