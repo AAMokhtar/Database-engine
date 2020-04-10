@@ -1,18 +1,14 @@
 package DatabaseEngine; //change to team name before submitting
 
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.*;
 
 import DatabaseEngine.BPlus.BPlusTree;
 import DatabaseEngine.BPlus.BPointer;
 import DatabaseEngine.R.RTree;
-import javafx.scene.shape.Polygon;
 import javafx.util.Pair;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
 
 public class DBApp {
 
