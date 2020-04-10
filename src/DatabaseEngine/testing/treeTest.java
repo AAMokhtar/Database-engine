@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 //working with the assumption that insert/delete methods of the table are correct
@@ -95,7 +96,7 @@ public class treeTest {
         DB.createBTreeIndex("TreeTesting","Integer");
 
         boolean treeExists = new File("data//BPlus//Trees//BPlusTree_TreeTesting_Integer.class").isFile();
-        assertTrue(treeExists);
+        Assert.assertTrue(treeExists);
     }
 
     //===============================TREE_INSERTION===================================
@@ -118,40 +119,40 @@ public class treeTest {
 
 
         //correct sizes
-        assertTrue(root.getSize() == 1,"incorrect node size");
-        assertTrue(rootVals.size() == 1,"incorrect node size");
-        assertTrue(rootPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, root.getSize());
+        Assert.assertEquals("incorrect node size", 1, rootVals.size());
+        Assert.assertEquals("incorrect node size", 2, rootPointers.size());
 
 
-        assertTrue(left.getSize() == 3,"incorrect node size");
-        assertTrue(leftVals.size() == 3,"incorrect node size");
-        assertTrue(leftPointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 3, left.getSize());
+        Assert.assertEquals("incorrect node size", 3, leftVals.size());
+        Assert.assertEquals("incorrect node size", 3, leftPointers.size());
 
-        assertTrue(right.getSize() == 2,"incorrect node size");
-        assertTrue(rightVals.size() == 2,"incorrect node size");
-        assertTrue(rightPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, right.getSize());
+        Assert.assertEquals("incorrect node size", 2, rightVals.size());
+        Assert.assertEquals("incorrect node size", 2, rightPointers.size());
 
 
         //nodes are linked correctly
-        assertTrue(left.getNext().equals(rootPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(right.getNext() == null,"leaves are linked incorrectly");
+        Assert.assertEquals("leaves are linked incorrectly", left.getNext(), rootPointers.get(1));
+        Assert.assertNull("leaves are linked incorrectly", right.getNext());
+        Assert.assertNull(right.getNext());
 
         //values are correct
-        assertTrue(rootVals.get(0) == 16,"incorrect value");
-        assertTrue(leftVals.get(0) == 1,"incorrect value");
-        assertTrue(leftVals.get(1) == 4,"incorrect value");
-        assertTrue(leftVals.get(2) == 9,"incorrect value");
-        assertTrue(rightVals.get(0) == 16,"incorrect value");
-        assertTrue(rightVals.get(1) == 25,"incorrect value");
+        Assert.assertEquals("incorrect value", 16, (int) rootVals.get(0));
+        Assert.assertEquals("incorrect value", 1, (int) leftVals.get(0));
+        Assert.assertEquals("incorrect value", 4, (int) leftVals.get(1));
+        Assert.assertEquals("incorrect value", 9, (int) leftVals.get(2));
+        Assert.assertEquals("incorrect value", 16, (int) rightVals.get(0));
+        Assert.assertEquals("incorrect value", 25, (int) rightVals.get(1));
 
         //pointers are correct
-        assertTrue(leftPointers.get(0).getPage() == 1 && leftPointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(leftPointers.get(1).getPage() == 1 && leftPointers.get(1).getOffset() == 1,"incorrect pointer");
-        assertTrue(leftPointers.get(2).getPage() == 1 && leftPointers.get(2).getOffset() == 2,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", leftPointers.get(0).getPage() == 1 && leftPointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", leftPointers.get(1).getPage() == 1 && leftPointers.get(1).getOffset() == 1);
+        Assert.assertTrue("incorrect pointer", leftPointers.get(2).getPage() == 1 && leftPointers.get(2).getOffset() == 2);
 
-        assertTrue(rightPointers.get(0).getPage() == 2 && rightPointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(rightPointers.get(1).getPage() == 2 && rightPointers.get(1).getOffset() == 1,"incorrect pointer");
-        assertTrue(right.getNext() == null);
+        Assert.assertTrue("incorrect pointer", rightPointers.get(0).getPage() == 2 && rightPointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", rightPointers.get(1).getPage() == 2 && rightPointers.get(1).getOffset() == 1);
     }
 
     @Test
@@ -174,42 +175,42 @@ public class treeTest {
 
 
         //correct sizes
-        assertTrue(root.getSize() == 1,"incorrect node size");
-        assertTrue(rootVals.size() == 1,"incorrect node size");
-        assertTrue(rootPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, root.getSize());
+        Assert.assertEquals("incorrect node size", 1, rootVals.size());
+        Assert.assertEquals("incorrect node size", 2, rootPointers.size());
 
 
-        assertTrue(left.getSize() == 3,"incorrect node size");
-        assertTrue(leftVals.size() == 3,"incorrect node size");
-        assertTrue(leftPointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 3, left.getSize());
+        Assert.assertEquals("incorrect node size", 3, leftVals.size());
+        Assert.assertEquals("incorrect node size", 3, leftPointers.size());
 
-        assertTrue(right.getSize() == 3,"incorrect node size");
-        assertTrue(rightVals.size() == 3,"incorrect node size");
-        assertTrue(rightPointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 3, right.getSize());
+        Assert.assertEquals("incorrect node size", 3, rightVals.size());
+        Assert.assertEquals("incorrect node size", 3, rightPointers.size());
 
 
         //nodes are linked correctly
-        assertTrue(left.getNext().equals(rootPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(right.getNext() == null,"leaves are linked incorrectly");
+        Assert.assertEquals("leaves are linked incorrectly", left.getNext(), rootPointers.get(1));
+        Assert.assertNull("leaves are linked incorrectly", right.getNext());
 
         //values are correct
-        assertTrue(rootVals.get(0) == 16,"incorrect value");
-        assertTrue(leftVals.get(0) == 1,"incorrect value");
-        assertTrue(leftVals.get(1) == 4,"incorrect value");
-        assertTrue(leftVals.get(2) == 9,"incorrect value");
-        assertTrue(rightVals.get(0) == 16,"incorrect value");
-        assertTrue(rightVals.get(1) == 20,"incorrect value");
-        assertTrue(rightVals.get(2) == 25,"incorrect value");
+        Assert.assertEquals("incorrect value", 16, (int) rootVals.get(0));
+        Assert.assertEquals("incorrect value", 1, (int) leftVals.get(0));
+        Assert.assertEquals("incorrect value", 4, (int) leftVals.get(1));
+        Assert.assertEquals("incorrect value", 9, (int) leftVals.get(2));
+        Assert.assertEquals("incorrect value", 16, (int) rightVals.get(0));
+        Assert.assertEquals("incorrect value", 20, (int) rightVals.get(1));
+        Assert.assertEquals("incorrect value", 25, (int) rightVals.get(2));
 
 
         //pointers are correct
-        assertTrue(leftPointers.get(0).getPage() == 1 && leftPointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(leftPointers.get(1).getPage() == 1 && leftPointers.get(1).getOffset() == 1,"incorrect pointer");
-        assertTrue(leftPointers.get(2).getPage() == 1 && leftPointers.get(2).getOffset() == 2,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", leftPointers.get(0).getPage() == 1 && leftPointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", leftPointers.get(1).getPage() == 1 && leftPointers.get(1).getOffset() == 1);
+        Assert.assertTrue("incorrect pointer", leftPointers.get(2).getPage() == 1 && leftPointers.get(2).getOffset() == 2);
 
-        assertTrue(rightPointers.get(0).getPage() == 2 && rightPointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(rightPointers.get(1).getPage() == 2 && rightPointers.get(1).getOffset() == 1,"incorrect pointer");
-        assertTrue(rightPointers.get(2).getPage() == 2 && rightPointers.get(2).getOffset() == 2,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", rightPointers.get(0).getPage() == 2 && rightPointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", rightPointers.get(1).getPage() == 2 && rightPointers.get(1).getOffset() == 1);
+        Assert.assertTrue("incorrect pointer", rightPointers.get(2).getPage() == 2 && rightPointers.get(2).getOffset() == 2);
 
     }
 
@@ -236,54 +237,54 @@ public class treeTest {
 
 
         //correct sizes
-        assertTrue(root.getSize() == 2,"incorrect node size");
-        assertTrue(rootVals.size() == 2,"incorrect node size");
-        assertTrue(rootPointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, root.getSize());
+        Assert.assertEquals("incorrect node size", 2, rootVals.size());
+        Assert.assertEquals("incorrect node size", 3, rootPointers.size());
 
-        assertTrue(left.getSize() == 2,"incorrect node size");
-        assertTrue(leftVals.size() == 2,"incorrect node size");
-        assertTrue(leftPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, left.getSize());
+        Assert.assertEquals("incorrect node size", 2, leftVals.size());
+        Assert.assertEquals("incorrect node size", 2, leftPointers.size());
 
-        assertTrue(mid.getSize() == 2,"incorrect node size");
-        assertTrue(midVals.size() == 2,"incorrect node size");
-        assertTrue( midPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, mid.getSize());
+        Assert.assertEquals("incorrect node size", 2, midVals.size());
+        Assert.assertEquals("incorrect node size", 2, midPointers.size());
 
-        assertTrue(right.getSize() == 3,"incorrect node size");
-        assertTrue(rightVals.size() == 3,"incorrect node size");
-        assertTrue(rightPointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 3, right.getSize());
+        Assert.assertEquals("incorrect node size", 3, rightVals.size());
+        Assert.assertEquals("incorrect node size", 3, rightPointers.size());
 
 
         //nodes are linked correctly
-        assertTrue(left.getNext().equals(rootPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(mid.getNext().equals(rootPointers.get(2)),"leaves are linked incorrectly");
-        assertTrue(right.getNext() == null,"leaves are linked incorrectly");
+        Assert.assertEquals("leaves are linked incorrectly", left.getNext(), rootPointers.get(1));
+        Assert.assertEquals("leaves are linked incorrectly", mid.getNext(), rootPointers.get(2));
+        Assert.assertNull("leaves are linked incorrectly", right.getNext());
 
 
         //values are correct
-        assertTrue(rootVals.get(0) == 9,"incorrect value");
-        assertTrue(rootVals.get(1) == 16,"incorrect value");
+        Assert.assertEquals("incorrect value", 9, (int) rootVals.get(0));
+        Assert.assertEquals("incorrect value", 16, (int) rootVals.get(1));
 
-        assertTrue(leftVals.get(0) == 1,"incorrect value");
-        assertTrue(leftVals.get(1) == 4,"incorrect value");
+        Assert.assertEquals("incorrect value", 1, (int) leftVals.get(0));
+        Assert.assertEquals("incorrect value", 4, (int) leftVals.get(1));
 
-        assertTrue(midVals.get(0) == 9,"incorrect value");
-        assertTrue(midVals.get(1) == 13,"incorrect value");
+        Assert.assertEquals("incorrect value", 9, (int) midVals.get(0));
+        Assert.assertEquals("incorrect value", 13, (int) midVals.get(1));
 
-        assertTrue(rightVals.get(0) == 16,"incorrect value");
-        assertTrue(rightVals.get(1) == 20,"incorrect value");
-        assertTrue(rightVals.get(2) == 25,"incorrect value");
+        Assert.assertEquals("incorrect value", 16, (int) rightVals.get(0));
+        Assert.assertEquals("incorrect value", 20, (int) rightVals.get(1));
+        Assert.assertEquals("incorrect value", 25, (int) rightVals.get(2));
 
 
         //pointers are correct
-        assertTrue(leftPointers.get(0).getPage() == 1 && leftPointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(leftPointers.get(1).getPage() == 1 && leftPointers.get(1).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", leftPointers.get(0).getPage() == 1 && leftPointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", leftPointers.get(1).getPage() == 1 && leftPointers.get(1).getOffset() == 1);
 
-        assertTrue(midPointers.get(0).getPage() == 1 && midPointers.get(0).getOffset() == 2,"incorrect pointer");
-        assertTrue(midPointers.get(1).getPage() == 2 && midPointers.get(1).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", midPointers.get(0).getPage() == 1 && midPointers.get(0).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", midPointers.get(1).getPage() == 2 && midPointers.get(1).getOffset() == 0);
 
-        assertTrue(rightPointers.get(0).getPage() == 2 && rightPointers.get(0).getOffset() == 1,"incorrect pointer");
-        assertTrue(rightPointers.get(1).getPage() == 2 && rightPointers.get(1).getOffset() == 2,"incorrect pointer");
-        assertTrue(rightPointers.get(2).getPage() == 3 && rightPointers.get(2).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", rightPointers.get(0).getPage() == 2 && rightPointers.get(0).getOffset() == 1);
+        Assert.assertTrue("incorrect pointer", rightPointers.get(1).getPage() == 2 && rightPointers.get(1).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", rightPointers.get(2).getPage() == 3 && rightPointers.get(2).getOffset() == 0);
 
     }
 
@@ -310,58 +311,58 @@ public class treeTest {
 
 
         //correct sizes
-        assertTrue(root.getSize() == 2,"incorrect node size");
-        assertTrue(rootVals.size() == 2,"incorrect node size");
-        assertTrue(rootPointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, root.getSize());
+        Assert.assertEquals("incorrect node size", 2, rootVals.size());
+        Assert.assertEquals("incorrect node size", 3, rootPointers.size());
 
-        assertTrue(left.getSize() == 2,"incorrect node size");
-        assertTrue(leftVals.size() == 2,"incorrect node size");
-        assertTrue(leftPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, left.getSize());
+        Assert.assertEquals("incorrect node size", 2, leftVals.size());
+        Assert.assertEquals("incorrect node size", 2, leftPointers.size());
 
-        assertTrue(mid.getSize() == 3,"incorrect node size");
-        assertTrue(midVals.size() == 3,"incorrect node size");
-        assertTrue( midPointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 3, mid.getSize());
+        Assert.assertEquals("incorrect node size", 3, midVals.size());
+        Assert.assertEquals("incorrect node size", 3, midPointers.size());
 
-        assertTrue(right.getSize() == 3,"incorrect node size");
-        assertTrue(rightVals.size() == 3,"incorrect node size");
-        assertTrue(rightPointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 3, right.getSize());
+        Assert.assertEquals("incorrect node size", 3, rightVals.size());
+        Assert.assertEquals("incorrect node size", 3, rightPointers.size());
 
 
         //nodes are linked correctly
-        assertTrue(left.getNext().equals(rootPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(mid.getNext().equals(rootPointers.get(2)),"leaves are linked incorrectly");
-        assertTrue(right.getNext() == null,"leaves are linked incorrectly");
+        Assert.assertEquals("leaves are linked incorrectly", left.getNext(), rootPointers.get(1));
+        Assert.assertEquals("leaves are linked incorrectly", mid.getNext(), rootPointers.get(2));
+        Assert.assertNull("leaves are linked incorrectly", right.getNext());
 
 
         //values are correct
-        assertTrue(rootVals.get(0) == 9,"incorrect value");
-        assertTrue(rootVals.get(1) == 16,"incorrect value");
+        Assert.assertEquals("incorrect value", 9, (int) rootVals.get(0));
+        Assert.assertEquals("incorrect value", 16, (int) rootVals.get(1));
 
-        assertTrue(leftVals.get(0) == 1,"incorrect value");
-        assertTrue(leftVals.get(1) == 4,"incorrect value");
+        Assert.assertEquals("incorrect value", 1, (int) leftVals.get(0));
+        Assert.assertEquals("incorrect value", 4, (int) leftVals.get(1));
 
-        assertTrue(midVals.get(0) == 9,"incorrect value");
-        assertTrue(midVals.get(1) == 13,"incorrect value");
-        assertTrue(midVals.get(2) == 15,"incorrect value");
+        Assert.assertEquals("incorrect value", 9, (int) midVals.get(0));
+        Assert.assertEquals("incorrect value", 13, (int) midVals.get(1));
+        Assert.assertEquals("incorrect value", 15, (int) midVals.get(2));
 
 
-        assertTrue(rightVals.get(0) == 16,"incorrect value");
-        assertTrue(rightVals.get(1) == 20,"incorrect value");
-        assertTrue(rightVals.get(2) == 25,"incorrect value");
+        Assert.assertEquals("incorrect value", 16, (int) rightVals.get(0));
+        Assert.assertEquals("incorrect value", 20, (int) rightVals.get(1));
+        Assert.assertEquals("incorrect value", 25, (int) rightVals.get(2));
 
 
         //pointers are correct
-        assertTrue(leftPointers.get(0).getPage() == 1 && leftPointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(leftPointers.get(1).getPage() == 1 && leftPointers.get(1).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", leftPointers.get(0).getPage() == 1 && leftPointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", leftPointers.get(1).getPage() == 1 && leftPointers.get(1).getOffset() == 1);
 
-        assertTrue(midPointers.get(0).getPage() == 1 && midPointers.get(0).getOffset() == 2,"incorrect pointer");
-        assertTrue(midPointers.get(1).getPage() == 2 && midPointers.get(1).getOffset() == 0,"incorrect pointer");
-        assertTrue(midPointers.get(2).getPage() == 2 && midPointers.get(2).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", midPointers.get(0).getPage() == 1 && midPointers.get(0).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", midPointers.get(1).getPage() == 2 && midPointers.get(1).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", midPointers.get(2).getPage() == 2 && midPointers.get(2).getOffset() == 1);
 
 
-        assertTrue(rightPointers.get(0).getPage() == 2 && rightPointers.get(0).getOffset() == 2,"incorrect pointer");
-        assertTrue(rightPointers.get(1).getPage() == 3 && rightPointers.get(1).getOffset() == 0,"incorrect pointer");
-        assertTrue(rightPointers.get(2).getPage() == 3 && rightPointers.get(2).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", rightPointers.get(0).getPage() == 2 && rightPointers.get(0).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", rightPointers.get(1).getPage() == 3 && rightPointers.get(1).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", rightPointers.get(2).getPage() == 3 && rightPointers.get(2).getOffset() == 1);
     }
 
     @Test
@@ -391,66 +392,66 @@ public class treeTest {
 
 
         //correct sizes
-        assertTrue(root.getSize() == 3,"incorrect node size");
-        assertTrue(rootVals.size() == 3,"incorrect node size");
-        assertTrue(rootPointers.size() == 4,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 3, root.getSize());
+        Assert.assertEquals("incorrect node size", 3, rootVals.size());
+        Assert.assertEquals("incorrect node size", 4, rootPointers.size());
 
-        assertTrue(one.getSize() == 2,"incorrect node size");
-        assertTrue(oneVals.size() == 2,"incorrect node size");
-        assertTrue(onePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, one.getSize());
+        Assert.assertEquals("incorrect node size", 2, oneVals.size());
+        Assert.assertEquals("incorrect node size", 2, onePointers.size());
 
-        assertTrue(two.getSize() == 2,"incorrect node size");
-        assertTrue(twoVals.size() == 2,"incorrect node size");
-        assertTrue( twoPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, two.getSize());
+        Assert.assertEquals("incorrect node size", 2, twoVals.size());
+        Assert.assertEquals("incorrect node size", 2, twoPointers.size());
 
-        assertTrue(three.getSize() == 2,"incorrect node size");
-        assertTrue(threeVals.size() == 2,"incorrect node size");
-        assertTrue(threePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, three.getSize());
+        Assert.assertEquals("incorrect node size", 2, threeVals.size());
+        Assert.assertEquals("incorrect node size", 2, threePointers.size());
 
-        assertTrue(four.getSize() == 3,"incorrect node size");
-        assertTrue(fourVals.size() == 3,"incorrect node size");
-        assertTrue(fourPointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 3, four.getSize());
+        Assert.assertEquals("incorrect node size", 3, fourVals.size());
+        Assert.assertEquals("incorrect node size", 3, fourPointers.size());
 
 
         //nodes are linked correctly
-        assertTrue(one.getNext().equals(rootPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(two.getNext().equals(rootPointers.get(2)),"leaves are linked incorrectly");
-        assertTrue(three.getNext().equals(rootPointers.get(3)),"leaves are linked incorrectly");
-        assertTrue(four.getNext() == null);
+        Assert.assertEquals("leaves are linked incorrectly", one.getNext(), rootPointers.get(1));
+        Assert.assertEquals("leaves are linked incorrectly", two.getNext(), rootPointers.get(2));
+        Assert.assertEquals("leaves are linked incorrectly", three.getNext(), rootPointers.get(3));
+        Assert.assertNull(four.getNext());
 
 
         //values are correct
-        assertTrue(rootVals.get(0) == 9,"incorrect value");
-        assertTrue(rootVals.get(1) == 13,"incorrect value");
-        assertTrue(rootVals.get(2) == 16,"incorrect value");
+        Assert.assertEquals("incorrect value", 9, (int) rootVals.get(0));
+        Assert.assertEquals("incorrect value", 13, (int) rootVals.get(1));
+        Assert.assertEquals("incorrect value", 16, (int) rootVals.get(2));
 
-        assertTrue(oneVals.get(0) == 1,"incorrect value");
-        assertTrue(oneVals.get(1) == 4,"incorrect value");
+        Assert.assertEquals("incorrect value", 1, (int) oneVals.get(0));
+        Assert.assertEquals("incorrect value", 4, (int) oneVals.get(1));
 
-        assertTrue(twoVals.get(0) == 9,"incorrect value");
-        assertTrue(twoVals.get(1) == 10,"incorrect value");
+        Assert.assertEquals("incorrect value", 9, (int) twoVals.get(0));
+        Assert.assertEquals("incorrect value", 10, (int) twoVals.get(1));
 
-        assertTrue(threeVals.get(0) == 13);
-        assertTrue(threeVals.get(1) == 15);
+        Assert.assertEquals(13, (int) threeVals.get(0));
+        Assert.assertEquals(15, (int) threeVals.get(1));
 
-        assertTrue(fourVals.get(0) == 16,"incorrect value");
-        assertTrue(fourVals.get(1) == 20,"incorrect value");
-        assertTrue(fourVals.get(2) == 25,"incorrect value");
+        Assert.assertEquals("incorrect value", 16, (int) fourVals.get(0));
+        Assert.assertEquals("incorrect value", 20, (int) fourVals.get(1));
+        Assert.assertEquals("incorrect value", 25, (int) fourVals.get(2));
 
 
         //pointers are correct
-        assertTrue(onePointers.get(0).getPage() == 1 && onePointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(onePointers.get(1).getPage() == 1 && onePointers.get(1).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", onePointers.get(0).getPage() == 1 && onePointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", onePointers.get(1).getPage() == 1 && onePointers.get(1).getOffset() == 1);
 
-        assertTrue(twoPointers.get(0).getPage() == 1 && twoPointers.get(0).getOffset() == 2,"incorrect pointer");
-        assertTrue(twoPointers.get(1).getPage() == 2 && twoPointers.get(1).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", twoPointers.get(0).getPage() == 1 && twoPointers.get(0).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", twoPointers.get(1).getPage() == 2 && twoPointers.get(1).getOffset() == 0);
 
-        assertTrue(threePointers.get(0).getPage() == 2 && threePointers.get(0).getOffset() == 1,"incorrect pointer");
-        assertTrue(threePointers.get(1).getPage() == 2 && threePointers.get(1).getOffset() == 2,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", threePointers.get(0).getPage() == 2 && threePointers.get(0).getOffset() == 1);
+        Assert.assertTrue("incorrect pointer", threePointers.get(1).getPage() == 2 && threePointers.get(1).getOffset() == 2);
 
-        assertTrue(fourPointers.get(0).getPage() == 3 && fourPointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(fourPointers.get(1).getPage() == 3 && fourPointers.get(1).getOffset() == 1,"incorrect pointer");
-        assertTrue(fourPointers.get(2).getPage() == 3 && fourPointers.get(2).getOffset() == 2,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", fourPointers.get(0).getPage() == 3 && fourPointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", fourPointers.get(1).getPage() == 3 && fourPointers.get(1).getOffset() == 1);
+        Assert.assertTrue("incorrect pointer", fourPointers.get(2).getPage() == 3 && fourPointers.get(2).getOffset() == 2);
     }
 
     @Test
@@ -480,68 +481,68 @@ public class treeTest {
 
 
         //correct sizes
-        assertTrue(root.getSize() == 3,"incorrect node size");
-        assertTrue(rootVals.size() == 3,"incorrect node size");
-        assertTrue(rootPointers.size() == 4,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 3, root.getSize());
+        Assert.assertEquals("incorrect node size", 3, rootVals.size());
+        Assert.assertEquals("incorrect node size", 4, rootPointers.size());
 
-        assertTrue(one.getSize() == 2,"incorrect node size");
-        assertTrue(oneVals.size() == 2,"incorrect node size");
-        assertTrue(onePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, one.getSize());
+        Assert.assertEquals("incorrect node size", 2, oneVals.size());
+        Assert.assertEquals("incorrect node size", 2, onePointers.size());
 
-        assertTrue(two.getSize() == 3,"incorrect node size");
-        assertTrue(twoVals.size() == 3,"incorrect node size");
-        assertTrue( twoPointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 3, two.getSize());
+        Assert.assertEquals("incorrect node size", 3, twoVals.size());
+        Assert.assertEquals("incorrect node size", 3, twoPointers.size());
 
-        assertTrue(three.getSize() == 2,"incorrect node size");
-        assertTrue(threeVals.size() == 2,"incorrect node size");
-        assertTrue(threePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, three.getSize());
+        Assert.assertEquals("incorrect node size", 2, threeVals.size());
+        Assert.assertEquals("incorrect node size", 2, threePointers.size());
 
-        assertTrue(four.getSize() == 3,"incorrect node size");
-        assertTrue(fourVals.size() == 3,"incorrect node size");
-        assertTrue(fourPointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 3, four.getSize());
+        Assert.assertEquals("incorrect node size", 3, fourVals.size());
+        Assert.assertEquals("incorrect node size", 3, fourPointers.size());
 
 
         //nodes are linked correctly
-        assertTrue(one.getNext().equals(rootPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(two.getNext().equals(rootPointers.get(2)),"leaves are linked incorrectly");
-        assertTrue(three.getNext().equals(rootPointers.get(3)),"leaves are linked incorrectly");
-        assertTrue(four.getNext() == null);
+        Assert.assertEquals("leaves are linked incorrectly", one.getNext(), rootPointers.get(1));
+        Assert.assertEquals("leaves are linked incorrectly", two.getNext(), rootPointers.get(2));
+        Assert.assertEquals("leaves are linked incorrectly", three.getNext(), rootPointers.get(3));
+        Assert.assertNull(four.getNext());
 
 
         //values are correct
-        assertTrue(rootVals.get(0) == 9,"incorrect value");
-        assertTrue(rootVals.get(1) == 13,"incorrect value");
-        assertTrue(rootVals.get(2) == 16,"incorrect value");
+        Assert.assertEquals("incorrect value", 9, (int) rootVals.get(0));
+        Assert.assertEquals("incorrect value", 13, (int) rootVals.get(1));
+        Assert.assertEquals("incorrect value", 16, (int) rootVals.get(2));
 
-        assertTrue(oneVals.get(0) == 1,"incorrect value");
-        assertTrue(oneVals.get(1) == 4,"incorrect value");
+        Assert.assertEquals("incorrect value", 1, (int) oneVals.get(0));
+        Assert.assertEquals("incorrect value", 4, (int) oneVals.get(1));
 
-        assertTrue(twoVals.get(0) == 9,"incorrect value");
-        assertTrue(twoVals.get(1) == 10,"incorrect value");
-        assertTrue(twoVals.get(2) == 11,"incorrect value");
+        Assert.assertEquals("incorrect value", 9, (int) twoVals.get(0));
+        Assert.assertEquals("incorrect value", 10, (int) twoVals.get(1));
+        Assert.assertEquals("incorrect value", 11, (int) twoVals.get(2));
 
-        assertTrue(threeVals.get(0) == 13,"incorrect value");
-        assertTrue(threeVals.get(1) == 15,"incorrect value");
+        Assert.assertEquals("incorrect value", 13, (int) threeVals.get(0));
+        Assert.assertEquals("incorrect value", 15, (int) threeVals.get(1));
 
-        assertTrue(fourVals.get(0) == 16,"incorrect value");
-        assertTrue(fourVals.get(1) == 20,"incorrect value");
-        assertTrue(fourVals.get(2) == 25,"incorrect value");
+        Assert.assertEquals("incorrect value", 16, (int) fourVals.get(0));
+        Assert.assertEquals("incorrect value", 20, (int) fourVals.get(1));
+        Assert.assertEquals("incorrect value", 25, (int) fourVals.get(2));
 
 
         //pointers are correct
-        assertTrue(onePointers.get(0).getPage() == 1 && onePointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(onePointers.get(1).getPage() == 1 && onePointers.get(1).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", onePointers.get(0).getPage() == 1 && onePointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", onePointers.get(1).getPage() == 1 && onePointers.get(1).getOffset() == 1);
 
-        assertTrue(twoPointers.get(0).getPage() == 1 && twoPointers.get(0).getOffset() == 2,"incorrect pointer");
-        assertTrue(twoPointers.get(1).getPage() == 2 && twoPointers.get(1).getOffset() == 0,"incorrect pointer");
-        assertTrue(twoPointers.get(2).getPage() == 2 && twoPointers.get(2).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", twoPointers.get(0).getPage() == 1 && twoPointers.get(0).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", twoPointers.get(1).getPage() == 2 && twoPointers.get(1).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", twoPointers.get(2).getPage() == 2 && twoPointers.get(2).getOffset() == 1);
 
-        assertTrue(threePointers.get(0).getPage() == 2 && threePointers.get(0).getOffset() == 2,"incorrect pointer");
-        assertTrue(threePointers.get(1).getPage() == 3 && threePointers.get(1).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", threePointers.get(0).getPage() == 2 && threePointers.get(0).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", threePointers.get(1).getPage() == 3 && threePointers.get(1).getOffset() == 0);
 
-        assertTrue(fourPointers.get(0).getPage() == 3 && fourPointers.get(0).getOffset() == 1,"incorrect pointer");
-        assertTrue(fourPointers.get(1).getPage() == 3 && fourPointers.get(1).getOffset() == 2,"incorrect pointer");
-        assertTrue(fourPointers.get(2).getPage() == 4 && fourPointers.get(2).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", fourPointers.get(0).getPage() == 3 && fourPointers.get(0).getOffset() == 1);
+        Assert.assertTrue("incorrect pointer", fourPointers.get(1).getPage() == 3 && fourPointers.get(1).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", fourPointers.get(2).getPage() == 4 && fourPointers.get(2).getOffset() == 0);
     }
 
     @Test
@@ -583,89 +584,89 @@ public class treeTest {
 
 
         //correct sizes
-        assertTrue(root.getSize() == 1,"incorrect node size");
-        assertTrue(rootVals.size() == 1,"incorrect node size");
-        assertTrue(rootPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, root.getSize());
+        Assert.assertEquals("incorrect node size", 1, rootVals.size());
+        Assert.assertEquals("incorrect node size", 2, rootPointers.size());
 
-        assertTrue(left.getSize() == 2,"incorrect node size");
-        assertTrue(leftVals.size() == 2,"incorrect node size");
-        assertTrue(leftPointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, left.getSize());
+        Assert.assertEquals("incorrect node size", 2, leftVals.size());
+        Assert.assertEquals("incorrect node size", 3, leftPointers.size());
 
-        assertTrue(right.getSize() == 1,"incorrect node size");
-        assertTrue(rightVals.size() == 1,"incorrect node size");
-        assertTrue(rightPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, right.getSize());
+        Assert.assertEquals("incorrect node size", 1, rightVals.size());
+        Assert.assertEquals("incorrect node size", 2, rightPointers.size());
 
-        assertTrue(one.getSize() == 2,"incorrect node size");
-        assertTrue(oneVals.size() == 2,"incorrect node size");
-        assertTrue(onePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, one.getSize());
+        Assert.assertEquals("incorrect node size", 2, oneVals.size());
+        Assert.assertEquals("incorrect node size", 2, onePointers.size());
 
-        assertTrue(two.getSize() == 2,"incorrect node size");
-        assertTrue(twoVals.size() == 2,"incorrect node size");
-        assertTrue( twoPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, two.getSize());
+        Assert.assertEquals("incorrect node size", 2, twoVals.size());
+        Assert.assertEquals("incorrect node size", 2, twoPointers.size());
 
-        assertTrue(three.getSize() == 2,"incorrect node size");
-        assertTrue(threeVals.size() == 2,"incorrect node size");
-        assertTrue(threePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, three.getSize());
+        Assert.assertEquals("incorrect node size", 2, threeVals.size());
+        Assert.assertEquals("incorrect node size", 2, threePointers.size());
 
-        assertTrue(four.getSize() == 2,"incorrect node size");
-        assertTrue(fourVals.size() == 2,"incorrect node size");
-        assertTrue(fourPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, four.getSize());
+        Assert.assertEquals("incorrect node size", 2, fourVals.size());
+        Assert.assertEquals("incorrect node size", 2, fourPointers.size());
 
-        assertTrue(five.getSize() == 3,"incorrect node size");
-        assertTrue(fiveVals.size() == 3,"incorrect node size");
-        assertTrue(fivePointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 3, five.getSize());
+        Assert.assertEquals("incorrect node size", 3, fiveVals.size());
+        Assert.assertEquals("incorrect node size", 3, fivePointers.size());
 
 
         //nodes are linked correctly
-        assertTrue(one.getNext().equals(leftPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(two.getNext().equals(leftPointers.get(2)),"leaves are linked incorrectly");
-        assertTrue(three.getNext().equals(rightPointers.get(0)),"leaves are linked incorrectly");
-        assertTrue(four.getNext().equals(rightPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(five.getNext() == null);
+        Assert.assertEquals("leaves are linked incorrectly", one.getNext(), leftPointers.get(1));
+        Assert.assertEquals("leaves are linked incorrectly", two.getNext(), leftPointers.get(2));
+        Assert.assertEquals("leaves are linked incorrectly", three.getNext(), rightPointers.get(0));
+        Assert.assertEquals("leaves are linked incorrectly", four.getNext(), rightPointers.get(1));
+        Assert.assertNull(five.getNext());
 
 
         //values are correct
-        assertTrue(rootVals.get(0) == 13,"incorrect value");
+        Assert.assertEquals("incorrect value", 13, (int) rootVals.get(0));
 
-        assertTrue(leftVals.get(0) == 9,"incorrect value");
-        assertTrue(leftVals.get(1) == 11,"incorrect value");
+        Assert.assertEquals("incorrect value", 9, (int) leftVals.get(0));
+        Assert.assertEquals("incorrect value", 11, (int) leftVals.get(1));
 
-        assertTrue(rightVals.get(0) == 16,"incorrect value");
+        Assert.assertEquals("incorrect value", 16, (int) rightVals.get(0));
 
-        assertTrue(oneVals.get(0) == 1,"incorrect value");
-        assertTrue(oneVals.get(1) == 4,"incorrect value");
+        Assert.assertEquals("incorrect value", 1, (int) oneVals.get(0));
+        Assert.assertEquals("incorrect value", 4, (int) oneVals.get(1));
 
-        assertTrue(twoVals.get(0) == 9,"incorrect value");
-        assertTrue(twoVals.get(1) == 10,"incorrect value");
+        Assert.assertEquals("incorrect value", 9, (int) twoVals.get(0));
+        Assert.assertEquals("incorrect value", 10, (int) twoVals.get(1));
 
-        assertTrue(threeVals.get(0) == 11,"incorrect value");
-        assertTrue(threeVals.get(1) == 12,"incorrect value");
+        Assert.assertEquals("incorrect value", 11, (int) threeVals.get(0));
+        Assert.assertEquals("incorrect value", 12, (int) threeVals.get(1));
 
-        assertTrue(fourVals.get(0) == 13,"incorrect value");
-        assertTrue(fourVals.get(1) == 15,"incorrect value");
+        Assert.assertEquals("incorrect value", 13, (int) fourVals.get(0));
+        Assert.assertEquals("incorrect value", 15, (int) fourVals.get(1));
 
-        assertTrue(fiveVals.get(0) == 16,"incorrect value");
-        assertTrue(fiveVals.get(1) == 20,"incorrect value");
-        assertTrue(fiveVals.get(2) == 25,"incorrect value");
+        Assert.assertEquals("incorrect value", 16, (int) fiveVals.get(0));
+        Assert.assertEquals("incorrect value", 20, (int) fiveVals.get(1));
+        Assert.assertEquals("incorrect value", 25, (int) fiveVals.get(2));
 
 
 
         //pointers are correct
-        assertTrue(onePointers.get(0).getPage() == 1 && onePointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(onePointers.get(1).getPage() == 1 && onePointers.get(1).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", onePointers.get(0).getPage() == 1 && onePointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", onePointers.get(1).getPage() == 1 && onePointers.get(1).getOffset() == 1);
 
-        assertTrue(twoPointers.get(0).getPage() == 1 && twoPointers.get(0).getOffset() == 2,"incorrect pointer");
-        assertTrue(twoPointers.get(1).getPage() == 2 && twoPointers.get(1).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", twoPointers.get(0).getPage() == 1 && twoPointers.get(0).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", twoPointers.get(1).getPage() == 2 && twoPointers.get(1).getOffset() == 0);
 
-        assertTrue(threePointers.get(0).getPage() == 2 && threePointers.get(0).getOffset() == 1,"incorrect pointer");
-        assertTrue(threePointers.get(1).getPage() == 2 && threePointers.get(1).getOffset() == 2,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", threePointers.get(0).getPage() == 2 && threePointers.get(0).getOffset() == 1);
+        Assert.assertTrue("incorrect pointer", threePointers.get(1).getPage() == 2 && threePointers.get(1).getOffset() == 2);
 
-        assertTrue(fourPointers.get(0).getPage() == 3 && fourPointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(fourPointers.get(1).getPage() == 3 && fourPointers.get(1).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", fourPointers.get(0).getPage() == 3 && fourPointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", fourPointers.get(1).getPage() == 3 && fourPointers.get(1).getOffset() == 1);
 
-        assertTrue(fivePointers.get(0).getPage() == 3 && fivePointers.get(0).getOffset() == 2,"incorrect pointer");
-        assertTrue(fivePointers.get(1).getPage() == 4 && fivePointers.get(1).getOffset() == 0,"incorrect pointer");
-        assertTrue(fivePointers.get(2).getPage() == 4 && fivePointers.get(2).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", fivePointers.get(0).getPage() == 3 && fivePointers.get(0).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", fivePointers.get(1).getPage() == 4 && fivePointers.get(1).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", fivePointers.get(2).getPage() == 4 && fivePointers.get(2).getOffset() == 1);
     }
 
     //================================TREE_OVERFLOW===================================
@@ -676,26 +677,26 @@ public class treeTest {
             insert(13,13.2,"G", "2020-03-13", true, 13);
 
         String path = "data//overflow_Pages//overflow_TreeTesting_Integer_13_0.class";
-        assertTrue(new File(path).isFile()); //first page
+        Assert.assertTrue(new File(path).isFile()); //first page
 
         overflowPage[] pages = new overflowPage[3];
 
         pages[0] = Utilities.deserializeOverflow("TreeTesting_Integer_13_0");
-        assertEquals("TreeTesting_Integer_13_1", pages[0].getNext(),"overflow pages are not linked correctly");
-        assertEquals(null, pages[0].getPrev(),"overflow pages are not linked correctly");
+        Assert.assertEquals("overflow pages are not linked correctly", "TreeTesting_Integer_13_1", pages[0].getNext());
+        Assert.assertNull("overflow pages are not linked correctly", pages[0].getPrev());
 
         pages[1] = Utilities.deserializeOverflow("TreeTesting_Integer_13_1");
-        assertEquals("TreeTesting_Integer_13_2", pages[1].getNext(),"overflow pages are not linked correctly");
-        assertEquals("TreeTesting_Integer_13_0", pages[1].getPrev(),"overflow pages are not linked correctly");
+        Assert.assertEquals("overflow pages are not linked correctly", "TreeTesting_Integer_13_2", pages[1].getNext());
+        Assert.assertEquals("overflow pages are not linked correctly", "TreeTesting_Integer_13_0", pages[1].getPrev());
 
         pages[2] = Utilities.deserializeOverflow("TreeTesting_Integer_13_2");
-        assertEquals(null, pages[2].getNext(),"overflow pages are not linked correctly");
-        assertEquals("TreeTesting_Integer_13_1", pages[2].getPrev(),"overflow pages are not linked correctly");
+        Assert.assertNull("overflow pages are not linked correctly", pages[2].getNext());
+        Assert.assertEquals("overflow pages are not linked correctly", "TreeTesting_Integer_13_1", pages[2].getPrev());
 
         //sizes
-        assertEquals(3, pages[0].size(),"page size is incorrect");
-        assertEquals(3, pages[1].size(),"page size is incorrect");
-        assertEquals(3, pages[2].size(),"page size is incorrect");
+        Assert.assertEquals("page size is incorrect", 3, pages[0].size());
+        Assert.assertEquals("page size is incorrect", 3, pages[1].size());
+        Assert.assertEquals("page size is incorrect", 3, pages[2].size());
 
         //correct pointers
         for (int i = 0; i < 3; i++) {
@@ -704,8 +705,8 @@ public class treeTest {
             while (!curPage.isEmpty()){
                 BPointer curPointer = (BPointer) curPage.poll();
 
-                assertEquals(2 - j, curPointer.getOffset(),"overflow pointer offeset is incorrect");
-                assertEquals(5 - i, curPointer.getPage(),"overflow pointer page is incorrect");
+                Assert.assertEquals("overflow pointer offeset is incorrect", 2 - j, curPointer.getOffset());
+                Assert.assertEquals("overflow pointer page is incorrect", 5 - i, curPointer.getPage());
 
                 j++;
             }
@@ -749,89 +750,89 @@ public class treeTest {
 
 
         //correct sizes
-        assertTrue(root.getSize() == 1,"incorrect node size");
-        assertTrue(rootVals.size() == 1,"incorrect node size");
-        assertTrue(rootPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, root.getSize());
+        Assert.assertEquals("incorrect node size", 1, rootVals.size());
+        Assert.assertEquals("incorrect node size", 2, rootPointers.size());
 
-        assertTrue(left.getSize() == 2,"incorrect node size");
-        assertTrue(leftVals.size() == 2,"incorrect node size");
-        assertTrue(leftPointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, left.getSize());
+        Assert.assertEquals("incorrect node size", 2, leftVals.size());
+        Assert.assertEquals("incorrect node size", 3, leftPointers.size());
 
-        assertTrue(right.getSize() == 1,"incorrect node size");
-        assertTrue(rightVals.size() == 1,"incorrect node size");
-        assertTrue(rightPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, right.getSize());
+        Assert.assertEquals("incorrect node size", 1, rightVals.size());
+        Assert.assertEquals("incorrect node size", 2, rightPointers.size());
 
-        assertTrue(one.getSize() == 2,"incorrect node size");
-        assertTrue(oneVals.size() == 2,"incorrect node size");
-        assertTrue(onePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, one.getSize());
+        Assert.assertEquals("incorrect node size", 2, oneVals.size());
+        Assert.assertEquals("incorrect node size", 2, onePointers.size());
 
-        assertTrue(two.getSize() == 2,"incorrect node size");
-        assertTrue(twoVals.size() == 2,"incorrect node size");
-        assertTrue( twoPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, two.getSize());
+        Assert.assertEquals("incorrect node size", 2, twoVals.size());
+        Assert.assertEquals("incorrect node size", 2, twoPointers.size());
 
-        assertTrue(three.getSize() == 2,"incorrect node size");
-        assertTrue(threeVals.size() == 2,"incorrect node size");
-        assertTrue(threePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, three.getSize());
+        Assert.assertEquals("incorrect node size", 2, threeVals.size());
+        Assert.assertEquals("incorrect node size", 2, threePointers.size());
 
-        assertTrue(four.getSize() == 2,"incorrect node size");
-        assertTrue(fourVals.size() == 2,"incorrect node size");
-        assertTrue(fourPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, four.getSize());
+        Assert.assertEquals("incorrect node size", 2, fourVals.size());
+        Assert.assertEquals("incorrect node size", 2, fourPointers.size());
 
-        assertTrue(five.getSize() == 3,"incorrect node size");
-        assertTrue(fiveVals.size() == 3,"incorrect node size");
-        assertTrue(fivePointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 3, five.getSize());
+        Assert.assertEquals("incorrect node size", 3, fiveVals.size());
+        Assert.assertEquals("incorrect node size", 3, fivePointers.size());
 
 
         //nodes are linked correctly
-        assertTrue(one.getNext().equals(leftPointers.get(1)));
-        assertTrue(two.getNext().equals(leftPointers.get(2)));
-        assertTrue(three.getNext().equals(rightPointers.get(0)));
-        assertTrue(four.getNext().equals(rightPointers.get(1)));
-        assertTrue(five.getNext() == null);
+        Assert.assertEquals(one.getNext(), leftPointers.get(1));
+        Assert.assertEquals(two.getNext(), leftPointers.get(2));
+        Assert.assertEquals(three.getNext(), rightPointers.get(0));
+        Assert.assertEquals(four.getNext(), rightPointers.get(1));
+        Assert.assertNull(five.getNext());
 
 
         //values are correct
-        assertTrue(rootVals.get(0) == 13,"incorrect value");
+        Assert.assertEquals("incorrect value", 13, (int) rootVals.get(0));
 
-        assertTrue(leftVals.get(0) == 9,"incorrect value");
-        assertTrue(leftVals.get(1) == 11,"incorrect value");
+        Assert.assertEquals("incorrect value", 9, (int) leftVals.get(0));
+        Assert.assertEquals("incorrect value", 11, (int) leftVals.get(1));
 
-        assertTrue(rightVals.get(0) == 16,"incorrect value");
+        Assert.assertEquals("incorrect value", 16, (int) rightVals.get(0));
 
-        assertTrue(oneVals.get(0) == 1,"incorrect value");
-        assertTrue(oneVals.get(1) == 4,"incorrect value");
+        Assert.assertEquals("incorrect value", 1, (int) oneVals.get(0));
+        Assert.assertEquals("incorrect value", 4, (int) oneVals.get(1));
 
-        assertTrue(twoVals.get(0) == 9,"incorrect value");
-        assertTrue(twoVals.get(1) == 10,"incorrect value");
+        Assert.assertEquals("incorrect value", 9, (int) twoVals.get(0));
+        Assert.assertEquals("incorrect value", 10, (int) twoVals.get(1));
 
-        assertTrue(threeVals.get(0) == 11,"incorrect value");
-        assertTrue(threeVals.get(1) == 12,"incorrect value");
+        Assert.assertEquals("incorrect value", 11, (int) threeVals.get(0));
+        Assert.assertEquals("incorrect value", 12, (int) threeVals.get(1));
 
-        assertTrue(fourVals.get(0) == 13,"incorrect value");
-        assertTrue(fourVals.get(1) == 15,"incorrect value");
+        Assert.assertEquals("incorrect value", 13, (int) fourVals.get(0));
+        Assert.assertEquals("incorrect value", 15, (int) fourVals.get(1));
 
-        assertTrue(fiveVals.get(0) == 16,"incorrect value");
-        assertTrue(fiveVals.get(1) == 20,"incorrect value");
-        assertTrue(fiveVals.get(2) == 25,"incorrect value");
+        Assert.assertEquals("incorrect value", 16, (int) fiveVals.get(0));
+        Assert.assertEquals("incorrect value", 20, (int) fiveVals.get(1));
+        Assert.assertEquals("incorrect value", 25, (int) fiveVals.get(2));
 
 
 
         //pointers are correct
-        assertTrue(onePointers.get(0).getPage() == 1 && onePointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(onePointers.get(1).getPage() == 1 && onePointers.get(1).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", onePointers.get(0).getPage() == 1 && onePointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", onePointers.get(1).getPage() == 1 && onePointers.get(1).getOffset() == 1);
 
-        assertTrue(twoPointers.get(0).getPage() == 1 && twoPointers.get(0).getOffset() == 2,"incorrect pointer");
-        assertTrue(twoPointers.get(1).getPage() == 2 && twoPointers.get(1).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", twoPointers.get(0).getPage() == 1 && twoPointers.get(0).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", twoPointers.get(1).getPage() == 2 && twoPointers.get(1).getOffset() == 0);
 
-        assertTrue(threePointers.get(0).getPage() == 2 && threePointers.get(0).getOffset() == 1,"incorrect pointer");
-        assertTrue(threePointers.get(1).getPage() == 2 && threePointers.get(1).getOffset() == 2,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", threePointers.get(0).getPage() == 2 && threePointers.get(0).getOffset() == 1);
+        Assert.assertTrue("incorrect pointer", threePointers.get(1).getPage() == 2 && threePointers.get(1).getOffset() == 2);
 
-        assertTrue(fourPointers.get(0).getPage() == 6 && fourPointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(fourPointers.get(1).getPage() == 6 && fourPointers.get(1).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", fourPointers.get(0).getPage() == 6 && fourPointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", fourPointers.get(1).getPage() == 6 && fourPointers.get(1).getOffset() == 1);
 
-        assertTrue(fivePointers.get(0).getPage() == 6 && fivePointers.get(0).getOffset() == 2,"incorrect pointer");
-        assertTrue(fivePointers.get(1).getPage() == 7 && fivePointers.get(1).getOffset() == 0,"incorrect pointer");
-        assertTrue(fivePointers.get(2).getPage() == 7 && fivePointers.get(2).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", fivePointers.get(0).getPage() == 6 && fivePointers.get(0).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", fivePointers.get(1).getPage() == 7 && fivePointers.get(1).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", fivePointers.get(2).getPage() == 7 && fivePointers.get(2).getOffset() == 1);
 
     }
 
@@ -844,7 +845,7 @@ public class treeTest {
         DB.deleteFromTable("TreeTesting", tuple); //delete 13 with its 9 duplicates
 
         File overflow = new File("data//overflow_Pages");
-        assertEquals(0,overflow.listFiles().length, "overflow pages still exist after deletion");
+        Assert.assertEquals("overflow pages still exist after deletion", 0,overflow.listFiles().length);
 
         //----------------------------------TREE_STRUCTURE--------------------------------------
 
@@ -883,87 +884,87 @@ public class treeTest {
 
 
         //correct sizes
-        assertTrue(root.getSize() == 1,"incorrect node size");
-        assertTrue(rootVals.size() == 1,"incorrect node size");
-        assertTrue(rootPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, root.getSize());
+        Assert.assertEquals("incorrect node size", 1, rootVals.size());
+        Assert.assertEquals("incorrect node size", 2, rootPointers.size());
 
-        assertTrue(left.getSize() == 2,"incorrect node size");
-        assertTrue(leftVals.size() == 2,"incorrect node size");
-        assertTrue(leftPointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, left.getSize());
+        Assert.assertEquals("incorrect node size", 2, leftVals.size());
+        Assert.assertEquals("incorrect node size", 3, leftPointers.size());
 
-        assertTrue(right.getSize() == 1,"incorrect node size");
-        assertTrue(rightVals.size() == 1,"incorrect node size");
-        assertTrue(rightPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, right.getSize());
+        Assert.assertEquals("incorrect node size", 1, rightVals.size());
+        Assert.assertEquals("incorrect node size", 2, rightPointers.size());
 
-        assertTrue(one.getSize() == 2,"incorrect node size");
-        assertTrue(oneVals.size() == 2,"incorrect node size");
-        assertTrue(onePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, one.getSize());
+        Assert.assertEquals("incorrect node size", 2, oneVals.size());
+        Assert.assertEquals("incorrect node size", 2, onePointers.size());
 
-        assertTrue(two.getSize() == 2,"incorrect node size");
-        assertTrue(twoVals.size() == 2,"incorrect node size");
-        assertTrue( twoPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, two.getSize());
+        Assert.assertEquals("incorrect node size", 2, twoVals.size());
+        Assert.assertEquals("incorrect node size", 2, twoPointers.size());
 
-        assertTrue(three.getSize() == 2,"incorrect node size");
-        assertTrue(threeVals.size() == 2,"incorrect node size");
-        assertTrue(threePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, three.getSize());
+        Assert.assertEquals("incorrect node size", 2, threeVals.size());
+        Assert.assertEquals("incorrect node size", 2, threePointers.size());
 
-        assertTrue(four.getSize() == 1,"incorrect node size");
-        assertTrue(fourVals.size() == 1,"incorrect node size");
-        assertTrue(fourPointers.size() == 1,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, four.getSize());
+        Assert.assertEquals("incorrect node size", 1, fourVals.size());
+        Assert.assertEquals("incorrect node size", 1, fourPointers.size());
 
-        assertTrue(five.getSize() == 3,"incorrect node size");
-        assertTrue(fiveVals.size() == 3,"incorrect node size");
-        assertTrue(fivePointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 3, five.getSize());
+        Assert.assertEquals("incorrect node size", 3, fiveVals.size());
+        Assert.assertEquals("incorrect node size", 3, fivePointers.size());
 
 
         //nodes are linked correctly
-        assertTrue(one.getNext().equals(leftPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(two.getNext().equals(leftPointers.get(2)),"leaves are linked incorrectly");
-        assertTrue(three.getNext().equals(rightPointers.get(0)),"leaves are linked incorrectly");
-        assertTrue(four.getNext().equals(rightPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(five.getNext() == null,"leaves are linked incorrectly");
+        Assert.assertEquals("leaves are linked incorrectly", one.getNext(), leftPointers.get(1));
+        Assert.assertEquals("leaves are linked incorrectly", two.getNext(), leftPointers.get(2));
+        Assert.assertEquals("leaves are linked incorrectly", three.getNext(), rightPointers.get(0));
+        Assert.assertEquals("leaves are linked incorrectly", four.getNext(), rightPointers.get(1));
+        Assert.assertNull("leaves are linked incorrectly", five.getNext());
 
 
         //values are correct
-        assertTrue(rootVals.get(0) == 15,"incorrect value");
+        Assert.assertEquals("incorrect value", 15, (int) rootVals.get(0));
 
-        assertTrue(leftVals.get(0) == 9,"incorrect value");
-        assertTrue(leftVals.get(1) == 11,"incorrect value");
+        Assert.assertEquals("incorrect value", 9, (int) leftVals.get(0));
+        Assert.assertEquals("incorrect value", 11, (int) leftVals.get(1));
 
-        assertTrue(rightVals.get(0) == 16,"incorrect value");
+        Assert.assertEquals("incorrect value", 16, (int) rightVals.get(0));
 
-        assertTrue(oneVals.get(0) == 1,"incorrect value");
-        assertTrue(oneVals.get(1) == 4,"incorrect value");
+        Assert.assertEquals("incorrect value", 1, (int) oneVals.get(0));
+        Assert.assertEquals("incorrect value", 4, (int) oneVals.get(1));
 
-        assertTrue(twoVals.get(0) == 9,"incorrect value");
-        assertTrue(twoVals.get(1) == 10,"incorrect value");
+        Assert.assertEquals("incorrect value", 9, (int) twoVals.get(0));
+        Assert.assertEquals("incorrect value", 10, (int) twoVals.get(1));
 
-        assertTrue(threeVals.get(0) == 11,"incorrect value");
-        assertTrue(threeVals.get(1) == 12,"incorrect value");
+        Assert.assertEquals("incorrect value", 11, (int) threeVals.get(0));
+        Assert.assertEquals("incorrect value", 12, (int) threeVals.get(1));
 
-        assertTrue(fourVals.get(0) == 15,"incorrect value");
+        Assert.assertEquals("incorrect value", 15, (int) fourVals.get(0));
 
-        assertTrue(fiveVals.get(0) == 16,"incorrect value");
-        assertTrue(fiveVals.get(1) == 20,"incorrect value");
-        assertTrue(fiveVals.get(2) == 25,"incorrect value");
+        Assert.assertEquals("incorrect value", 16, (int) fiveVals.get(0));
+        Assert.assertEquals("incorrect value", 20, (int) fiveVals.get(1));
+        Assert.assertEquals("incorrect value", 25, (int) fiveVals.get(2));
 
 
 
         //pointers are correct
-        assertTrue(onePointers.get(0).getPage() == 1 && onePointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(onePointers.get(1).getPage() == 1 && onePointers.get(1).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", onePointers.get(0).getPage() == 1 && onePointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", onePointers.get(1).getPage() == 1 && onePointers.get(1).getOffset() == 1);
 
-        assertTrue(twoPointers.get(0).getPage() == 1 && twoPointers.get(0).getOffset() == 2,"incorrect pointer");
-        assertTrue(twoPointers.get(1).getPage() == 2 && twoPointers.get(1).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", twoPointers.get(0).getPage() == 1 && twoPointers.get(0).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", twoPointers.get(1).getPage() == 2 && twoPointers.get(1).getOffset() == 0);
 
-        assertTrue(threePointers.get(0).getPage() == 2 && threePointers.get(0).getOffset() == 1,"incorrect pointer");
-        assertTrue(threePointers.get(1).getPage() == 2 && threePointers.get(1).getOffset() == 2,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", threePointers.get(0).getPage() == 2 && threePointers.get(0).getOffset() == 1);
+        Assert.assertTrue("incorrect pointer", threePointers.get(1).getPage() == 2 && threePointers.get(1).getOffset() == 2);
 
-        assertTrue(fourPointers.get(0).getPage() == 6 && fourPointers.get(0).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", fourPointers.get(0).getPage() == 6 && fourPointers.get(0).getOffset() == 0);
 
-        assertTrue(fivePointers.get(0).getPage() == 6 && fivePointers.get(0).getOffset() == 1,"incorrect pointer");
-        assertTrue(fivePointers.get(1).getPage() == 7 && fivePointers.get(1).getOffset() == 0,"incorrect pointer");
-        assertTrue(fivePointers.get(2).getPage() == 7 && fivePointers.get(2).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", fivePointers.get(0).getPage() == 6 && fivePointers.get(0).getOffset() == 1);
+        Assert.assertTrue("incorrect pointer", fivePointers.get(1).getPage() == 7 && fivePointers.get(1).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", fivePointers.get(2).getPage() == 7 && fivePointers.get(2).getOffset() == 1);
 
     }
 
@@ -1011,85 +1012,85 @@ public class treeTest {
 
 
         //correct sizes
-        assertTrue(root.getSize() == 1,"incorrect node size");
-        assertTrue(rootVals.size() == 1,"incorrect node size");
-        assertTrue(rootPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, root.getSize());
+        Assert.assertEquals("incorrect node size", 1, rootVals.size());
+        Assert.assertEquals("incorrect node size", 2, rootPointers.size());
 
-        assertTrue(left.getSize() == 2,"incorrect node size");
-        assertTrue(leftVals.size() == 2,"incorrect node size");
-        assertTrue(leftPointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, left.getSize());
+        Assert.assertEquals("incorrect node size", 2, leftVals.size());
+        Assert.assertEquals("incorrect node size", 3, leftPointers.size());
 
-        assertTrue(right.getSize() == 1,"incorrect node size");
-        assertTrue(rightVals.size() == 1,"incorrect node size");
-        assertTrue(rightPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, right.getSize());
+        Assert.assertEquals("incorrect node size", 1, rightVals.size());
+        Assert.assertEquals("incorrect node size", 2, rightPointers.size());
 
-        assertTrue(one.getSize() == 2,"incorrect node size");
-        assertTrue(oneVals.size() == 2,"incorrect node size");
-        assertTrue(onePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, one.getSize());
+        Assert.assertEquals("incorrect node size", 2, oneVals.size());
+        Assert.assertEquals("incorrect node size", 2, onePointers.size());
 
-        assertTrue(two.getSize() == 2,"incorrect node size");
-        assertTrue(twoVals.size() == 2,"incorrect node size");
-        assertTrue( twoPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, two.getSize());
+        Assert.assertEquals("incorrect node size", 2, twoVals.size());
+        Assert.assertEquals("incorrect node size", 2, twoPointers.size());
 
-        assertTrue(three.getSize() == 2,"incorrect node size");
-        assertTrue(threeVals.size() == 2,"incorrect node size");
-        assertTrue(threePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, three.getSize());
+        Assert.assertEquals("incorrect node size", 2, threeVals.size());
+        Assert.assertEquals("incorrect node size", 2, threePointers.size());
 
-        assertTrue(four.getSize() == 1,"incorrect node size");
-        assertTrue(fourVals.size() == 1,"incorrect node size");
-        assertTrue(fourPointers.size() == 1,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, four.getSize());
+        Assert.assertEquals("incorrect node size", 1, fourVals.size());
+        Assert.assertEquals("incorrect node size", 1, fourPointers.size());
 
-        assertTrue(five.getSize() == 2,"incorrect node size");
-        assertTrue(fiveVals.size() == 2,"incorrect node size");
-        assertTrue(fivePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, five.getSize());
+        Assert.assertEquals("incorrect node size", 2, fiveVals.size());
+        Assert.assertEquals("incorrect node size", 2, fivePointers.size());
 
 
         //nodes are linked correctly
-        assertTrue(one.getNext().equals(leftPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(two.getNext().equals(leftPointers.get(2)),"leaves are linked incorrectly");
-        assertTrue(three.getNext().equals(rightPointers.get(0)),"leaves are linked incorrectly");
-        assertTrue(four.getNext().equals(rightPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(five.getNext() == null,"leaves are linked incorrectly");
+        Assert.assertEquals("leaves are linked incorrectly", one.getNext(), leftPointers.get(1));
+        Assert.assertEquals("leaves are linked incorrectly", two.getNext(), leftPointers.get(2));
+        Assert.assertEquals("leaves are linked incorrectly", three.getNext(), rightPointers.get(0));
+        Assert.assertEquals("leaves are linked incorrectly", four.getNext(), rightPointers.get(1));
+        Assert.assertNull("leaves are linked incorrectly", five.getNext());
 
 
         //values are correct
-        assertTrue(rootVals.get(0) == 16,"incorrect value");
+        Assert.assertEquals("incorrect value", 16, (int) rootVals.get(0));
 
-        assertTrue(leftVals.get(0) == 9,"incorrect value");
-        assertTrue(leftVals.get(1) == 11,"incorrect value");
+        Assert.assertEquals("incorrect value", 9, (int) leftVals.get(0));
+        Assert.assertEquals("incorrect value", 11, (int) leftVals.get(1));
 
-        assertTrue(rightVals.get(0) == 20,"incorrect value");
+        Assert.assertEquals("incorrect value", 20, (int) rightVals.get(0));
 
-        assertTrue(oneVals.get(0) == 1,"incorrect value");
-        assertTrue(oneVals.get(1) == 4,"incorrect value");
+        Assert.assertEquals("incorrect value", 1, (int) oneVals.get(0));
+        Assert.assertEquals("incorrect value", 4, (int) oneVals.get(1));
 
-        assertTrue(twoVals.get(0) == 9,"incorrect value");
-        assertTrue(twoVals.get(1) == 10,"incorrect value");
+        Assert.assertEquals("incorrect value", 9, (int) twoVals.get(0));
+        Assert.assertEquals("incorrect value", 10, (int) twoVals.get(1));
 
-        assertTrue(threeVals.get(0) == 11,"incorrect value");
-        assertTrue(threeVals.get(1) == 12,"incorrect value");
+        Assert.assertEquals("incorrect value", 11, (int) threeVals.get(0));
+        Assert.assertEquals("incorrect value", 12, (int) threeVals.get(1));
 
-        assertTrue(fourVals.get(0) == 16,"incorrect value");
+        Assert.assertEquals("incorrect value", 16, (int) fourVals.get(0));
 
-        assertTrue(fiveVals.get(0) == 20,"incorrect value");
-        assertTrue(fiveVals.get(1) == 25,"incorrect value");
+        Assert.assertEquals("incorrect value", 20, (int) fiveVals.get(0));
+        Assert.assertEquals("incorrect value", 25, (int) fiveVals.get(1));
 
 
 
         //pointers are correct
-        assertTrue(onePointers.get(0).getPage() == 1 && onePointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(onePointers.get(1).getPage() == 1 && onePointers.get(1).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", onePointers.get(0).getPage() == 1 && onePointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", onePointers.get(1).getPage() == 1 && onePointers.get(1).getOffset() == 1);
 
-        assertTrue(twoPointers.get(0).getPage() == 1 && twoPointers.get(0).getOffset() == 2,"incorrect pointer");
-        assertTrue(twoPointers.get(1).getPage() == 2 && twoPointers.get(1).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", twoPointers.get(0).getPage() == 1 && twoPointers.get(0).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", twoPointers.get(1).getPage() == 2 && twoPointers.get(1).getOffset() == 0);
 
-        assertTrue(threePointers.get(0).getPage() == 2 && threePointers.get(0).getOffset() == 1,"incorrect pointer");
-        assertTrue(threePointers.get(1).getPage() == 2 && threePointers.get(1).getOffset() == 2,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", threePointers.get(0).getPage() == 2 && threePointers.get(0).getOffset() == 1);
+        Assert.assertTrue("incorrect pointer", threePointers.get(1).getPage() == 2 && threePointers.get(1).getOffset() == 2);
 
-        assertTrue(fourPointers.get(0).getPage() == 6 && fourPointers.get(0).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", fourPointers.get(0).getPage() == 6 && fourPointers.get(0).getOffset() == 0);
 
-        assertTrue(fivePointers.get(0).getPage() == 7 && fivePointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(fivePointers.get(1).getPage() == 7 && fivePointers.get(1).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", fivePointers.get(0).getPage() == 7 && fivePointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", fivePointers.get(1).getPage() == 7 && fivePointers.get(1).getOffset() == 1);
     }
 
     @Test
@@ -1135,71 +1136,71 @@ public class treeTest {
 
 
         //correct sizes
-        assertTrue(root.getSize() == 1,"incorrect node size");
-        assertTrue(rootVals.size() == 1,"incorrect node size");
-        assertTrue(rootPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, root.getSize());
+        Assert.assertEquals("incorrect node size", 1, rootVals.size());
+        Assert.assertEquals("incorrect node size", 2, rootPointers.size());
 
-        assertTrue(left.getSize() == 1,"incorrect node size");
-        assertTrue(leftVals.size() == 1,"incorrect node size");
-        assertTrue(leftPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, left.getSize());
+        Assert.assertEquals("incorrect node size", 1, leftVals.size());
+        Assert.assertEquals("incorrect node size", 2, leftPointers.size());
 
-        assertTrue(right.getSize() == 1,"incorrect node size");
-        assertTrue(rightVals.size() == 1,"incorrect node size");
-        assertTrue(rightPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, right.getSize());
+        Assert.assertEquals("incorrect node size", 1, rightVals.size());
+        Assert.assertEquals("incorrect node size", 2, rightPointers.size());
 
-        assertTrue(one.getSize() == 2,"incorrect node size");
-        assertTrue(oneVals.size() == 2,"incorrect node size");
-        assertTrue(onePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, one.getSize());
+        Assert.assertEquals("incorrect node size", 2, oneVals.size());
+        Assert.assertEquals("incorrect node size", 2, onePointers.size());
 
-        assertTrue(two.getSize() == 2,"incorrect node size");
-        assertTrue(twoVals.size() == 2,"incorrect node size");
-        assertTrue( twoPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, two.getSize());
+        Assert.assertEquals("incorrect node size", 2, twoVals.size());
+        Assert.assertEquals("incorrect node size", 2, twoPointers.size());
 
-        assertTrue(three.getSize() == 2,"incorrect node size");
-        assertTrue(threeVals.size() == 2,"incorrect node size");
-        assertTrue(threePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, three.getSize());
+        Assert.assertEquals("incorrect node size", 2, threeVals.size());
+        Assert.assertEquals("incorrect node size", 2, threePointers.size());
 
-        assertTrue(four.getSize() == 1,"incorrect node size");
-        assertTrue(fourVals.size() == 1,"incorrect node size");
-        assertTrue(fourPointers.size() == 1,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, four.getSize());
+        Assert.assertEquals("incorrect node size", 1, fourVals.size());
+        Assert.assertEquals("incorrect node size", 1, fourPointers.size());
 
         //nodes are linked correctly
-        assertTrue(one.getNext().equals(leftPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(two.getNext().equals(rightPointers.get(0)),"leaves are linked incorrectly");
-        assertTrue(three.getNext().equals(rightPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(four.getNext() == null);
+        Assert.assertEquals("leaves are linked incorrectly", one.getNext(), leftPointers.get(1));
+        Assert.assertEquals("leaves are linked incorrectly", two.getNext(), rightPointers.get(0));
+        Assert.assertEquals("leaves are linked incorrectly", three.getNext(), rightPointers.get(1));
+        Assert.assertNull(four.getNext());
 
 
         //values are correct
-        assertTrue(rootVals.get(0) == 11,"incorrect value");
+        Assert.assertEquals("incorrect value", 11, (int) rootVals.get(0));
 
-        assertTrue(leftVals.get(0) == 9,"incorrect value");
+        Assert.assertEquals("incorrect value", 9, (int) leftVals.get(0));
 
-        assertTrue(rightVals.get(0) == 25,"incorrect value");
+        Assert.assertEquals("incorrect value", 25, (int) rightVals.get(0));
 
-        assertTrue(oneVals.get(0) == 1,"incorrect value");
-        assertTrue(oneVals.get(1) == 4,"incorrect value");
+        Assert.assertEquals("incorrect value", 1, (int) oneVals.get(0));
+        Assert.assertEquals("incorrect value", 4, (int) oneVals.get(1));
 
-        assertTrue(twoVals.get(0) == 9,"incorrect value");
-        assertTrue(twoVals.get(1) == 10,"incorrect value");
+        Assert.assertEquals("incorrect value", 9, (int) twoVals.get(0));
+        Assert.assertEquals("incorrect value", 10, (int) twoVals.get(1));
 
-        assertTrue(threeVals.get(0) == 11,"incorrect value");
-        assertTrue(threeVals.get(1) == 12,"incorrect value");
+        Assert.assertEquals("incorrect value", 11, (int) threeVals.get(0));
+        Assert.assertEquals("incorrect value", 12, (int) threeVals.get(1));
 
-        assertTrue(fourVals.get(0) == 25,"incorrect value");
+        Assert.assertEquals("incorrect value", 25, (int) fourVals.get(0));
 
 
         //pointers are correct
-        assertTrue(onePointers.get(0).getPage() == 1 && onePointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(onePointers.get(1).getPage() == 1 && onePointers.get(1).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", onePointers.get(0).getPage() == 1 && onePointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", onePointers.get(1).getPage() == 1 && onePointers.get(1).getOffset() == 1);
 
-        assertTrue(twoPointers.get(0).getPage() == 1 && twoPointers.get(0).getOffset() == 2,"incorrect pointer");
-        assertTrue(twoPointers.get(1).getPage() == 2 && twoPointers.get(1).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", twoPointers.get(0).getPage() == 1 && twoPointers.get(0).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", twoPointers.get(1).getPage() == 2 && twoPointers.get(1).getOffset() == 0);
 
-        assertTrue(threePointers.get(0).getPage() == 2 && threePointers.get(0).getOffset() == 1,"incorrect pointer");
-        assertTrue(threePointers.get(1).getPage() == 2 && threePointers.get(1).getOffset() == 2,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", threePointers.get(0).getPage() == 2 && threePointers.get(0).getOffset() == 1);
+        Assert.assertTrue("incorrect pointer", threePointers.get(1).getPage() == 2 && threePointers.get(1).getOffset() == 2);
 
-        assertTrue(fourPointers.get(0).getPage() == 7 && fourPointers.get(0).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", fourPointers.get(0).getPage() == 7 && fourPointers.get(0).getOffset() == 0);
     }
 
     @Test
@@ -1231,52 +1232,51 @@ public class treeTest {
 
 
         //correct sizes
-        assertTrue(root.getSize() == 2,"incorrect node size");
-        assertTrue(rootVals.size() == 2,"incorrect node size");
-        assertTrue(rootPointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, root.getSize());
+        Assert.assertEquals("incorrect node size", 2, rootVals.size());
+        Assert.assertEquals("incorrect node size", 3, rootPointers.size());
 
-        assertTrue(left.getSize() == 2,"incorrect node size");
-        assertTrue(leftVals.size() == 2,"incorrect node size");
-        assertTrue(leftPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, left.getSize());
+        Assert.assertEquals("incorrect node size", 2, leftVals.size());
+        Assert.assertEquals("incorrect node size", 2, leftPointers.size());
 
-        assertTrue(mid.getSize() == 2,"incorrect node size");
-        assertTrue(midVals.size() == 2,"incorrect node size");
-        assertTrue( midPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, mid.getSize());
+        Assert.assertEquals("incorrect node size", 2, midVals.size());
+        Assert.assertEquals("incorrect node size", 2, midPointers.size());
 
-        assertTrue(right.getSize() == 1,"incorrect node size");
-        assertTrue(rightVals.size() == 1,"incorrect node size");
-        assertTrue(rightPointers.size() == 1,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, right.getSize());
+        Assert.assertEquals("incorrect node size", 1, rightVals.size());
+        Assert.assertEquals("incorrect node size", 1, rightPointers.size());
 
 
         //nodes are linked correctly
-        assertTrue(left.getNext().equals(rootPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(mid.getNext().equals(rootPointers.get(2)),"leaves are linked incorrectly");
-        assertTrue(right.getNext() == null);
+        Assert.assertEquals("leaves are linked incorrectly", left.getNext(), rootPointers.get(1));
+        Assert.assertEquals("leaves are linked incorrectly", mid.getNext(), rootPointers.get(2));
+        Assert.assertNull(right.getNext());
 
 
         //values are correct
-        assertTrue(rootVals.get(0) == 9,"incorrect value");
-        assertTrue(rootVals.get(1) == 25,"incorrect value");
+        Assert.assertEquals("incorrect value", 9, (int) rootVals.get(0));
+        Assert.assertEquals("incorrect value", 25, (int) rootVals.get(1));
 
-        assertTrue(leftVals.get(0) == 1,"incorrect value");
-        assertTrue(leftVals.get(1) == 4,"incorrect value");
+        Assert.assertEquals("incorrect value", 1, (int) leftVals.get(0));
+        Assert.assertEquals("incorrect value", 4, (int) leftVals.get(1));
 
-        assertTrue(midVals.get(0) == 9,"incorrect value");
-        assertTrue(midVals.get(1) == 10,"incorrect value");
+        Assert.assertEquals("incorrect value", 9, (int) midVals.get(0));
+        Assert.assertEquals("incorrect value", 10, (int) midVals.get(1));
 
 
-
-        assertTrue(rightVals.get(0) == 25,"incorrect value");
+        Assert.assertEquals("incorrect value", 25, (int) rightVals.get(0));
 
 
         //pointers are correct
-        assertTrue(leftPointers.get(0).getPage() == 1 && leftPointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(leftPointers.get(1).getPage() == 1 && leftPointers.get(1).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", leftPointers.get(0).getPage() == 1 && leftPointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", leftPointers.get(1).getPage() == 1 && leftPointers.get(1).getOffset() == 1);
 
-        assertTrue(midPointers.get(0).getPage() == 1 && midPointers.get(0).getOffset() == 2,"incorrect pointer");
-        assertTrue(midPointers.get(1).getPage() == 2 && midPointers.get(1).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", midPointers.get(0).getPage() == 1 && midPointers.get(0).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", midPointers.get(1).getPage() == 2 && midPointers.get(1).getOffset() == 0);
 
-        assertTrue(rightPointers.get(0).getPage() == 7 && rightPointers.get(0).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", rightPointers.get(0).getPage() == 7 && rightPointers.get(0).getOffset() == 0);
 
     }
 
@@ -1309,37 +1309,37 @@ public class treeTest {
 
 
         //correct sizes
-        assertTrue(root.getSize() == 1,"incorrect node size");
-        assertTrue(rootVals.size() == 1,"incorrect node size");
-        assertTrue(rootPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, root.getSize());
+        Assert.assertEquals("incorrect node size", 1, rootVals.size());
+        Assert.assertEquals("incorrect node size", 2, rootPointers.size());
 
-        assertTrue(left.getSize() == 1,"incorrect node size");
-        assertTrue(leftVals.size() == 1,"incorrect node size");
-        assertTrue(leftPointers.size() == 1,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, left.getSize());
+        Assert.assertEquals("incorrect node size", 1, leftVals.size());
+        Assert.assertEquals("incorrect node size", 1, leftPointers.size());
 
 
-        assertTrue(right.getSize() == 1,"incorrect node size");
-        assertTrue(rightVals.size() == 1,"incorrect node size");
-        assertTrue(rightPointers.size() == 1,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, right.getSize());
+        Assert.assertEquals("incorrect node size", 1, rightVals.size());
+        Assert.assertEquals("incorrect node size", 1, rightPointers.size());
 
 
         //nodes are linked correctly
-        assertTrue(left.getNext().equals(rootPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(right.getNext() == null,"leaves are linked incorrectly");
+        Assert.assertEquals("leaves are linked incorrectly", left.getNext(), rootPointers.get(1));
+        Assert.assertNull("leaves are linked incorrectly", right.getNext());
 
 
         //values are correct
-        assertTrue(rootVals.get(0) == 4,"incorrect value");
+        Assert.assertEquals("incorrect value", 4, (int) rootVals.get(0));
 
-        assertTrue(leftVals.get(0) == 1,"incorrect value");
+        Assert.assertEquals("incorrect value", 1, (int) leftVals.get(0));
 
-        assertTrue(rightVals.get(0) == 4,"incorrect value");
+        Assert.assertEquals("incorrect value", 4, (int) rightVals.get(0));
 
 
         //pointers are correct
-        assertTrue(leftPointers.get(0).getPage() == 1 && leftPointers.get(0).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", leftPointers.get(0).getPage() == 1 && leftPointers.get(0).getOffset() == 0);
 
-        assertTrue(rightPointers.get(0).getPage() == 1 && rightPointers.get(0).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", rightPointers.get(0).getPage() == 1 && rightPointers.get(0).getOffset() == 1);
 
     }
 
@@ -1357,20 +1357,20 @@ public class treeTest {
         ArrayList<Integer> rootVals = root.getValues();
 
         //correct sizes
-        assertTrue(root.getSize() == 1,"incorrect node size");
-        assertTrue(rootVals.size() == 1,"incorrect node size");
-        assertTrue(rootPointers.size() == 1,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, root.getSize());
+        Assert.assertEquals("incorrect node size", 1, rootVals.size());
+        Assert.assertEquals("incorrect node size", 1, rootPointers.size());
 
         //nodes are linked correctly
-        assertTrue(root.getNext() == null,"leaves are linked incorrectly");
+        Assert.assertNull("leaves are linked incorrectly", root.getNext());
 
 
         //values are correct
-        assertTrue(rootVals.get(0) == 4,"incorrect value");
+        Assert.assertEquals("incorrect value", 4, (int) rootVals.get(0));
 
 
         //pointers are correct
-        assertTrue(rootPointers.get(0).getPage() == 1 && rootPointers.get(0).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", rootPointers.get(0).getPage() == 1 && rootPointers.get(0).getOffset() == 0);
 
     }
 
@@ -1383,7 +1383,7 @@ public class treeTest {
         //----------------------------------TREE_STRUCTURE--------------------------------------
 
         BPlusTree<Integer> treeInt = Utilities.deserializeBPT("TreeTesting_Integer");
-        assertEquals(null,treeInt.getRoot(),"tree root should be null");
+        Assert.assertNull("tree root should be null", treeInt.getRoot());
     }
 
     @Test
@@ -1397,12 +1397,12 @@ public class treeTest {
         DB.createRTreeIndex("TreeTesting","Polygon");
 
         //trees exist
-        assertTrue(new File("data//BPlus//Trees//BPlusTree_TreeTesting_Integer.class").isFile());
-        assertTrue(new File("data//BPlus//Trees//BPlusTree_TreeTesting_Double.class").isFile());
-        assertTrue(new File("data//BPlus//Trees//BPlusTree_TreeTesting_String.class").isFile());
-        assertTrue(new File("data//BPlus//Trees//BPlusTree_TreeTesting_Date.class").isFile());
-        assertTrue(new File("data//BPlus//Trees//BPlusTree_TreeTesting_Boolean.class").isFile());
-        assertTrue(new File("data//R//Trees//RTree_TreeTesting_Polygon.class").isFile());
+        Assert.assertTrue(new File("data//BPlus//Trees//BPlusTree_TreeTesting_Integer.class").isFile());
+        Assert.assertTrue(new File("data//BPlus//Trees//BPlusTree_TreeTesting_Double.class").isFile());
+        Assert.assertTrue(new File("data//BPlus//Trees//BPlusTree_TreeTesting_String.class").isFile());
+        Assert.assertTrue(new File("data//BPlus//Trees//BPlusTree_TreeTesting_Date.class").isFile());
+        Assert.assertTrue(new File("data//BPlus//Trees//BPlusTree_TreeTesting_Boolean.class").isFile());
+        Assert.assertTrue(new File("data//R//Trees//RTree_TreeTesting_Polygon.class").isFile());
     }
 
     @Test
@@ -1442,89 +1442,89 @@ public class treeTest {
 
 
         //correct sizes
-        assertTrue(root.getSize() == 1,"incorrect node size");
-        assertTrue(rootVals.size() == 1,"incorrect node size");
-        assertTrue(rootPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, root.getSize());
+        Assert.assertEquals("incorrect node size", 1, rootVals.size());
+        Assert.assertEquals("incorrect node size", 2, rootPointers.size());
 
-        assertTrue(left.getSize() == 2,"incorrect node size");
-        assertTrue(leftVals.size() == 2,"incorrect node size");
-        assertTrue(leftPointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, left.getSize());
+        Assert.assertEquals("incorrect node size", 2, leftVals.size());
+        Assert.assertEquals("incorrect node size", 3, leftPointers.size());
 
-        assertTrue(right.getSize() == 1,"incorrect node size");
-        assertTrue(rightVals.size() == 1,"incorrect node size");
-        assertTrue(rightPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, right.getSize());
+        Assert.assertEquals("incorrect node size", 1, rightVals.size());
+        Assert.assertEquals("incorrect node size", 2, rightPointers.size());
 
-        assertTrue(one.getSize() == 2,"incorrect node size");
-        assertTrue(oneVals.size() == 2,"incorrect node size");
-        assertTrue(onePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, one.getSize());
+        Assert.assertEquals("incorrect node size", 2, oneVals.size());
+        Assert.assertEquals("incorrect node size", 2, onePointers.size());
 
-        assertTrue(two.getSize() == 2,"incorrect node size");
-        assertTrue(twoVals.size() == 2,"incorrect node size");
-        assertTrue( twoPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, two.getSize());
+        Assert.assertEquals("incorrect node size", 2, twoVals.size());
+        Assert.assertEquals("incorrect node size", 2, twoPointers.size());
 
-        assertTrue(three.getSize() == 2,"incorrect node size");
-        assertTrue(threeVals.size() == 2,"incorrect node size");
-        assertTrue(threePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, three.getSize());
+        Assert.assertEquals("incorrect node size", 2, threeVals.size());
+        Assert.assertEquals("incorrect node size", 2, threePointers.size());
 
-        assertTrue(four.getSize() == 2,"incorrect node size");
-        assertTrue(fourVals.size() == 2,"incorrect node size");
-        assertTrue(fourPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, four.getSize());
+        Assert.assertEquals("incorrect node size", 2, fourVals.size());
+        Assert.assertEquals("incorrect node size", 2, fourPointers.size());
 
-        assertTrue(five.getSize() == 3,"incorrect node size");
-        assertTrue(fiveVals.size() == 3,"incorrect node size");
-        assertTrue(fivePointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 3, five.getSize());
+        Assert.assertEquals("incorrect node size", 3, fiveVals.size());
+        Assert.assertEquals("incorrect node size", 3, fivePointers.size());
 
 
         //nodes are linked correctly
-        assertTrue(one.getNext().equals(leftPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(two.getNext().equals(leftPointers.get(2)),"leaves are linked incorrectly");
-        assertTrue(three.getNext().equals(rightPointers.get(0)),"leaves are linked incorrectly");
-        assertTrue(four.getNext().equals(rightPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(five.getNext() == null);
+        Assert.assertEquals("leaves are linked incorrectly", one.getNext(), leftPointers.get(1));
+        Assert.assertEquals("leaves are linked incorrectly", two.getNext(), leftPointers.get(2));
+        Assert.assertEquals("leaves are linked incorrectly", three.getNext(), rightPointers.get(0));
+        Assert.assertEquals("leaves are linked incorrectly", four.getNext(), rightPointers.get(1));
+        Assert.assertNull(five.getNext());
 
 
         //values are correct
-        assertTrue(rootVals.get(0) == 13.2,"incorrect value");
+        Assert.assertEquals("incorrect value", 13.2, rootVals.get(0), 0.0);
 
-        assertTrue(leftVals.get(0) == 9.8,"incorrect value");
-        assertTrue(leftVals.get(1) == 11.23,"incorrect value");
+        Assert.assertEquals("incorrect value", 9.8, leftVals.get(0), 0.0);
+        Assert.assertEquals("incorrect value", 11.23, leftVals.get(1), 0.0);
 
-        assertTrue(rightVals.get(0) == 16.3,"incorrect value");
+        Assert.assertEquals("incorrect value", 16.3, rightVals.get(0), 0.0);
 
-        assertTrue(oneVals.get(0) == 0.9,"incorrect value");
-        assertTrue(oneVals.get(1) == 4.6,"incorrect value");
+        Assert.assertEquals("incorrect value", 0.9, oneVals.get(0), 0.0);
+        Assert.assertEquals("incorrect value", 4.6, oneVals.get(1), 0.0);
 
-        assertTrue(twoVals.get(0) == 9.8,"incorrect value");
-        assertTrue(twoVals.get(1) == 10.56,"incorrect value");
+        Assert.assertEquals("incorrect value", 9.8, twoVals.get(0), 0.0);
+        Assert.assertEquals("incorrect value", 10.56, twoVals.get(1), 0.0);
 
-        assertTrue(threeVals.get(0) == 11.23,"incorrect value");
-        assertTrue(threeVals.get(1) == 12.49,"incorrect value");
+        Assert.assertEquals("incorrect value", 11.23, threeVals.get(0), 0.0);
+        Assert.assertEquals("incorrect value", 12.49, threeVals.get(1), 0.0);
 
-        assertTrue(fourVals.get(0) == 13.2,"incorrect value");
-        assertTrue(fourVals.get(1) == 15.7,"incorrect value");
+        Assert.assertEquals("incorrect value", 13.2, fourVals.get(0), 0.0);
+        Assert.assertEquals("incorrect value", 15.7, fourVals.get(1), 0.0);
 
-        assertTrue(fiveVals.get(0) == 16.3,"incorrect value");
-        assertTrue(fiveVals.get(1) == 20.1,"incorrect value");
-        assertTrue(fiveVals.get(2) == 25.9,"incorrect value");
+        Assert.assertEquals("incorrect value", 16.3, fiveVals.get(0), 0.0);
+        Assert.assertEquals("incorrect value", 20.1, fiveVals.get(1), 0.0);
+        Assert.assertEquals("incorrect value", 25.9, fiveVals.get(2), 0.0);
 
 
 
         //pointers are correct
-        assertTrue(onePointers.get(0).getPage() == 8 && onePointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(onePointers.get(1).getPage() == 8 && onePointers.get(1).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", onePointers.get(0).getPage() == 8 && onePointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", onePointers.get(1).getPage() == 8 && onePointers.get(1).getOffset() == 1);
 
-        assertTrue(twoPointers.get(0).getPage() == 8 && twoPointers.get(0).getOffset() == 2,"incorrect pointer");
-        assertTrue(twoPointers.get(1).getPage() == 9 && twoPointers.get(1).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", twoPointers.get(0).getPage() == 8 && twoPointers.get(0).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", twoPointers.get(1).getPage() == 9 && twoPointers.get(1).getOffset() == 0);
 
-        assertTrue(threePointers.get(0).getPage() == 9 && threePointers.get(0).getOffset() == 1,"incorrect pointer");
-        assertTrue(threePointers.get(1).getPage() == 9 && threePointers.get(1).getOffset() == 2,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", threePointers.get(0).getPage() == 9 && threePointers.get(0).getOffset() == 1);
+        Assert.assertTrue("incorrect pointer", threePointers.get(1).getPage() == 9 && threePointers.get(1).getOffset() == 2);
 
-        assertTrue(fourPointers.get(0).getPage() == 10 && fourPointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(fourPointers.get(1).getPage() == 10 && fourPointers.get(1).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", fourPointers.get(0).getPage() == 10 && fourPointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", fourPointers.get(1).getPage() == 10 && fourPointers.get(1).getOffset() == 1);
 
-        assertTrue(fivePointers.get(0).getPage() == 10 && fivePointers.get(0).getOffset() == 2,"incorrect pointer");
-        assertTrue(fivePointers.get(1).getPage() == 11 && fivePointers.get(1).getOffset() == 0,"incorrect pointer");
-        assertTrue(fivePointers.get(2).getPage() == 11 && fivePointers.get(2).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", fivePointers.get(0).getPage() == 10 && fivePointers.get(0).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", fivePointers.get(1).getPage() == 11 && fivePointers.get(1).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", fivePointers.get(2).getPage() == 11 && fivePointers.get(2).getOffset() == 1);
     }
 
     @Test
@@ -1564,89 +1564,89 @@ public class treeTest {
 
 
         //correct sizes
-        assertTrue(root.getSize() == 1,"incorrect node size");
-        assertTrue(rootVals.size() == 1,"incorrect node size");
-        assertTrue(rootPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, root.getSize());
+        Assert.assertEquals("incorrect node size", 1, rootVals.size());
+        Assert.assertEquals("incorrect node size", 2, rootPointers.size());
 
-        assertTrue(left.getSize() == 2,"incorrect node size");
-        assertTrue(leftVals.size() == 2,"incorrect node size");
-        assertTrue(leftPointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, left.getSize());
+        Assert.assertEquals("incorrect node size", 2, leftVals.size());
+        Assert.assertEquals("incorrect node size", 3, leftPointers.size());
 
-        assertTrue(right.getSize() == 1,"incorrect node size");
-        assertTrue(rightVals.size() == 1,"incorrect node size");
-        assertTrue(rightPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, right.getSize());
+        Assert.assertEquals("incorrect node size", 1, rightVals.size());
+        Assert.assertEquals("incorrect node size", 2, rightPointers.size());
 
-        assertTrue(one.getSize() == 2,"incorrect node size");
-        assertTrue(oneVals.size() == 2,"incorrect node size");
-        assertTrue(onePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, one.getSize());
+        Assert.assertEquals("incorrect node size", 2, oneVals.size());
+        Assert.assertEquals("incorrect node size", 2, onePointers.size());
 
-        assertTrue(two.getSize() == 2,"incorrect node size");
-        assertTrue(twoVals.size() == 2,"incorrect node size");
-        assertTrue( twoPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, two.getSize());
+        Assert.assertEquals("incorrect node size", 2, twoVals.size());
+        Assert.assertEquals("incorrect node size", 2, twoPointers.size());
 
-        assertTrue(three.getSize() == 2,"incorrect node size");
-        assertTrue(threeVals.size() == 2,"incorrect node size");
-        assertTrue(threePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, three.getSize());
+        Assert.assertEquals("incorrect node size", 2, threeVals.size());
+        Assert.assertEquals("incorrect node size", 2, threePointers.size());
 
-        assertTrue(four.getSize() == 2,"incorrect node size");
-        assertTrue(fourVals.size() == 2,"incorrect node size");
-        assertTrue(fourPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, four.getSize());
+        Assert.assertEquals("incorrect node size", 2, fourVals.size());
+        Assert.assertEquals("incorrect node size", 2, fourPointers.size());
 
-        assertTrue(five.getSize() == 3,"incorrect node size");
-        assertTrue(fiveVals.size() == 3,"incorrect node size");
-        assertTrue(fivePointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 3, five.getSize());
+        Assert.assertEquals("incorrect node size", 3, fiveVals.size());
+        Assert.assertEquals("incorrect node size", 3, fivePointers.size());
 
 
         //nodes are linked correctly
-        assertTrue(one.getNext().equals(leftPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(two.getNext().equals(leftPointers.get(2)),"leaves are linked incorrectly");
-        assertTrue(three.getNext().equals(rightPointers.get(0)),"leaves are linked incorrectly");
-        assertTrue(four.getNext().equals(rightPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(five.getNext() == null);
+        Assert.assertEquals("leaves are linked incorrectly", one.getNext(), leftPointers.get(1));
+        Assert.assertEquals("leaves are linked incorrectly", two.getNext(), leftPointers.get(2));
+        Assert.assertEquals("leaves are linked incorrectly", three.getNext(), rightPointers.get(0));
+        Assert.assertEquals("leaves are linked incorrectly", four.getNext(), rightPointers.get(1));
+        Assert.assertNull(five.getNext());
 
 
         //values are correct
-        assertEquals("G",rootVals.get(0),"incorrect value");
+        Assert.assertEquals("incorrect value", "G",rootVals.get(0));
 
-        assertEquals("C", leftVals.get(0),"incorrect value");
-        assertEquals("E",leftVals.get(1),"incorrect value");
+        Assert.assertEquals("incorrect value", "C", leftVals.get(0));
+        Assert.assertEquals("incorrect value", "E",leftVals.get(1));
 
-        assertEquals("I", rightVals.get(0),"incorrect value");
+        Assert.assertEquals("incorrect value", "I", rightVals.get(0));
 
-        assertEquals("A",oneVals.get(0),"incorrect value");
-        assertEquals("B", oneVals.get(1),"incorrect value");
+        Assert.assertEquals("incorrect value", "A",oneVals.get(0));
+        Assert.assertEquals("incorrect value", "B", oneVals.get(1));
 
-        assertEquals("C",twoVals.get(0),"incorrect value");
-        assertEquals("D", twoVals.get(1),"incorrect value");
+        Assert.assertEquals("incorrect value", "C",twoVals.get(0));
+        Assert.assertEquals("incorrect value", "D", twoVals.get(1));
 
-        assertEquals("E", threeVals.get(0),"incorrect value");
-        assertEquals("F", threeVals.get(1),"incorrect value");
+        Assert.assertEquals("incorrect value", "E", threeVals.get(0));
+        Assert.assertEquals("incorrect value", "F", threeVals.get(1));
 
-        assertEquals("G", fourVals.get(0),"incorrect value");
-        assertEquals("H", fourVals.get(1),"incorrect value");
+        Assert.assertEquals("incorrect value", "G", fourVals.get(0));
+        Assert.assertEquals("incorrect value", "H", fourVals.get(1));
 
-        assertEquals("I", fiveVals.get(0),"incorrect value");
-        assertEquals("J", fiveVals.get(1),"incorrect value");
-        assertEquals("K", fiveVals.get(2),"incorrect value");
+        Assert.assertEquals("incorrect value", "I", fiveVals.get(0));
+        Assert.assertEquals("incorrect value", "J", fiveVals.get(1));
+        Assert.assertEquals("incorrect value", "K", fiveVals.get(2));
 
 
 
         //pointers are correct
-        assertTrue(onePointers.get(0).getPage() == 8 && onePointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(onePointers.get(1).getPage() == 8 && onePointers.get(1).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", onePointers.get(0).getPage() == 8 && onePointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", onePointers.get(1).getPage() == 8 && onePointers.get(1).getOffset() == 1);
 
-        assertTrue(twoPointers.get(0).getPage() == 8 && twoPointers.get(0).getOffset() == 2,"incorrect pointer");
-        assertTrue(twoPointers.get(1).getPage() == 9 && twoPointers.get(1).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", twoPointers.get(0).getPage() == 8 && twoPointers.get(0).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", twoPointers.get(1).getPage() == 9 && twoPointers.get(1).getOffset() == 0);
 
-        assertTrue(threePointers.get(0).getPage() == 9 && threePointers.get(0).getOffset() == 1,"incorrect pointer");
-        assertTrue(threePointers.get(1).getPage() == 9 && threePointers.get(1).getOffset() == 2,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", threePointers.get(0).getPage() == 9 && threePointers.get(0).getOffset() == 1);
+        Assert.assertTrue("incorrect pointer", threePointers.get(1).getPage() == 9 && threePointers.get(1).getOffset() == 2);
 
-        assertTrue(fourPointers.get(0).getPage() == 10 && fourPointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(fourPointers.get(1).getPage() == 10 && fourPointers.get(1).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", fourPointers.get(0).getPage() == 10 && fourPointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", fourPointers.get(1).getPage() == 10 && fourPointers.get(1).getOffset() == 1);
 
-        assertTrue(fivePointers.get(0).getPage() == 10 && fivePointers.get(0).getOffset() == 2,"incorrect pointer");
-        assertTrue(fivePointers.get(1).getPage() == 11 && fivePointers.get(1).getOffset() == 0,"incorrect pointer");
-        assertTrue(fivePointers.get(2).getPage() == 11 && fivePointers.get(2).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", fivePointers.get(0).getPage() == 10 && fivePointers.get(0).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", fivePointers.get(1).getPage() == 11 && fivePointers.get(1).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", fivePointers.get(2).getPage() == 11 && fivePointers.get(2).getOffset() == 1);
     }
 
     @Test
@@ -1686,89 +1686,89 @@ public class treeTest {
 
 
         //correct sizes
-        assertTrue(root.getSize() == 1,"incorrect node size");
-        assertTrue(rootVals.size() == 1,"incorrect node size");
-        assertTrue(rootPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, root.getSize());
+        Assert.assertEquals("incorrect node size", 1, rootVals.size());
+        Assert.assertEquals("incorrect node size", 2, rootPointers.size());
 
-        assertTrue(left.getSize() == 2,"incorrect node size");
-        assertTrue(leftVals.size() == 2,"incorrect node size");
-        assertTrue(leftPointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, left.getSize());
+        Assert.assertEquals("incorrect node size", 2, leftVals.size());
+        Assert.assertEquals("incorrect node size", 3, leftPointers.size());
 
-        assertTrue(right.getSize() == 1,"incorrect node size");
-        assertTrue(rightVals.size() == 1,"incorrect node size");
-        assertTrue(rightPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, right.getSize());
+        Assert.assertEquals("incorrect node size", 1, rightVals.size());
+        Assert.assertEquals("incorrect node size", 2, rightPointers.size());
 
-        assertTrue(one.getSize() == 2,"incorrect node size");
-        assertTrue(oneVals.size() == 2,"incorrect node size");
-        assertTrue(onePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, one.getSize());
+        Assert.assertEquals("incorrect node size", 2, oneVals.size());
+        Assert.assertEquals("incorrect node size", 2, onePointers.size());
 
-        assertTrue(two.getSize() == 2,"incorrect node size");
-        assertTrue(twoVals.size() == 2,"incorrect node size");
-        assertTrue( twoPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, two.getSize());
+        Assert.assertEquals("incorrect node size", 2, twoVals.size());
+        Assert.assertEquals("incorrect node size", 2, twoPointers.size());
 
-        assertTrue(three.getSize() == 2,"incorrect node size");
-        assertTrue(threeVals.size() == 2,"incorrect node size");
-        assertTrue(threePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, three.getSize());
+        Assert.assertEquals("incorrect node size", 2, threeVals.size());
+        Assert.assertEquals("incorrect node size", 2, threePointers.size());
 
-        assertTrue(four.getSize() == 2,"incorrect node size");
-        assertTrue(fourVals.size() == 2,"incorrect node size");
-        assertTrue(fourPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, four.getSize());
+        Assert.assertEquals("incorrect node size", 2, fourVals.size());
+        Assert.assertEquals("incorrect node size", 2, fourPointers.size());
 
-        assertTrue(five.getSize() == 3,"incorrect node size");
-        assertTrue(fiveVals.size() == 3,"incorrect node size");
-        assertTrue(fivePointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 3, five.getSize());
+        Assert.assertEquals("incorrect node size", 3, fiveVals.size());
+        Assert.assertEquals("incorrect node size", 3, fivePointers.size());
 
 
         //nodes are linked correctly
-        assertTrue(one.getNext().equals(leftPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(two.getNext().equals(leftPointers.get(2)),"leaves are linked incorrectly");
-        assertTrue(three.getNext().equals(rightPointers.get(0)),"leaves are linked incorrectly");
-        assertTrue(four.getNext().equals(rightPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(five.getNext() == null);
+        Assert.assertEquals("leaves are linked incorrectly", one.getNext(), leftPointers.get(1));
+        Assert.assertEquals("leaves are linked incorrectly", two.getNext(), leftPointers.get(2));
+        Assert.assertEquals("leaves are linked incorrectly", three.getNext(), rightPointers.get(0));
+        Assert.assertEquals("leaves are linked incorrectly", four.getNext(), rightPointers.get(1));
+        Assert.assertNull(five.getNext());
 
 
         //values are correct
-        assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-13"),rootVals.get(0),"incorrect value");
+        Assert.assertEquals("incorrect value", new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-13"),rootVals.get(0));
 
-        assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-09"), leftVals.get(0),"incorrect value");
-        assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-11"),leftVals.get(1),"incorrect value");
+        Assert.assertEquals("incorrect value", new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-09"), leftVals.get(0));
+        Assert.assertEquals("incorrect value", new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-11"),leftVals.get(1));
 
-        assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-16"), rightVals.get(0),"incorrect value");
+        Assert.assertEquals("incorrect value", new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-16"), rightVals.get(0));
 
-        assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-01"),oneVals.get(0),"incorrect value");
-        assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-04"), oneVals.get(1),"incorrect value");
+        Assert.assertEquals("incorrect value", new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-01"),oneVals.get(0));
+        Assert.assertEquals("incorrect value", new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-04"), oneVals.get(1));
 
-        assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-09"),twoVals.get(0),"incorrect value");
-        assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-10"), twoVals.get(1),"incorrect value");
+        Assert.assertEquals("incorrect value", new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-09"),twoVals.get(0));
+        Assert.assertEquals("incorrect value", new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-10"), twoVals.get(1));
 
-        assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-11"), threeVals.get(0),"incorrect value");
-        assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-12"), threeVals.get(1),"incorrect value");
+        Assert.assertEquals("incorrect value", new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-11"), threeVals.get(0));
+        Assert.assertEquals("incorrect value", new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-12"), threeVals.get(1));
 
-        assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-13"), fourVals.get(0),"incorrect value");
-        assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-15"), fourVals.get(1),"incorrect value");
+        Assert.assertEquals("incorrect value", new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-13"), fourVals.get(0));
+        Assert.assertEquals("incorrect value", new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-15"), fourVals.get(1));
 
-        assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-16"), fiveVals.get(0),"incorrect value");
-        assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-20"), fiveVals.get(1),"incorrect value");
-        assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-25"), fiveVals.get(2),"incorrect value");
+        Assert.assertEquals("incorrect value", new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-16"), fiveVals.get(0));
+        Assert.assertEquals("incorrect value", new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-20"), fiveVals.get(1));
+        Assert.assertEquals("incorrect value", new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-25"), fiveVals.get(2));
 
 
 
         //pointers are correct
-        assertTrue(onePointers.get(0).getPage() == 8 && onePointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(onePointers.get(1).getPage() == 8 && onePointers.get(1).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", onePointers.get(0).getPage() == 8 && onePointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", onePointers.get(1).getPage() == 8 && onePointers.get(1).getOffset() == 1);
 
-        assertTrue(twoPointers.get(0).getPage() == 8 && twoPointers.get(0).getOffset() == 2,"incorrect pointer");
-        assertTrue(twoPointers.get(1).getPage() == 9 && twoPointers.get(1).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", twoPointers.get(0).getPage() == 8 && twoPointers.get(0).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", twoPointers.get(1).getPage() == 9 && twoPointers.get(1).getOffset() == 0);
 
-        assertTrue(threePointers.get(0).getPage() == 9 && threePointers.get(0).getOffset() == 1,"incorrect pointer");
-        assertTrue(threePointers.get(1).getPage() == 9 && threePointers.get(1).getOffset() == 2,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", threePointers.get(0).getPage() == 9 && threePointers.get(0).getOffset() == 1);
+        Assert.assertTrue("incorrect pointer", threePointers.get(1).getPage() == 9 && threePointers.get(1).getOffset() == 2);
 
-        assertTrue(fourPointers.get(0).getPage() == 10 && fourPointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(fourPointers.get(1).getPage() == 10 && fourPointers.get(1).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", fourPointers.get(0).getPage() == 10 && fourPointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", fourPointers.get(1).getPage() == 10 && fourPointers.get(1).getOffset() == 1);
 
-        assertTrue(fivePointers.get(0).getPage() == 10 && fivePointers.get(0).getOffset() == 2,"incorrect pointer");
-        assertTrue(fivePointers.get(1).getPage() == 11 && fivePointers.get(1).getOffset() == 0,"incorrect pointer");
-        assertTrue(fivePointers.get(2).getPage() == 11 && fivePointers.get(2).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", fivePointers.get(0).getPage() == 10 && fivePointers.get(0).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", fivePointers.get(1).getPage() == 11 && fivePointers.get(1).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", fivePointers.get(2).getPage() == 11 && fivePointers.get(2).getOffset() == 1);
     }
 
     @Test
@@ -1780,70 +1780,70 @@ public class treeTest {
         ArrayList<BPointer> rootPointers = root.getPointers();
 
         //correct sizes
-        assertTrue(root.getSize() == 2,"incorrect node size");
-        assertTrue(rootVals.size() == 2,"incorrect node size");
-        assertTrue(rootPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, root.getSize());
+        Assert.assertEquals("incorrect node size", 2, rootVals.size());
+        Assert.assertEquals("incorrect node size", 2, rootPointers.size());
 
         //nodes are linked correctly
-        assertTrue(root.getNext() == null);
+        Assert.assertNull(root.getNext());
 
         //correct values
-        assertEquals(false,rootVals.get(0),"incorrect value");
-        assertEquals(true,rootVals.get(1),"incorrect value");
+        Assert.assertEquals("incorrect value", false,rootVals.get(0));
+        Assert.assertEquals("incorrect value", true,rootVals.get(1));
 
         //pointers are correct
-        assertTrue(rootPointers.get(0).getPage() == 8 && rootPointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(rootPointers.get(1).getPage() == 9 && rootPointers.get(1).getOffset() == 2,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", rootPointers.get(0).getPage() == 8 && rootPointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", rootPointers.get(1).getPage() == 9 && rootPointers.get(1).getOffset() == 2);
 
         String path = "data//overflow_Pages//overflow_TreeTesting_Boolean_false_0.class";
-        assertTrue(new File(path).isFile()); //first page
+        Assert.assertTrue(new File(path).isFile()); //first page
 
         overflowPage[] falsePages = new overflowPage[2];
 
         falsePages[0] = Utilities.deserializeOverflow("TreeTesting_Boolean_false_0");
-        assertEquals("TreeTesting_Boolean_false_1", falsePages[0].getNext(),"overflow pages are not linked correctly");
-        assertEquals(null, falsePages[0].getPrev(),"overflow pages are not linked correctly");
+        Assert.assertEquals("overflow pages are not linked correctly", "TreeTesting_Boolean_false_1", falsePages[0].getNext());
+        Assert.assertNull("overflow pages are not linked correctly", falsePages[0].getPrev());
 
         falsePages[1] = Utilities.deserializeOverflow("TreeTesting_Boolean_false_1");
-        assertEquals(null, falsePages[1].getNext(),"overflow pages are not linked correctly");
-        assertEquals("TreeTesting_Boolean_false_0", falsePages[1].getPrev(),"overflow pages are not linked correctly");
+        Assert.assertNull("overflow pages are not linked correctly", falsePages[1].getNext());
+        Assert.assertEquals("overflow pages are not linked correctly", "TreeTesting_Boolean_false_0", falsePages[1].getPrev());
 
         //sizes are correct
-        assertEquals(3,falsePages[0].size(),"incorrect overflow page size");
-        assertEquals(1,falsePages[1].size(),"incorrect overflow page size");
+        Assert.assertEquals("incorrect overflow page size", 3,falsePages[0].size());
+        Assert.assertEquals("incorrect overflow page size", 1,falsePages[1].size());
 
         //pointers are correct
         Queue<Pointer> p =  falsePages[0].getPointers();
-        assertTrue(((BPointer) p.peek()).getPage() == 8 && ((BPointer) p.poll()).getOffset() == 1,"incorrect pointer");
-        assertTrue(((BPointer) p.peek()).getPage() == 8 && ((BPointer) p.poll()).getOffset() == 2,"incorrect pointer");
-        assertTrue(((BPointer) p.peek()).getPage() == 9 && ((BPointer) p.poll()).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", ((BPointer) p.peek()).getPage() == 8 && ((BPointer) p.poll()).getOffset() == 1);
+        Assert.assertTrue("incorrect pointer", ((BPointer) p.peek()).getPage() == 8 && ((BPointer) p.poll()).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", ((BPointer) p.peek()).getPage() == 9 && ((BPointer) p.poll()).getOffset() == 0);
 
         p =  falsePages[1].getPointers();
-        assertTrue(((BPointer) p.peek()).getPage() == 9 && ((BPointer) p.poll()).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", ((BPointer) p.peek()).getPage() == 9 && ((BPointer) p.poll()).getOffset() == 1);
 
         overflowPage[] truePages = new overflowPage[2];
 
         truePages[0] = Utilities.deserializeOverflow("TreeTesting_Boolean_true_0");
-        assertEquals("TreeTesting_Boolean_true_1", truePages[0].getNext(),"overflow pages are not linked correctly");
-        assertEquals(null, truePages[0].getPrev(),"overflow pages are not linked correctly");
+        Assert.assertEquals("overflow pages are not linked correctly", "TreeTesting_Boolean_true_1", truePages[0].getNext());
+        Assert.assertNull("overflow pages are not linked correctly", truePages[0].getPrev());
 
         truePages[1] = Utilities.deserializeOverflow("TreeTesting_Boolean_true_1");
-        assertEquals(null, truePages[1].getNext(),"overflow pages are not linked correctly");
-        assertEquals("TreeTesting_Boolean_true_0", truePages[1].getPrev(),"overflow pages are not linked correctly");
+        Assert.assertNull("overflow pages are not linked correctly", truePages[1].getNext());
+        Assert.assertEquals("overflow pages are not linked correctly", "TreeTesting_Boolean_true_0", truePages[1].getPrev());
 
         //sizes are correct
-        assertEquals(3,truePages[0].size(),"incorrect overflow page size");
-        assertEquals(2,truePages[1].size(),"incorrect overflow page size");
+        Assert.assertEquals("incorrect overflow page size", 3,truePages[0].size());
+        Assert.assertEquals("incorrect overflow page size", 2,truePages[1].size());
 
         //pointers are correct
         p =  truePages[0].getPointers();
-        assertTrue(((BPointer) p.peek()).getPage() == 10 && ((BPointer) p.poll()).getOffset() == 0,"incorrect pointer");
-        assertTrue(((BPointer) p.peek()).getPage() == 10 && ((BPointer) p.poll()).getOffset() == 1,"incorrect pointer");
-        assertTrue(((BPointer) p.peek()).getPage() == 10 && ((BPointer) p.poll()).getOffset() == 2,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", ((BPointer) p.peek()).getPage() == 10 && ((BPointer) p.poll()).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", ((BPointer) p.peek()).getPage() == 10 && ((BPointer) p.poll()).getOffset() == 1);
+        Assert.assertTrue("incorrect pointer", ((BPointer) p.peek()).getPage() == 10 && ((BPointer) p.poll()).getOffset() == 2);
 
         p =  truePages[1].getPointers();
-        assertTrue(((BPointer) p.peek()).getPage() == 11 && ((BPointer) p.poll()).getOffset() == 0,"incorrect pointer");
-        assertTrue(((BPointer) p.peek()).getPage() == 11 && ((BPointer) p.poll()).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", ((BPointer) p.peek()).getPage() == 11 && ((BPointer) p.poll()).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", ((BPointer) p.peek()).getPage() == 11 && ((BPointer) p.poll()).getOffset() == 1);
 
     }
 
@@ -1884,89 +1884,89 @@ public class treeTest {
 
 
         //correct sizes
-        assertTrue(root.getSize() == 1,"incorrect node size");
-        assertTrue(rootVals.size() == 1,"incorrect node size");
-        assertTrue(rootPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, root.getSize());
+        Assert.assertEquals("incorrect node size", 1, rootVals.size());
+        Assert.assertEquals("incorrect node size", 2, rootPointers.size());
 
-        assertTrue(left.getSize() == 2,"incorrect node size");
-        assertTrue(leftVals.size() == 2,"incorrect node size");
-        assertTrue(leftPointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, left.getSize());
+        Assert.assertEquals("incorrect node size", 2, leftVals.size());
+        Assert.assertEquals("incorrect node size", 3, leftPointers.size());
 
-        assertTrue(right.getSize() == 1,"incorrect node size");
-        assertTrue(rightVals.size() == 1,"incorrect node size");
-        assertTrue(rightPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, right.getSize());
+        Assert.assertEquals("incorrect node size", 1, rightVals.size());
+        Assert.assertEquals("incorrect node size", 2, rightPointers.size());
 
-        assertTrue(one.getSize() == 2,"incorrect node size");
-        assertTrue(oneVals.size() == 2,"incorrect node size");
-        assertTrue(onePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, one.getSize());
+        Assert.assertEquals("incorrect node size", 2, oneVals.size());
+        Assert.assertEquals("incorrect node size", 2, onePointers.size());
 
-        assertTrue(two.getSize() == 2,"incorrect node size");
-        assertTrue(twoVals.size() == 2,"incorrect node size");
-        assertTrue( twoPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, two.getSize());
+        Assert.assertEquals("incorrect node size", 2, twoVals.size());
+        Assert.assertEquals("incorrect node size", 2, twoPointers.size());
 
-        assertTrue(three.getSize() == 2,"incorrect node size");
-        assertTrue(threeVals.size() == 2,"incorrect node size");
-        assertTrue(threePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, three.getSize());
+        Assert.assertEquals("incorrect node size", 2, threeVals.size());
+        Assert.assertEquals("incorrect node size", 2, threePointers.size());
 
-        assertTrue(four.getSize() == 2,"incorrect node size");
-        assertTrue(fourVals.size() == 2,"incorrect node size");
-        assertTrue(fourPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, four.getSize());
+        Assert.assertEquals("incorrect node size", 2, fourVals.size());
+        Assert.assertEquals("incorrect node size", 2, fourPointers.size());
 
-        assertTrue(five.getSize() == 3,"incorrect node size");
-        assertTrue(fiveVals.size() == 3,"incorrect node size");
-        assertTrue(fivePointers.size() == 3,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 3, five.getSize());
+        Assert.assertEquals("incorrect node size", 3, fiveVals.size());
+        Assert.assertEquals("incorrect node size", 3, fivePointers.size());
 
 
         //nodes are linked correctly
-        assertTrue(one.getNext().equals(leftPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(two.getNext().equals(leftPointers.get(2)),"leaves are linked incorrectly");
-        assertTrue(three.getNext().equals(rightPointers.get(0)),"leaves are linked incorrectly");
-        assertTrue(four.getNext().equals(rightPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(five.getNext() == null);
+        Assert.assertEquals("leaves are linked incorrectly", one.getNext(), leftPointers.get(1));
+        Assert.assertEquals("leaves are linked incorrectly", two.getNext(), leftPointers.get(2));
+        Assert.assertEquals("leaves are linked incorrectly", three.getNext(), rightPointers.get(0));
+        Assert.assertEquals("leaves are linked incorrectly", four.getNext(), rightPointers.get(1));
+        Assert.assertNull(five.getNext());
 
 
         //values are correct
-        assertTrue(Utilities.polygonsEqual(square(13),rootVals.get(0)),"incorrect value");
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(13),rootVals.get(0)));
 
-        assertTrue(Utilities.polygonsEqual(square(9),leftVals.get(0)),"incorrect value");
-        assertTrue(Utilities.polygonsEqual(square(11),leftVals.get(1)),"incorrect value");
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(9),leftVals.get(0)));
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(11),leftVals.get(1)));
 
-        assertTrue(Utilities.polygonsEqual(square(16),rightVals.get(0)),"incorrect value");
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(16),rightVals.get(0)));
 
-        assertTrue(Utilities.polygonsEqual(square(1),oneVals.get(0)),"incorrect value");
-        assertTrue(Utilities.polygonsEqual(square(4),oneVals.get(1)),"incorrect value");
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(1),oneVals.get(0)));
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(4),oneVals.get(1)));
 
-        assertTrue(Utilities.polygonsEqual(square(9),twoVals.get(0)),"incorrect value");
-        assertTrue(Utilities.polygonsEqual(square(10),twoVals.get(1)),"incorrect value");
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(9),twoVals.get(0)));
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(10),twoVals.get(1)));
 
-        assertTrue(Utilities.polygonsEqual(square(11),threeVals.get(0)),"incorrect value");
-        assertTrue(Utilities.polygonsEqual(square(12),threeVals.get(1)),"incorrect value");
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(11),threeVals.get(0)));
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(12),threeVals.get(1)));
 
-        assertTrue(Utilities.polygonsEqual(square(13),fourVals.get(0)),"incorrect value");
-        assertTrue(Utilities.polygonsEqual(square(15),fourVals.get(1)),"incorrect value");
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(13),fourVals.get(0)));
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(15),fourVals.get(1)));
 
-        assertTrue(Utilities.polygonsEqual(square(16),fiveVals.get(0)),"incorrect value");
-        assertTrue(Utilities.polygonsEqual(square(20),fiveVals.get(1)),"incorrect value");
-        assertTrue(Utilities.polygonsEqual(square(25),fiveVals.get(2)),"incorrect value");
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(16),fiveVals.get(0)));
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(20),fiveVals.get(1)));
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(25),fiveVals.get(2)));
 
 
 
         //pointers are correct
-        assertTrue(onePointers.get(0).getPage() == 8 && onePointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(onePointers.get(1).getPage() == 8 && onePointers.get(1).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", onePointers.get(0).getPage() == 8 && onePointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", onePointers.get(1).getPage() == 8 && onePointers.get(1).getOffset() == 1);
 
-        assertTrue(twoPointers.get(0).getPage() == 8 && twoPointers.get(0).getOffset() == 2,"incorrect pointer");
-        assertTrue(twoPointers.get(1).getPage() == 9 && twoPointers.get(1).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", twoPointers.get(0).getPage() == 8 && twoPointers.get(0).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", twoPointers.get(1).getPage() == 9 && twoPointers.get(1).getOffset() == 0);
 
-        assertTrue(threePointers.get(0).getPage() == 9 && threePointers.get(0).getOffset() == 1,"incorrect pointer");
-        assertTrue(threePointers.get(1).getPage() == 9 && threePointers.get(1).getOffset() == 2,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", threePointers.get(0).getPage() == 9 && threePointers.get(0).getOffset() == 1);
+        Assert.assertTrue("incorrect pointer", threePointers.get(1).getPage() == 9 && threePointers.get(1).getOffset() == 2);
 
-        assertTrue(fourPointers.get(0).getPage() == 10 && fourPointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(fourPointers.get(1).getPage() == 10 && fourPointers.get(1).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", fourPointers.get(0).getPage() == 10 && fourPointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", fourPointers.get(1).getPage() == 10 && fourPointers.get(1).getOffset() == 1);
 
-        assertTrue(fivePointers.get(0).getPage() == 10 && fivePointers.get(0).getOffset() == 2,"incorrect pointer");
-        assertTrue(fivePointers.get(1).getPage() == 11 && fivePointers.get(1).getOffset() == 0,"incorrect pointer");
-        assertTrue(fivePointers.get(2).getPage() == 11 && fivePointers.get(2).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", fivePointers.get(0).getPage() == 10 && fivePointers.get(0).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", fivePointers.get(1).getPage() == 11 && fivePointers.get(1).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", fivePointers.get(2).getPage() == 11 && fivePointers.get(2).getOffset() == 1);
     }
 
     @Test
@@ -2018,71 +2018,71 @@ public class treeTest {
 
 
         //correct sizes
-        assertTrue(root.getSize() == 1,"incorrect node size");
-        assertTrue(rootVals.size() == 1,"incorrect node size");
-        assertTrue(rootPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, root.getSize());
+        Assert.assertEquals("incorrect node size", 1, rootVals.size());
+        Assert.assertEquals("incorrect node size", 2, rootPointers.size());
 
-        assertTrue(left.getSize() == 1,"incorrect node size");
-        assertTrue(leftVals.size() == 1,"incorrect node size");
-        assertTrue(leftPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, left.getSize());
+        Assert.assertEquals("incorrect node size", 1, leftVals.size());
+        Assert.assertEquals("incorrect node size", 2, leftPointers.size());
 
-        assertTrue(right.getSize() == 1,"incorrect node size");
-        assertTrue(rightVals.size() == 1,"incorrect node size");
-        assertTrue(rightPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, right.getSize());
+        Assert.assertEquals("incorrect node size", 1, rightVals.size());
+        Assert.assertEquals("incorrect node size", 2, rightPointers.size());
 
-        assertTrue(one.getSize() == 2,"incorrect node size");
-        assertTrue(oneVals.size() == 2,"incorrect node size");
-        assertTrue(onePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, one.getSize());
+        Assert.assertEquals("incorrect node size", 2, oneVals.size());
+        Assert.assertEquals("incorrect node size", 2, onePointers.size());
 
-        assertTrue(two.getSize() == 2,"incorrect node size");
-        assertTrue(twoVals.size() == 2,"incorrect node size");
-        assertTrue( twoPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, two.getSize());
+        Assert.assertEquals("incorrect node size", 2, twoVals.size());
+        Assert.assertEquals("incorrect node size", 2, twoPointers.size());
 
-        assertTrue(three.getSize() == 2,"incorrect node size");
-        assertTrue(threeVals.size() == 2,"incorrect node size");
-        assertTrue(threePointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 2, three.getSize());
+        Assert.assertEquals("incorrect node size", 2, threeVals.size());
+        Assert.assertEquals("incorrect node size", 2, threePointers.size());
 
-        assertTrue(four.getSize() == 1,"incorrect node size");
-        assertTrue(fourVals.size() == 1,"incorrect node size");
-        assertTrue(fourPointers.size() == 1,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, four.getSize());
+        Assert.assertEquals("incorrect node size", 1, fourVals.size());
+        Assert.assertEquals("incorrect node size", 1, fourPointers.size());
 
 
         //nodes are linked correctly
-        assertTrue(one.getNext().equals(leftPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(two.getNext().equals(rightPointers.get(0)),"leaves are linked incorrectly");
-        assertTrue(three.getNext().equals(rightPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(four.getNext() == null);
+        Assert.assertEquals("leaves are linked incorrectly", one.getNext(), leftPointers.get(1));
+        Assert.assertEquals("leaves are linked incorrectly", two.getNext(), rightPointers.get(0));
+        Assert.assertEquals("leaves are linked incorrectly", three.getNext(), rightPointers.get(1));
+        Assert.assertNull(four.getNext());
 
 
         //values are correct
-        assertTrue(Utilities.polygonsEqual(square(11),rootVals.get(0)),"incorrect value");
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(11),rootVals.get(0)));
 
-        assertTrue(Utilities.polygonsEqual(square(9),leftVals.get(0)),"incorrect value");
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(9),leftVals.get(0)));
 
-        assertTrue(Utilities.polygonsEqual(square(25),rightVals.get(0)),"incorrect value");
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(25),rightVals.get(0)));
 
-        assertTrue(Utilities.polygonsEqual(square(1),oneVals.get(0)),"incorrect value");
-        assertTrue(Utilities.polygonsEqual(square(4),oneVals.get(1)),"incorrect value");
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(1),oneVals.get(0)));
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(4),oneVals.get(1)));
 
-        assertTrue(Utilities.polygonsEqual(square(9),twoVals.get(0)),"incorrect value");
-        assertTrue(Utilities.polygonsEqual(square(10),twoVals.get(1)),"incorrect value");
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(9),twoVals.get(0)));
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(10),twoVals.get(1)));
 
-        assertTrue(Utilities.polygonsEqual(square(11),threeVals.get(0)),"incorrect value");
-        assertTrue(Utilities.polygonsEqual(square(12),threeVals.get(1)),"incorrect value");
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(11),threeVals.get(0)));
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(12),threeVals.get(1)));
 
-        assertTrue(Utilities.polygonsEqual(square(25),fourVals.get(0)),"incorrect value");
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(25),fourVals.get(0)));
 
         //pointers are correct
-        assertTrue(onePointers.get(0).getPage() == 8 && onePointers.get(0).getOffset() == 0,"incorrect pointer");
-        assertTrue(onePointers.get(1).getPage() == 8 && onePointers.get(1).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", onePointers.get(0).getPage() == 8 && onePointers.get(0).getOffset() == 0);
+        Assert.assertTrue("incorrect pointer", onePointers.get(1).getPage() == 8 && onePointers.get(1).getOffset() == 1);
 
-        assertTrue(twoPointers.get(0).getPage() == 8 && twoPointers.get(0).getOffset() == 2,"incorrect pointer");
-        assertTrue(twoPointers.get(1).getPage() == 9 && twoPointers.get(1).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", twoPointers.get(0).getPage() == 8 && twoPointers.get(0).getOffset() == 2);
+        Assert.assertTrue("incorrect pointer", twoPointers.get(1).getPage() == 9 && twoPointers.get(1).getOffset() == 0);
 
-        assertTrue(threePointers.get(0).getPage() == 9 && threePointers.get(0).getOffset() == 1,"incorrect pointer");
-        assertTrue(threePointers.get(1).getPage() == 9 && threePointers.get(1).getOffset() == 2,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", threePointers.get(0).getPage() == 9 && threePointers.get(0).getOffset() == 1);
+        Assert.assertTrue("incorrect pointer", threePointers.get(1).getPage() == 9 && threePointers.get(1).getOffset() == 2);
 
-        assertTrue(fourPointers.get(0).getPage() == 11 && fourPointers.get(0).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", fourPointers.get(0).getPage() == 11 && fourPointers.get(0).getOffset() == 0);
 
     }
 
@@ -2121,36 +2121,36 @@ public class treeTest {
         ArrayList<BPointer> rightPointers = right.getPointers();
 
         //correct sizes
-        assertTrue(root.getSize() == 1,"incorrect node size");
-        assertTrue(rootVals.size() == 1,"incorrect node size");
-        assertTrue(rootPointers.size() == 2,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, root.getSize());
+        Assert.assertEquals("incorrect node size", 1, rootVals.size());
+        Assert.assertEquals("incorrect node size", 2, rootPointers.size());
 
-        assertTrue(left.getSize() == 1,"incorrect node size");
-        assertTrue(leftVals.size() == 1,"incorrect node size");
-        assertTrue(leftPointers.size() == 1,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, left.getSize());
+        Assert.assertEquals("incorrect node size", 1, leftVals.size());
+        Assert.assertEquals("incorrect node size", 1, leftPointers.size());
 
 
-        assertTrue(right.getSize() == 1,"incorrect node size");
-        assertTrue(rightVals.size() == 1,"incorrect node size");
-        assertTrue(rightPointers.size() == 1,"incorrect node size");
+        Assert.assertEquals("incorrect node size", 1, right.getSize());
+        Assert.assertEquals("incorrect node size", 1, rightVals.size());
+        Assert.assertEquals("incorrect node size", 1, rightPointers.size());
 
 
         //nodes are linked correctly
-        assertTrue(left.getNext().equals(rootPointers.get(1)),"leaves are linked incorrectly");
-        assertTrue(right.getNext() == null,"leaves are linked incorrectly");
+        Assert.assertEquals("leaves are linked incorrectly", left.getNext(), rootPointers.get(1));
+        Assert.assertNull("leaves are linked incorrectly", right.getNext());
 
 
         //values are correct
-        assertTrue(Utilities.polygonsEqual(square(4),rootVals.get(0)),"incorrect value");
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(4),rootVals.get(0)));
 
-        assertTrue(Utilities.polygonsEqual(square(1),leftVals.get(0)),"incorrect value");
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(1),leftVals.get(0)));
 
-        assertTrue(Utilities.polygonsEqual(square(4),rightVals.get(0)),"incorrect value");
+        Assert.assertTrue("incorrect value", Utilities.polygonsEqual(square(4),rightVals.get(0)));
 
         //pointers are correct
-        assertTrue(leftPointers.get(0).getPage() == 8 && leftPointers.get(0).getOffset() == 0,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", leftPointers.get(0).getPage() == 8 && leftPointers.get(0).getOffset() == 0);
 
-        assertTrue(rightPointers.get(0).getPage() == 8 && rightPointers.get(0).getOffset() == 1,"incorrect pointer");
+        Assert.assertTrue("incorrect pointer", rightPointers.get(0).getPage() == 8 && rightPointers.get(0).getOffset() == 1);
 
     }
 
@@ -2166,7 +2166,7 @@ public class treeTest {
         //----------------------------------TREE_STRUCTURE--------------------------------------
 
         RTree treePoly = Utilities.deserializeRTree("TreeTesting_Polygon");
-        assertEquals(null,treePoly.getRoot(),"tree root should be null");
+        Assert.assertNull("tree root should be null", treePoly.getRoot());
     }
 
     @Test
@@ -2183,7 +2183,7 @@ public class treeTest {
         //then delete them all
         overflowPage.destroyAllPages("dummy");
 
-        assertEquals(0,dir.listFiles().length,"failed to destroy all pages");
+        Assert.assertEquals("failed to destroy all pages", 0,dir.listFiles().length);
 
     }
 
