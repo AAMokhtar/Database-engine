@@ -62,7 +62,7 @@ public class DBApp {
 		DBApp d = new DBApp();
 		d.init();
 		try {
-			d.createTable("Test3","shape", table);
+			d.createTable("Test1","shape", table);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
@@ -80,20 +80,20 @@ public class DBApp {
 		
 
 		try {
-			//d.insertIntoTable("Test3", tuple);
-			d.deleteFromTable("Test3", tuple);
+			//d.insertIntoTable("Test1", tuple);
+			d.deleteFromTable("Test1", tuple);
 
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
 
-		/*try {
+		try {
 		  	d.createRTreeIndex("Test1", "shape");
 			//d.createBTreeIndex("Test5", "birthdate");
 			} catch (DBAppException e) {
 			System.out.println(e.getMessage());
-		}*/
-		Table obj=Utilities.deserializeTable("Test3");
+		}
+		Table obj=Utilities.deserializeTable("Test1");
 
 
 		for (int i = 0; i < obj.getPages().size(); i++) {
@@ -373,7 +373,17 @@ public class DBApp {
 //		arrSQLTerms[0]._objValue = "John Noor"; 
 		Set<String> keys = htblColNameValue.keySet();
 		int z = 0;
-		for(String key : keys) {
+		for(String key : keys) { 
+			if(htblColNameValue.get(key) instanceof java.awt.Polygon)
+			{
+				SQLTerm term = new SQLTerm();
+				term._strTableName = strTableName;
+				term._strColumnName = key;
+				term._strOperator = "=";
+				term._objValue = new myPolygon((java.awt.Polygon)(htblColNameValue.get(key)));
+				arrSQLTerms[z] = term;
+				z++;	
+			}else {
 			SQLTerm term = new SQLTerm();
 			term._strTableName = strTableName;
 			term._strColumnName = key;
@@ -382,13 +392,13 @@ public class DBApp {
 			arrSQLTerms[z] = term;
 			z++;
 			}
+			}
 		String[]strarrOperators = new String[arrSQLTerms.length-1];
 		for(int i = 0; i< strarrOperators.length;i++) {
 			strarrOperators[i] = "AND"; 
 		}
 	BSet<BPointer> pointers =	Utilities.selectPointers(indices, arrSQLTerms, strarrOperators);
 	Iterator<Vector<Object>> rows = Utilities.getPointerRecords(pointers);
-	System.out.println(pointers.size());
 	if(indices.containsKey(strTableName)) {
 	
 		ArrayList<String[]> metaData = Utilities.readMetaDataForSpecificTable(strTableName);
