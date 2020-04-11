@@ -1,18 +1,14 @@
 package DatabaseEngine; //change to team name before submitting
 
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.*;
 
 import DatabaseEngine.BPlus.BPlusTree;
 import DatabaseEngine.BPlus.BPointer;
 import DatabaseEngine.R.RTree;
-import javafx.scene.shape.Polygon;
 import javafx.util.Pair;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
 
 public class DBApp {
 
@@ -57,42 +53,46 @@ public class DBApp {
 		//CREATE TABLE TEST PASSED!
 		Hashtable table = new Hashtable<String, String>();
 		table.put("ID","java.lang.Integer");
-		//table.put("name","java.lang.String");
-		//table.put("isAdult","java.lang.Boolean");
-		//table.put("nationality","java.lang.String");
-		//table.put("birthdate","java.util.Date");
-		//table.put("gpa","java.lang.Double");
+		table.put("name","java.lang.String");
+		table.put("isAdult","java.lang.Boolean");
+		table.put("nationality","java.lang.String");
+		table.put("birthdate","java.util.Date");
+		table.put("gpa","java.lang.Double");
+		table.put("shape", "java.awt.Polygon");
 		DBApp d = new DBApp();
 		d.init();
 		try {
-			d.createTable("Test4","ID", table);
+			d.createTable("Test2","shape", table);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
-
+		int[] x={1,7,1,7};
+		int[] y={1,1,7,7};
+		java.awt.Polygon poly= new java.awt.Polygon(x,y,4);
 		Hashtable<String, Object> tuple = new Hashtable<String, Object>();
 		tuple.put("ID",6);
-		//tuple.put("name","Ismail");
-		//tuple.put("isAdult",true);
-		//tuple.put("nationality","China");
-		//tuple.put("birthdate",new Date(434567650));
-		//tuple.put("gpa",1.0);
+		tuple.put("name","Hassan");
+		tuple.put("isAdult",true);
+		tuple.put("nationality","Estonia");
+		tuple.put("birthdate",new Date(2000,06,02));
+		tuple.put("gpa",1.0);
+		tuple.put("shape",poly);
 		
 
 		try {
-			d.insertIntoTable("Test4", tuple);
-			//d.deleteFromTable("Test4", tuple);
+			//d.insertIntoTable("Test2", tuple);
+			d.deleteFromTable("Test2", tuple);
 
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
 
 		/*try {
-			d.createBTreeIndex("Test3", "ID");
+		  	d.createRTreeIndex("Test2", "shape");
 			} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}*/
-		Table obj=Utilities.deserializeTable("Test4");
+		Table obj=Utilities.deserializeTable("Test2");
 
 
 		for (int i = 0; i < obj.getPages().size(); i++) {
@@ -131,9 +131,9 @@ public class DBApp {
 			//check if clustering key has an index
 			if(temp[4].equals("True") && !clusteringKeyType.equals("java.awt.Polygon"))
 			{
-			//clustering key has a B+ tree index so I should use that index to search for place	
-				// load B+ tree index
-				BPlusTree index= (BPlusTree) indices.get(strTableName).get(temp[1]);
+			//clustering key has a B+/R tree index so I should use that index to search for place	
+			// load B+/R tree index
+				index index= indices.get(strTableName).get(temp[1]);
 				if(tableToInsertIn.getPages().isEmpty())
 				{
 					//in this case we know table is still empty. So I just need to create a new page
@@ -145,7 +145,16 @@ public class DBApp {
 				else
 				{
 					// since table is not empty, we must use the index
-					BSet set=index.search((Comparable)htblColNameValue.get(clusteringKey), ">=");
+					BSet set;
+					if(clusteringKeyType.equals("java.awt.Polygon"))
+					{
+						myPolygon poly= new myPolygon((java.awt.Polygon)htblColNameValue.get(clusteringKey));
+						set=((RTree)index).search(poly, ">=");
+					}
+					else
+					{
+						set=((BPlusTree)index).search((Comparable)htblColNameValue.get(clusteringKey), ">=");
+					}
 					BPointer firstPtr=firstPtr=(BPointer)set.getMin();
 				
 					if(firstPtr==null)
@@ -235,8 +244,11 @@ public class DBApp {
 				{
 					//Rtree
 					// fetch tree
-					//insert in tree
+					RTree tree= (RTree) indices.get(strTableName).get(temp[1]);
+					//insert in tree"java.awt.Polygon"
+					tree.insert(new myPolygon((java.awt.Polygon)htblColNameValue.get(temp[1])), new BPointer(pageIndx, rowNumber), true);
 					//serialize
+					Utilities.serializeRTree(tree);
 				}
 					
 					
@@ -244,12 +256,14 @@ public class DBApp {
 			
 			//Step 8: Insert actual tuple
 			tableToInsertIn.insertRegularCase(newTuple, pageIndx, rowNumber, indexClusteringKey, htblColNameValue.get(clusteringKey), clusteringKeyType);
-			
+			//Step 9:serialize table again
+			Utilities.serializeTable(tableToInsertIn);
+			this.indices = Utilities.loadIndices();
 		}
-		//Step 9:serialize table again
-		Utilities.serializeTable(tableToInsertIn);
-		this.indices = Utilities.loadIndices();
-		
+		else
+		{
+			throw new DBAppException("Table " + strTableName + " does not exist. Cannot insert in a nonexistant table.");
+		}
 	}
 
 	//---------------------------------------------------------------------UPDATE METHOD--------------------------------------------------------------------
@@ -359,7 +373,17 @@ public class DBApp {
 //		arrSQLTerms[0]._objValue = "John Noor"; 
 		Set<String> keys = htblColNameValue.keySet();
 		int z = 0;
-		for(String key : keys) {
+		for(String key : keys) { 
+			if(htblColNameValue.get(key) instanceof java.awt.Polygon)
+			{
+				SQLTerm term = new SQLTerm();
+				term._strTableName = strTableName;
+				term._strColumnName = key;
+				term._strOperator = "=";
+				term._objValue = new myPolygon((java.awt.Polygon)(htblColNameValue.get(key)));
+				arrSQLTerms[z] = term;
+				z++;	
+			}else {
 			SQLTerm term = new SQLTerm();
 			term._strTableName = strTableName;
 			term._strColumnName = key;
@@ -367,6 +391,7 @@ public class DBApp {
 			term._objValue = htblColNameValue.get(key);
 			arrSQLTerms[z] = term;
 			z++;
+			}
 			}
 		String[]strarrOperators = new String[arrSQLTerms.length-1];
 		for(int i = 0; i< strarrOperators.length;i++) {
@@ -410,6 +435,7 @@ public class DBApp {
 		}
 		else {
 			// Call the Rtree's delete
+			((RTree)	columnTreeIndices.get(key)).delete((myPolygon)value,p,type);
 		}
 		}
 			t.delete(p.getPage(), p.getOffset());
@@ -499,7 +525,7 @@ public class DBApp {
 					queryResult = Utilities.indexedQuery(colType,tree,cur);
 				}
 				else { //no index, search in records
-					queryResult = Utilities.recordQuery(cur,colInfo[4].charAt(0) == 'T',cur_table,colnum,colType);
+					queryResult = Utilities.recordQuery(cur,colInfo[3].charAt(0) == 'T',cur_table,colnum,colType);
 				}
 
 			//-----------perform set operation-----------
@@ -514,7 +540,7 @@ public class DBApp {
 
 
 		} //repeat for all SQL terms
-
+		
 		return Utilities.getPointerRecords(resultPointers); //return an iterator containing the records extracted from resultPointers
 	}
 	

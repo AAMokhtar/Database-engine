@@ -1,7 +1,6 @@
 package DatabaseEngine.BPlus;
 
 import DatabaseEngine.*;
-import com.sun.jdi.Value;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -76,6 +75,8 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 
             case "=":
                 curNode = Utilities.findLeaf(root, value, false); //find node of value
+                if(curNode!=null)
+                {
                 index = Utilities.selectiveBinarySearch(curNode.getValues(), value, "="); //find the index of value
 
                 if (curNode != null && index != -1){ // find all records = value
@@ -100,6 +101,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                 }
 
                 break;
+                }
 
             //-----------------NEXT CASE--------------------
 
@@ -113,10 +115,10 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                     if (index == curNode.getValues().size()){ //next node
                         curNode = (BPTExternal<T>) Utilities.deserializeNode(curNode.getNext());
                         index = 0;
-
+                        continue;
                     }
 
-                    else if (curNode.getValues().get(index) != value){
+                    else if (!curNode.getValues().get(index).equals(value)){
                         ret.add(curNode.getPointers().get(index)); // add to output
 
                         String path = "data//overflow_Pages//" + "overflow_" + name +"_"+ curNode.getValues().get(index) + "_0.class";
@@ -135,8 +137,8 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                             }
 
                         }
-                        index++;
                     }
+                    index++;
                 }
 
                 break;

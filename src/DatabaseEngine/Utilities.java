@@ -15,11 +15,8 @@ import java.io.PrintWriter;
 import java.awt.Polygon;
 import java.io.*;
 
-import java.util.Date;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Hashtable;
 import java.util.*;
+import java.time.LocalDateTime;
 
 import DatabaseEngine.BPlus.*;
 import DatabaseEngine.R.RExternal;
@@ -443,7 +440,6 @@ public class Utilities {
 	public static void serializeTable(Table T) {
 		//store into file (serialize)
 		try {
-
 			String path =  "data//" + "table_" + T.getName() + ".class";
 			path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
 
@@ -1117,6 +1113,9 @@ public class Utilities {
 			case "java.lang.Boolean": //final case
 				return conditionHelp((Boolean) a,(Boolean) b,condition); //do stuff
 
+			case "java.awt.Polygon":
+				return conditionHelp((myPolygon) a,(myPolygon) b,condition); //do stuff
+
 			default:break; //some other stuff
 		}
 
@@ -1136,7 +1135,11 @@ public class Utilities {
 			case "<=":
 				return a.compareTo(b) <= 0;
 			case "=":
-				return a.compareTo(b) == 0;
+				if (a instanceof Polygon) return Utilities.polygonsEqual((myPolygon) a, (myPolygon) b);
+				else return a.compareTo(b) == 0;
+			case"!=":
+				if (a instanceof Polygon) return !Utilities.polygonsEqual((myPolygon) a, (myPolygon) b);
+				else return a.compareTo(b) != 0;
 			default: break;
 		}
 
@@ -1169,23 +1172,26 @@ public class Utilities {
 				ret[0] = mid;
 			}
 		}
+		if(elements!=null)
+		{
+			lo = 0;
+			hi = elements.size() - 1;
 
-		lo = 0;
-		hi = elements.size() - 1;
-
-		while (lo <= hi && ret[0] != -1){ //binary search in page
-			int mid = (lo + hi) / 2;
+			while (lo <= hi && ret[0] != -1){ //binary search in page
+				int mid = (lo + hi) / 2;
 
 
-			if (((Comparable) elements.get(mid).get(column)).compareTo(value) < 0){ // current element is less than value
-				lo = mid + 1;
+				if (((Comparable) elements.get(mid).get(column)).compareTo(value) < 0){ // current element is less than value
+					lo = mid + 1;
+				}
+				else { // last element is >= than value
+					hi = mid - 1;
+					ret[1] = mid;
+				}
 			}
-			else { // last element is >= than value
-				hi = mid - 1;
-				ret[1] = mid;
-			}
+
 		}
-
+		
 		return ret;
 	}
 
@@ -1234,7 +1240,7 @@ public class Utilities {
 			int[] pageIndex = {-1,-1}; //{page, index}
 
 			//Get the appropriate starting position:
-			if (cur._strOperator.equals("<=") || cur._strOperator.equals("<")){ //no binary search needed
+			if (cur._strOperator.equals("<=") || cur._strOperator.equals("<") || cur._strOperator.equals("!=")){ //no binary search needed
 				pageIndex[0] = 0;
 				pageIndex[1] = 0;
 			}
@@ -1261,11 +1267,14 @@ public class Utilities {
 
 							//if the tuple satisfies the SQL term
 							if (Utilities.condition(tuple.get(colnum), cur._objValue, colType, cur._strOperator))
-								queryResult.add(new BPointer(pageIndex[0],pageIndex[1])); //add it to the result
+								queryResult.add(new BPointer(cur_table.getPages().get(pageIndex[0]),pageIndex[1])); //add it to the result
 
 							else{
-								done = true;//for outer loop
-								break; //break since the records are sorted (the remaining records do not satisfy the condition)
+								if (!(colType.getName().equals("java.awt.Polygon") && cur._strOperator.equals("="))
+								&& !cur._strOperator.equals("!=") && !cur._strOperator.equals(">")) {
+									done = true;//for outer loop
+									break; //break since the records are sorted (the remaining records do not satisfy the condition)
+								}
 							}
 							pageIndex[1]++; //next index
 						}
@@ -1343,6 +1352,7 @@ public class Utilities {
 			case ">=":
 			case "<":
 			case "<=":
+			case"!=":
 			case "=":break;
 			default: return false; //else
 		}
@@ -1446,7 +1456,7 @@ public class Utilities {
 				queryResult = Utilities.indexedQuery(colType,tree,cur);
 			}
 			else { //no index, search in records
-				queryResult = Utilities.recordQuery(cur,colInfo[4].charAt(0) == 'T',cur_table,colnum,colType);
+				queryResult = Utilities.recordQuery(cur,colInfo[3].charAt(0) == 'T',cur_table,colnum,colType);
 			}
 
 			//-----------perform set operation-----------
