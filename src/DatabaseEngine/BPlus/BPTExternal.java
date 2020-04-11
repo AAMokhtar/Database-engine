@@ -87,7 +87,11 @@ public class BPTExternal<T extends Comparable<T>> extends BPTNode<T> { //leaf
 				getValues().remove(key);
 				pointers.remove(key);
 				decSize();
-	            if (new File("data//overflow_Pages//" + "overflow_" + name +"_" +value + "_0.class").isFile()){ //has overflow pages
+
+                String path = "data//overflow_Pages//" + "overflow_" + name +"_" + value + "_0.class" ;
+                path = path.replaceAll("[^a-zA-Z0-9()_./+]","");
+
+	            if (new File(path).isFile()){ //has overflow pages
 					overflowPage curPage = Utilities.deserializeOverflow(name + "_"+value + "_0"); //get the first page
 
 	            	getPointers().add(key,(BPointer)curPage.poll());
