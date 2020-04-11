@@ -1172,8 +1172,9 @@ public class Utilities {
 				ret[0] = mid;
 			}
 		}
-		if(elements!=null)
+		if(ret[0]!=-1)
 		{
+			elements = Utilities.deserializePage(list.get(ret[0])).getPageElements();
 			lo = 0;
 			hi = elements.size() - 1;
 
@@ -1198,7 +1199,7 @@ public class Utilities {
 	//returns a set containing the query's results as pointers
 	public static BSet<BPointer> indexedQuery(Class colType, index tree, SQLTerm cur){
 		BSet<BPointer> queryResult = new BSet<>(); //output
-
+		
 		if (colType.getName().equals("java.awt.Polygon")){ //use R tree
 			queryResult =  ((RTree) tree).search((myPolygon) cur._objValue, cur._strOperator);
 		}
@@ -1633,7 +1634,7 @@ public class Utilities {
 			int key = -1;
 			if (!firstNode)
 				key = selectiveBinarySearch(cur.getValues(), value, "<="); //find place in array (greatest index less than or equal value)
-
+			
 			return findLeaf(Utilities.deserializeRNode(((RInternal) cur).getPointers().get(key + 1)),value, firstNode); //down the tree
 		}
 
