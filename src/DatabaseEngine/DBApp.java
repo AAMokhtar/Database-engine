@@ -52,48 +52,47 @@ public class DBApp {
 		public static void main(String args[]) {
 		//CREATE TABLE TEST PASSED!
 		Hashtable table = new Hashtable<String, String>();
-		//table.put("ID","java.lang.Integer");
-		//table.put("name","java.lang.String");
-		//table.put("isAdult","java.lang.Boolean");
-		//table.put("nationality","java.lang.String");
-		//table.put("birthdate","java.util.Date");
-		//table.put("gpa","java.lang.Double");
+		table.put("ID","java.lang.Integer");
+		table.put("name","java.lang.String");
+		table.put("isAdult","java.lang.Boolean");
+		table.put("nationality","java.lang.String");
+		table.put("birthdate","java.util.Date");
+		table.put("gpa","java.lang.Double");
 		table.put("shape", "java.awt.Polygon");
 		DBApp d = new DBApp();
 		d.init();
 		try {
-			d.createTable("Test1","shape", table);
+			d.createTable("Test2","shape", table);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
-		int[] x={1,1,1,1};
-		int[] y={1,1,1,1};
+		int[] x={1,7,1,7};
+		int[] y={1,1,7,7};
 		java.awt.Polygon poly= new java.awt.Polygon(x,y,4);
 		Hashtable<String, Object> tuple = new Hashtable<String, Object>();
-		//tuple.put("ID",6);
-		//tuple.put("name","Ziad");
-		//tuple.put("isAdult",true);
-		//tuple.put("nationality","China");
-		//tuple.put("birthdate",new Date(2000,06,02));
-		//tuple.put("gpa",1.0);
+		tuple.put("ID",6);
+		tuple.put("name","Hassan");
+		tuple.put("isAdult",true);
+		tuple.put("nationality","Estonia");
+		tuple.put("birthdate",new Date(2000,06,02));
+		tuple.put("gpa",1.0);
 		tuple.put("shape",poly);
 		
 
 		try {
-			//d.insertIntoTable("Test1", tuple);
-			d.deleteFromTable("Test1", tuple);
+			//d.insertIntoTable("Test2", tuple);
+			d.deleteFromTable("Test2", tuple);
 
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
 
-		try {
-		  	d.createRTreeIndex("Test1", "shape");
-			//d.createBTreeIndex("Test5", "birthdate");
+		/*try {
+		  	d.createRTreeIndex("Test2", "shape");
 			} catch (DBAppException e) {
 			System.out.println(e.getMessage());
-		}
-		Table obj=Utilities.deserializeTable("Test1");
+		}*/
+		Table obj=Utilities.deserializeTable("Test2");
 
 
 		for (int i = 0; i < obj.getPages().size(); i++) {

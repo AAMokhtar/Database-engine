@@ -1148,23 +1148,26 @@ public class Utilities {
 				ret[0] = mid;
 			}
 		}
+		if(elements!=null)
+		{
+			lo = 0;
+			hi = elements.size() - 1;
 
-		lo = 0;
-		hi = elements.size() - 1;
-
-		while (lo <= hi && ret[0] != -1){ //binary search in page
-			int mid = (lo + hi) / 2;
+			while (lo <= hi && ret[0] != -1){ //binary search in page
+				int mid = (lo + hi) / 2;
 
 
-			if (((Comparable) elements.get(mid).get(column)).compareTo(value) < 0){ // current element is less than value
-				lo = mid + 1;
+				if (((Comparable) elements.get(mid).get(column)).compareTo(value) < 0){ // current element is less than value
+					lo = mid + 1;
+				}
+				else { // last element is >= than value
+					hi = mid - 1;
+					ret[1] = mid;
+				}
 			}
-			else { // last element is >= than value
-				hi = mid - 1;
-				ret[1] = mid;
-			}
+
 		}
-
+		
 		return ret;
 	}
 
