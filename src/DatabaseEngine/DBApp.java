@@ -321,7 +321,7 @@ public class DBApp {
 			for (int i = 0; i < pagesID.size(); i++) {
 				Page page = Utilities.deserializePage(pagesID.get(i));
 				Vector<Vector> records = page.getPageElements();
-
+				
 				//if the first element in the page is greater than the clustering key => element will not be in the page
 				//OR
 				//if the last element is less than the clustering key => element will not be in the page
@@ -330,7 +330,8 @@ public class DBApp {
 				if (((Comparable) records.firstElement().get(clusterIdx)).compareTo(clusterKey) <= 0 &&
 						((Comparable) records.lastElement().get(clusterIdx)).compareTo(clusterKey) >= 0) //ignore this stupid warning, Ali should check clustering entered implements comparable
 				{
-					Utilities.binarySearchUpdate(records, 0, records.size() - 1, clusterIdx, clusterKey, strTableName, htblColNameValue);
+					Hashtable<String, index> ind = this.indices.get(strTableName);
+					Utilities.binarySearchUpdate(records, 0, records.size() - 1, clusterIdx, clusterKey, strTableName, htblColNameValue, ind, page.getID());
 
 				}
 
