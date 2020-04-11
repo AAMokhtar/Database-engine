@@ -1244,7 +1244,7 @@ public class Utilities {
 
 							else{
 								if (!(colType.getName().equals("java.awt.Polygon") && cur._strOperator.equals("="))
-								&& !cur._strOperator.equals("!=")) {
+								&& !cur._strOperator.equals("!=") && !cur._strOperator.equals(">")) {
 									done = true;//for outer loop
 									break; //break since the records are sorted (the remaining records do not satisfy the condition)
 								}
@@ -1325,6 +1325,7 @@ public class Utilities {
 			case ">=":
 			case "<":
 			case "<=":
+			case"!=":
 			case "=":break;
 			default: return false; //else
 		}

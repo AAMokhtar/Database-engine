@@ -33,15 +33,16 @@ public class myPolygon extends Polygon implements Comparable<myPolygon>{
   	//TODO: implemented in the child polygon class
   	public String toString()
   	{
-  		String str = "";
-  		for(int i=0;i<this.shape.npoints;i++)
-  		{
-  			str += "("+this.shape.xpoints[i]+","+this.shape.ypoints[i]+")";
+//  		String str = "";
+//  		for(int i=0;i<this.shape.npoints;i++)
+//  		{
+//  			str += "("+this.shape.xpoints[i]+","+this.shape.ypoints[i]+")";
+//
+//  			if(i<this.shape.npoints-1)
+//  				str +=",";
+//  		}
 
-  			if(i<this.shape.npoints-1)
-  				str +=",";
-  		}
-  		return str;
+  		return this.getBounds().width*this.getBounds().height + "";
   	}
   
 

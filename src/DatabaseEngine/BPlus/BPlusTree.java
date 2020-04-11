@@ -112,10 +112,10 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                     if (index == curNode.getValues().size()){ //next node
                         curNode = (BPTExternal<T>) Utilities.deserializeNode(curNode.getNext());
                         index = 0;
-
+                        continue;
                     }
 
-                    else if (curNode.getValues().get(index) != value){
+                    else if (!curNode.getValues().get(index).equals(value)){
                         ret.add(curNode.getPointers().get(index)); // add to output
 
                         String path = "data//overflow_Pages//" + "overflow_" + name +"_"+ curNode.getValues().get(index) + "_0.class";
@@ -134,8 +134,8 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                             }
 
                         }
-                        index++;
                     }
+                    index++;
                 }
 
                 break;

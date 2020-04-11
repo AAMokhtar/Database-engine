@@ -23,7 +23,6 @@ import java.util.*;
 
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-
 //working with the assumption that insert/delete methods of the table are correct
 public class treeTest {
     private static DBApp DB;

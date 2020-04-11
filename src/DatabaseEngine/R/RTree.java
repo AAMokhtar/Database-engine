@@ -1,7 +1,6 @@
 package DatabaseEngine.R;
 
 import DatabaseEngine.*;
-import DatabaseEngine.BPlus.BPTExternal;
 import DatabaseEngine.BPlus.BPointer;
 import javafx.util.Pair;
 
@@ -11,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Queue;
 import java.util.Vector;
+
 
 public class RTree implements index<myPolygon>, Serializable {
 
@@ -128,10 +128,10 @@ public class RTree implements index<myPolygon>, Serializable {
                     if (index == curNode.getValues().size()){ //next node
                         curNode = (RExternal) Utilities.deserializeRNode(curNode.getNext());
                         index = 0;
-
+                        continue;
                     }
 
-                    if (!Utilities.polygonsEqual(curNode.getValues().get(index),polygon))
+                    else if (!Utilities.polygonsEqual(curNode.getValues().get(index),polygon))
                         ret.add(curNode.getPointers().get(index)); // add to output
 
                         String path = "data//overflow_Pages//" + "overflow_" + name +"_"+ curNode.getValues().get(index) + "_0.class";
@@ -670,7 +670,7 @@ public class RTree implements index<myPolygon>, Serializable {
 
     private void incrementPointersAt(int pageNum, int vecIndex){
         Object[] temp = Utilities.getAllRPointers(this);
-        HashMap<Integer,HashMap<Integer, BPointer>> pointers =
+        HashMap<Integer, HashMap<Integer, BPointer>> pointers =
                 (HashMap<Integer, HashMap<Integer, BPointer>>) temp[0]; //all the pointers of the tree
         ArrayList<overflowPage> overflow = (ArrayList<overflowPage>) temp[1]; //all the overflow pages of the tree
         ArrayList<RExternal> leaves = (ArrayList<RExternal>) temp[2];
