@@ -15,18 +15,18 @@ public class DBAppTest {
             , "java.util.Date", "java.lang.Double", "java.awt.Polygon"}; //all possible data types
 
     public static void main(String[] args) throws DBAppException, ParseException { //run to generate tables and insert tuples into them
-//        tables = new ArrayList<>();
-//        columns = new HashMap<>();
-//        tableVals = new HashMap<>();
-//        clusteringKeys = new Hashtable<>();
-//
-//        DB = new DBApp();
-//        DB.init();
-//
-//        createTable(5,true); //create a table with 5 columns
+        tables = new ArrayList<>();
+        columns = new HashMap<>();
+        tableVals = new HashMap<>();
+        clusteringKeys = new Hashtable<>();
+
+        DB = new DBApp();
+        DB.init();
+
+        createTable(5,true); //create a table with 5 columns
 //        createTable(5,true);
 //        DB.init();
-//        Insert(tables.get(0),10); //insert 20000 records into it
+        Insert(tables.get(0),10); //insert 20000 records into it
 //        Insert(tables.get(1),10);
 
 //        deleteFromTable(tables.get(0),500); //delete 500 records

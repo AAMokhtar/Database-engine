@@ -680,10 +680,10 @@ public class Utilities {
 	}
 
 
-	//returns the column name and type of the clustering key, respectively
+	//returns the column name, type of the clustering key and indexing boolean, respectively
 	//note: I don't check if the metadata is empty or table name is nonexistent as these were checked by updateChecker()
 	//and I only call this method if updateChecker() gave an okay
-	public static Pair<String,String> returnClustering(String tableName) throws DBAppException
+	public static String[] returnClustering(String tableName) throws DBAppException
 	{
 		try {
 			BufferedReader br = new BufferedReader(new FileReader("data//metadata.csv"));
@@ -700,7 +700,11 @@ public class Utilities {
 					tableFound = true;
 					if (Boolean.parseBoolean(ar[3]))// found the record with the table name and true for clustering
 					{
-						return new Pair<String, String>(ar[1], ar[2]); // returns clustering column name and its
+						String[] res = new String[3];
+						res[0] = ar[1];
+						res[1] = ar[2];
+						res[2] = ar[4];
+						return res; // returns clustering column name and its
 						// respective type
 					}
 				}
@@ -716,7 +720,7 @@ public class Utilities {
 			throw new DBAppException("Clustering column not found");
 		} catch (IOException e) {
 			e.printStackTrace();
-			return new Pair<String,String>("",""); //return empty column name and type
+			return null; 
 		}
 
 	}
@@ -784,16 +788,7 @@ public class Utilities {
 						//TODO: is the TouchDate the last index?
 					records.get(mid).set(records.get(mid).size()-1, LocalDateTime.now()); //updates the TouchDate to current time
 				}
-				/*
-				newVal.forEach((key,value) ->
-				{
-					int i = returnIndex(table, key);
-					records.get(mid).set(i, value); //ignore the warning, updateChecker already checked the types in the HT matches with metadata
-					//TODO: is the TouchDate the last index?
-					records.get(mid).set(records.get(mid).size()-1, LocalDateTime.now()); //updates the TouchDate to current time
-				});
-				*/
-
+			
 				//check the first and second half if they carry any record with the same clustering key value
 
 				binarySearchUpdate(records, low, mid-1, clusterIdx, clusterKey, table, newVal, indices, pageID); //first half
@@ -806,7 +801,73 @@ public class Utilities {
 		}
 		else return;
 	}
+	
+	
+	
+	public static void indexSearchUpdate(String table, Vector<Vector> records, Vector<Integer> offsets, Hashtable<String,Object> newVal, 
+			Hashtable<String, index> indices, int pageID) throws DBAppException
+	{
 
+		
+		for(int offset : offsets)
+		{
+			Set<String> keys = newVal.keySet();
+			
+			for(String key : keys)
+			{
+				//return the index of the current column being updated
+				int i = returnIndex(table, key);
+				
+				index ind = indices.get(key);
+				
+				//if what we're currently updating is a polygon
+				if(newVal.get(key) instanceof Polygon)
+				{
+					Polygon p = (Polygon)newVal.get(key);
+					myPolygon m = new myPolygon(p);
+					
+					RTree rtree = (RTree)ind;
+					BPointer x = new BPointer(pageID, offset);
+					rtree.delete((myPolygon)records.get(offset).get(i),x, records.get(offset).get(i).getClass().getName()); //delete the old data
+					rtree.insert(m,x,false); //insert the new data to be input in the next instruction
+					
+					
+					records.get(offset).set(i, m);
+				}
+				else
+				{
+					
+					BPlusTree btree = (BPlusTree)ind;
+					BPointer p = new BPointer(pageID, offset);
+					//PSA: all objects dealt with inside tables are Comparables
+					btree.delete((Comparable)records.get(offset).get(i), p, records.get(offset).get(i).getClass().getName()); //delete the old data
+					btree.insert((Comparable)newVal.get(key), p, false); //insert the new data to be input in the next instruction
+					
+					records.get(offset).set(i, newVal.get(key)); //ignore the warning, updateChecker already checked the types in the HT matches with metadata
+				}
+			}
+		}
+		
+	}
+	
+	//collects offsets of the same page and links them to their shared page id
+	public static Hashtable<Integer,Vector<Integer>> collectOffsets(BSet<BPointer> records)
+	{
+		Hashtable<Integer,Vector<Integer>> res = new Hashtable<Integer,Vector<Integer>>();
+		for(BPointer b : records)
+		{
+			if(!res.containsKey(b.getPage()))
+			{
+				Vector<Integer> v = new Vector<Integer>();
+				v.add(b.getOffset());
+				res.put(b.getPage(), v);
+			}
+			else
+				res.get(b.getPage()).add(b.getOffset());
+		}
+		
+		return res;
+	}
 	//------------------------------========================INDEX HELPERS========================------------------------------------
 
 	//loads all indices from memory and associates columns with their index

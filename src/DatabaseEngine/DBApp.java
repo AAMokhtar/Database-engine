@@ -266,17 +266,165 @@ public class DBApp {
 		}
 	}
 
-	//---------------------------------------------------------------------UPDATE METHOD--------------------------------------------------------------------
+	
+	//---------------------------------------------------------------------UPDATE METHOD----------------------------------------------------------------------
+	
+	
+	//updates using binary search
+	public void updateBS(String strTableName, String strClusteringKey, String[] cluster, Hashtable<String, Object> htblColNameValue) throws DBAppException
+	{
+		//figure out the index of the clustering column
+		int clusterIdx = Utilities.returnIndex(strTableName, cluster[0]);
 
-	//Mimi's part: update the records :)
+		String clusterType = cluster[1];
+
+		Comparable clusterKey;
+		//if clustering key is of type integer
+		if (clusterType.equals("java.lang.Integer"))
+			clusterKey = Integer.parseInt(strClusteringKey);
+		else if (clusterType.equals("java.lang.Double"))
+			clusterKey = Double.parseDouble(strClusteringKey);
+		//TODO: ask if it should be thrown as DBApp exception and if we use default format for date
+		else if (clusterType.equals("java.util.Date"))
+			try {
+				clusterKey = new SimpleDateFormat("YYYY-MM-DD").parse(strClusteringKey);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return;
+			}
+		else if (clusterType.equals("java.lang.String"))
+			clusterKey = strClusteringKey;
+			else if(clusterType.equals("java.awt.Polygon"))
+				clusterKey = myPolygon.parsePolygon(strClusteringKey);
+		else if (clusterType.equals("java.lang.Boolean")) {
+			clusterKey = Boolean.parseBoolean(strClusteringKey);
+		} else {
+			System.out.println("Invalid cluster data type detected in updateTable() method. \n"
+					+ "Make sure " + strTableName + " table's metadata for the clustering column is inputted correctly");
+			return;
+		}
+
+		//TODO: use binary search for pages?
+
+		Table t = Utilities.deserializeTable(strTableName);
+
+		Vector<Integer> pagesID = t.getPages();
 
 
-	//TODO: move to the TABLE class ya bent
+		for (int i = 0; i < pagesID.size(); i++) {
+			Page page = Utilities.deserializePage(pagesID.get(i));
+			Vector<Vector> records = page.getPageElements();
+			
+			//if the first element in the page is greater than the clustering key => element will not be in the page
+			//OR
+			//if the last element is less than the clustering key => element will not be in the page
+			//then binary search through the page to find the record to update
+			//DeMorgan's law is beautiful
+			if (((Comparable) records.firstElement().get(clusterIdx)).compareTo(clusterKey) <= 0 &&
+					((Comparable) records.lastElement().get(clusterIdx)).compareTo(clusterKey) >= 0) //ignore this stupid warning, Ali should check clustering entered implements comparable
+			{
+				Hashtable<String, index> ind = this.indices.get(strTableName);
+				Utilities.binarySearchUpdate(records, 0, records.size() - 1, clusterIdx, clusterKey, strTableName, htblColNameValue, ind, page.getID());
+
+			}
+
+			Utilities.serializePage(page);
+		}
+
+		Utilities.serializeTable(t);
+
+	}
+	
+	public void updateIndex(String strTableName, String strClusteringKey, String[] cluster,  Hashtable<String, Object> htblColNameValue) throws DBAppException
+	{
+		//figure out the index of the clustering column
+		int clusterIdx = Utilities.returnIndex(strTableName, cluster[0]);
+
+		String clusterType = cluster[1];
+		
+		//get the HT of all indices for the table
+		Hashtable<String, index> ind = this.indices.get(strTableName);
+		
+		BSet<BPointer> records;
+		
+		if (clusterType.equals("java.lang.Integer"))
+		{
+			Integer clusterKey = Integer.parseInt(strClusteringKey);
+			BPlusTree<Integer> clusterTree = (BPlusTree<Integer>)ind.get(cluster[0]);
+			records = clusterTree.search(clusterKey, "=");
+		}
+		else if (clusterType.equals("java.lang.Double"))
+		{
+			Double clusterKey = Double.parseDouble(strClusteringKey);
+			BPlusTree<Double> clusterTree = (BPlusTree<Double>)ind.get(cluster[0]);
+			records = clusterTree.search(clusterKey, "=");
+		}
+		else if (clusterType.equals("java.util.Date"))
+			try {
+				Date clusterKey = new SimpleDateFormat("YYYY-MM-DD").parse(strClusteringKey);
+				BPlusTree<Date> clusterTree = (BPlusTree<Date>)ind.get(cluster[0]);
+				records = clusterTree.search(clusterKey, "=");
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return;
+			}
+		else if (clusterType.equals("java.lang.String"))
+		{
+			String clusterKey = strClusteringKey;
+			BPlusTree<String> clusterTree = (BPlusTree<String>)ind.get(cluster[0]);
+			records = clusterTree.search(clusterKey, "=");
+		}
+			else if(clusterType.equals("java.awt.Polygon"))
+			{
+				myPolygon clusterKey = myPolygon.parsePolygon(strClusteringKey);
+				RTree clusterTree = (RTree)ind.get(cluster[0]);
+				records = clusterTree.search(clusterKey, "=");
+			}
+		else if (clusterType.equals("java.lang.Boolean")) 
+		{
+			Boolean clusterKey = Boolean.parseBoolean(strClusteringKey);
+			BPlusTree<Boolean> clusterTree = (BPlusTree<Boolean>)ind.get(cluster[0]);
+			records = clusterTree.search(clusterKey, "=");
+		} 
+		else 
+		{
+			System.out.println("Invalid cluster data type detected in updateTable() method. \n"
+					+ "Make sure " + strTableName + " table's metadata for the clustering column is inputted correctly");
+			return;
+		}
+		
+		//TODO: do I need to use Table?
+		
+		
+		Hashtable<Integer, Vector<Integer>> collectedOffset = Utilities.collectOffsets(records);
+		
+		Set<Integer> pageIDs = collectedOffset.keySet();
+		
+		
+		for(int id : pageIDs)
+		{
+			Page page = Utilities.deserializePage(id);
+			Vector<Vector> tuples = page.getPageElements();
+			
+			Utilities.indexSearchUpdate(strTableName, tuples, collectedOffset.get(id), htblColNameValue, ind, id);
+			
+			Utilities.deserializePage(id);
+		}
+			
+			
+		
+
+
+	}
+	
+	
 	//TODO: are many attributes updated or just one at a time?
 	//If only one at a time, simplify updateChecker (inc. Hashtable implementation)
-
 	public void updateTable(String strTableName, String strClusteringKey,
-							Hashtable<String, Object> htblColNameValue) throws DBAppException {
+							Hashtable<String, Object> htblColNameValue) throws DBAppException 
+	{
 		//check if table exists, all columns exits and if they do check if the type of object matches
 		boolean valid = Utilities.updateChecker(strTableName, htblColNameValue);
 
@@ -284,80 +432,26 @@ public class DBApp {
 		//either table does not exist, column name does not exist or type mismatch for data values
 		if (!valid) return;
 
-		else {
-			//TODO: search for the record with index and update the data values
+		// TODO: search for the record with index and update the data values
 
-			//figure out the column name and type of clustering key, respectively
-			Pair<String, String> cluster = Utilities.returnClustering(strTableName);
+		// figure out the column name, type of clustering key and indexing boolean,
+		// respectively
+		String[] cluster = Utilities.returnClustering(strTableName);
+		
+		if(cluster == null) return; //an exception is caught in returnClustering()
+		
+		Boolean indexed = Boolean.parseBoolean(cluster[2]);
 
-			//figure out the index of the clustering column
-			int clusterIdx = Utilities.returnIndex(strTableName, cluster.getKey());
-
-			String clusterType = cluster.getValue();
-
-			Comparable clusterKey;
-			//if clustering key is of type integer
-			if (clusterType.equals("java.lang.Integer"))
-				clusterKey = Integer.parseInt(strClusteringKey);
-			else if (clusterType.equals("java.lang.Double"))
-				clusterKey = Double.parseDouble(strClusteringKey);
-			//TODO: whey u erer? WHAI U EREROR?! pooleez fex des no metud nem .vaeloUf() yes? pulez delt des coad no wrk des metud .velOaf baed
-			//TODO:	reamuv metoad
-			//TODO: :''''(
-			//TODO: ask if it should be thrown as DBApp exception and if we use default format for date
-			else if (clusterType.equals("java.util.Date"))
-				try {
-					clusterKey = new SimpleDateFormat("YYYY-MM-DD").parse(strClusteringKey);
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					return;
-				}
-			else if (clusterType.equals("java.lang.String"))
-				clusterKey = strClusteringKey;
-  			else if(clusterType.equals("java.awt.Polygon"))
-  				clusterKey = myPolygon.parsePolygon(strClusteringKey);
-			else if (clusterType.equals("java.lang.Boolean")) {
-				clusterKey = Boolean.parseBoolean(strClusteringKey);
-			} else {
-				System.out.println("Invalid cluster data type detected in updateTable() method. \n"
-						+ "Make sure " + strTableName + " table's metadata for the clustering column is inputted correctly");
-				return;
-			}
-
-			//TODO: use binary search for pages?
-
-			Table t = Utilities.deserializeTable(strTableName);
-
-			Vector<Integer> pagesID = t.getPages();
-
-
-			for (int i = 0; i < pagesID.size(); i++) {
-				Page page = Utilities.deserializePage(pagesID.get(i));
-				Vector<Vector> records = page.getPageElements();
-				
-				//if the first element in the page is greater than the clustering key => element will not be in the page
-				//OR
-				//if the last element is less than the clustering key => element will not be in the page
-				//then binary search through the page to find the record to update
-				//DeMorgan's law is beautiful
-				if (((Comparable) records.firstElement().get(clusterIdx)).compareTo(clusterKey) <= 0 &&
-						((Comparable) records.lastElement().get(clusterIdx)).compareTo(clusterKey) >= 0) //ignore this stupid warning, Ali should check clustering entered implements comparable
-				{
-					Hashtable<String, index> ind = this.indices.get(strTableName);
-					Utilities.binarySearchUpdate(records, 0, records.size() - 1, clusterIdx, clusterKey, strTableName, htblColNameValue, ind, page.getID());
-
-				}
-
-				Utilities.serializePage(page);
-			}
-
-			Utilities.serializeTable(t);
-
-		}
-		this.indices = Utilities.loadIndices();
+		// if the clustering column is not indexed, use binary search
+		if (!indexed)
+			this.updateBS(strTableName, strClusteringKey, cluster, htblColNameValue);
+		 else 
+			this.updateIndex(strTableName, strClusteringKey, cluster, htblColNameValue);
+		
+			
 	}
 
+//-----------------------------------------------------------------END OF UPDATE------------------------------------------------------------------------
 
 	public void deleteFromTable(String strTableName, Hashtable<String, Object> htblColNameValue) throws DBAppException {
 		Table t = Utilities.deserializeTable(strTableName);
