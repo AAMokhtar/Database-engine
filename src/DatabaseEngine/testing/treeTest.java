@@ -581,7 +581,6 @@ public class treeTest {
         ArrayList<BPointer> fourPointers = four.getPointers();
         ArrayList<BPointer> fivePointers = five.getPointers();
 
-
         //correct sizes
         Assert.assertEquals("incorrect node size", 1, root.getSize());
         Assert.assertEquals("incorrect node size", 1, rootVals.size());
@@ -1880,8 +1879,7 @@ public class treeTest {
         ArrayList<BPointer> threePointers = three.getPointers();
         ArrayList<BPointer> fourPointers = four.getPointers();
         ArrayList<BPointer> fivePointers = five.getPointers();
-
-
+        
         //correct sizes
         Assert.assertEquals("incorrect node size", 1, root.getSize());
         Assert.assertEquals("incorrect node size", 1, rootVals.size());

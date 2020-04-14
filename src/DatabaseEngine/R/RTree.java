@@ -1,6 +1,7 @@
 package DatabaseEngine.R;
 
 import DatabaseEngine.*;
+import DatabaseEngine.BPlus.BPTExternal;
 import DatabaseEngine.BPlus.BPointer;
 import javafx.util.Pair;
 
@@ -59,8 +60,8 @@ public class RTree implements index<myPolygon>, Serializable {
     //-------------BASE METHODS-------------
 
     //Insert
-    public void insert(myPolygon value, BPointer recordPointer, boolean changeOldPointers) throws DBAppException {
-        if (changeOldPointers)
+    public void insert(myPolygon value, BPointer recordPointer, boolean incrementPointers){
+        if (incrementPointers)
             incrementPointersAt(recordPointer.getPage(), recordPointer.getOffset()); //if you inserted a new record as well
 
         insertHelp(value, recordPointer, root); //the actual insertion
@@ -339,7 +340,7 @@ public class RTree implements index<myPolygon>, Serializable {
     }
 
     //Delete
-	public void delete(myPolygon value, BPointer p, String type) {
+	public void delete(myPolygon value, BPointer p, String type, boolean decrementPointers) {
 		if (root instanceof RInternal) {
 			((RInternal) root).delete(value, p, name);
 			if (root.getValues().size() == 0) {
@@ -360,7 +361,9 @@ public class RTree implements index<myPolygon>, Serializable {
                 root = null;
             }
 		}
-		decrementPointersAt(p.getPage(), p.getOffset());
+		if (decrementPointers)
+		    decrementPointersAt(p.getPage(), p.getOffset());
+
 		Utilities.serializeRTree(this);
 	}
 
@@ -623,7 +626,7 @@ public class RTree implements index<myPolygon>, Serializable {
 		Utilities.serializeRNode(childnode);
 		Utilities.serializeRNode(bptInternal);
 	}
-    //shift pointers left or right
+
     private void decrementPointersAt(int pageNum, int vecIndex){
         BPointer temp = new BPointer(pageNum,vecIndex); //to compare with other pointers
 
@@ -714,30 +717,50 @@ public class RTree implements index<myPolygon>, Serializable {
 
     public String leavesToString(){
         StringBuilder ret = new StringBuilder();
-
+        StringBuilder retP = new StringBuilder();
         RExternal cur = Utilities.findLeaf(root,null,true);
+        ArrayList<BPointer> pointers;
 
         while (cur != null){
+            pointers = cur.getPointers();
             ret.append("[");
+            retP.append("[");
 
             int i = 0;
             for(Object val : cur.getValues()){
                 ret.append(" " + val.toString());
+                retP.append(" " + pointers.get(i));
 
-                if (i != maxPerNode - 1) ret.append(" |");
+                if (i != maxPerNode - 1){
+                    ret.append(" |");
+                    retP.append(" |");
+                }
+
+                i++;
             }
-
             while (i < maxPerNode - 1){
-                ret.append("    |");
+                ret.append(" EMPTY |");
+                retP.append(" EMPTY |");
+                i++;
             }
-            ret.append("    ");
 
-            if (cur.getNext() != null) ret.append("] -> ");
-            else ret.append("]");
+            if (i < maxPerNode) {
+                ret.append(" EMPTY");
+                retP.append(" EMPTY");
+            }
+
+            if (cur.getNext() != null){
+                ret.append(" ] ----> ");
+                retP.append(" ] ----> ");
+            }
+            else{
+                ret.append(" ]");
+                retP.append(" ]");
+            }
 
             cur = (RExternal) Utilities.deserializeRNode(cur.getNext());
         }
-        return ret.toString();
+        return ret.toString()+"\n"+retP.toString();
     }
     
 }

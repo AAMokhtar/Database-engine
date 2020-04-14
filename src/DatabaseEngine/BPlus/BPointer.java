@@ -40,4 +40,9 @@ public class BPointer implements Comparable<BPointer>, Serializable, Pointer {
     public int hashCode() {
         return Objects.hash(page, offset);
     }
+
+    @Override
+    public String toString() {
+        return "(" + page + ", " + offset+")";
+    }
 }

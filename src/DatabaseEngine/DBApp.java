@@ -524,12 +524,12 @@ public class DBApp {
 		Comparable value=	(Comparable) row.get(((int)columnIndexWithinTable.get(key).get(0)));
 		String type = (String)columnIndexWithinTable.get(key).get(1);
 		if(!(type.equals("java.awt.Polygon"))) {
-			((BPlusTree)	columnTreeIndices.get(key)).delete(value,p,type);
+			((BPlusTree)	columnTreeIndices.get(key)).delete(value,p,type,true);
 			
 		}
 		else {
 			// Call the Rtree's delete
-			((RTree)	columnTreeIndices.get(key)).delete((myPolygon)value,p,type);
+			((RTree)	columnTreeIndices.get(key)).delete((myPolygon)value,p,type,true);
 		}
 		}
 			t.delete(p.getPage(), p.getOffset());

@@ -14,54 +14,51 @@ public class DBAppTest {
     static String[] types = {"java.lang.Integer", "java.lang.String", "java.lang.Boolean"
             , "java.util.Date", "java.lang.Double", "java.awt.Polygon"}; //all possible data types
 
-    public static void main(String[] args) throws DBAppException, ParseException { //run to generate tables and insert tuples into them
-        tables = new ArrayList<>();
-        columns = new HashMap<>();
-        tableVals = new HashMap<>();
-        clusteringKeys = new Hashtable<>();
-
-        DB = new DBApp();
+    public static void main(String[] args) throws DBAppException { //run to generate tables and insert tuples into them
+        DB = new DBApp(); //initialize the engine
         DB.init();
 
-        createTable(5,true); //create a table with 5 columns
-//        createTable(5,true);
-//        DB.init();
-        Insert(tables.get(0),10); //insert 20000 records into it
-//        Insert(tables.get(1),10);
+        Hashtable table = new Hashtable<String, String>();
+        table.put("bjdto","java.lang.Boolean");
+        table.put("jhjcwhptk","java.lang.Integer");
+        table.put("jycbwmng","java.lang.Boolean");
+        table.put("siwobwybz","java.lang.Integer");
+        table.put("vxtnu","java.lang.Integer");
 
-//        deleteFromTable(tables.get(0),500); //delete 500 records
-//        deleteFromTable(tables.get(1),500);
-//        updateTable(tables.get(0), 500); //update 500 records
-//        updateTable(tables.get(1), 500);
+        DB.createTable("dfyniugqqhf","vxtnu",table);
+        DB.createBTreeIndex("dfyniugqqhf","bjdto");
+        DB.createBTreeIndex("dfyniugqqhf","jhjcwhptk");
+        DB.createBTreeIndex("dfyniugqqhf","jycbwmng");
+        DB.createBTreeIndex("dfyniugqqhf","siwobwybz");
+        DB.createBTreeIndex("dfyniugqqhf","vxtnu");
 
-//        SQLTerm[] t = new SQLTerm[3];
-//        t[0] = new SQLTerm();
-//        t[1] = new SQLTerm();
-//        t[2] = new SQLTerm();
-//
-//        t[0]._strTableName = "obevdjbiaoqgod";
-//        t[0]._strColumnName = "uyjyhuxf";
-//        t[0]._strOperator = ">";
-//        t[0]._objValue = 10;
-//
-//        t[1]._strTableName = "obevdjbiaoqgod";
-//        t[1]._strColumnName = "kskr";
-//        t[1]._strOperator = "=";
-//        t[1]._objValue = false;
-//
-//        t[2]._strTableName = "obevdjbiaoqgod";
-//        t[2]._strColumnName = "nvhmexdhcb";
-//        t[2]._strOperator = "<";
-//        t[2]._objValue = "m";
-//
-//        String[] operators = {"AND","AND"};
-//
-//        Iterator res = DB.selectFromTable(t, operators);
-//
-//        while (res.hasNext()){
-//            Vector cur = (Vector) res.next();
-//            System.out.println(cur.get(2) + " " + cur.get(0) + " " + cur.get(3));
-//        }
+
+        Hashtable<String, Object> newHash = new Hashtable<>();
+
+        newHash.put("bjdto", false);
+        newHash.put("jhjcwhptk", 133337);
+        newHash.put("jycbwmng", true);
+        newHash.put("siwobwybz", 333);
+        newHash.put("vxtnu", 29023134);
+
+        DB.insertIntoTable("dfyniugqqhf", newHash);
+        DB.insertIntoTable("dfyniugqqhf", newHash);
+        DB.insertIntoTable("dfyniugqqhf", newHash);
+        DB.insertIntoTable("dfyniugqqhf", newHash);
+        DB.insertIntoTable("dfyniugqqhf", newHash);
+        DB.insertIntoTable("dfyniugqqhf", newHash);
+        DB.insertIntoTable("dfyniugqqhf", newHash);
+        DB.insertIntoTable("dfyniugqqhf", newHash);
+        DB.insertIntoTable("dfyniugqqhf", newHash);
+        DB.insertIntoTable("dfyniugqqhf", newHash);
+
+
+        Page p1 = Utilities.deserializePage(1);
+
+        for(Vector v : p1.getPageElements())
+            System.out.println(v);
+
+        Utilities.serializePage(p1);
     }
 
     public static String randomString(int length) { //a string of random characters from a-z of the desired length

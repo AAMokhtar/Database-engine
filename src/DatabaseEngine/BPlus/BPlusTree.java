@@ -55,8 +55,8 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
     //-------------BASE METHODS-------------
 
     //Insert
-    public void insert(T value, BPointer recordPointer, boolean changeOldPointers) throws DBAppException {
-        if (changeOldPointers)
+    public void insert(T value, BPointer recordPointer, boolean incrementPointers){
+        if (incrementPointers)
             incrementPointersAt(recordPointer.getPage(), recordPointer.getOffset()); //if you inserted a new record as well
 
         insertHelp(value, recordPointer, root); //the actual insertion
@@ -319,7 +319,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 
 
     //Delete
-	public void delete(T value, BPointer p, String type) {
+	public void delete(T value, BPointer p, String type, boolean decrementPointers) {
 		if (root instanceof BPTInternal) {
 			((BPTInternal) root).delete(value, p, name);
 			if (root.getValues().size() == 0) {
@@ -340,7 +340,9 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                 root = null;
             }
 		}
-		decrementPointersAt(p.getPage(), p.getOffset());
+		if (decrementPointers)
+		    decrementPointersAt(p.getPage(), p.getOffset());
+
 		Utilities.serializeBPT(this);
 	}
 
@@ -603,7 +605,7 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 		Utilities.serializeNode(childnode);
 		Utilities.serializeNode(bptInternal);
 	}
-    //shift pointers left or right
+
     private void decrementPointersAt(int pageNum, int vecIndex){
         BPointer temp = new BPointer(pageNum,vecIndex); //to compare with other pointers
 
@@ -694,30 +696,50 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 
     public String leavesToString(){
         StringBuilder ret = new StringBuilder();
-
+        StringBuilder retP = new StringBuilder();
         BPTExternal cur = Utilities.findLeaf(root,null,true);
+        ArrayList<BPointer> pointers;
 
         while (cur != null){
+            pointers = cur.getPointers();
             ret.append("[");
+            retP.append("[");
 
             int i = 0;
             for(Object val : cur.getValues()){
                 ret.append(" " + val.toString());
+                retP.append(" " + pointers.get(i));
 
-                if (i != maxPerNode - 1) ret.append(" |");
+                if (i != maxPerNode - 1){
+                    ret.append(" |");
+                    retP.append(" |");
+                }
+
+                i++;
             }
-
             while (i < maxPerNode - 1){
-                ret.append("    |");
+                ret.append(" EMPTY |");
+                retP.append(" EMPTY |");
+                i++;
             }
-            ret.append("    ");
 
-            if (cur.getNext() != null) ret.append("] -> ");
-            else ret.append("]");
+            if (i < maxPerNode) {
+                ret.append(" EMPTY");
+                retP.append(" EMPTY");
+            }
+
+            if (cur.getNext() != null){
+                ret.append(" ] ----> ");
+                retP.append(" ] ----> ");
+            }
+            else{
+                ret.append(" ]");
+                retP.append(" ]");
+            }
 
             cur = (BPTExternal) Utilities.deserializeNode(cur.getNext());
         }
-        return ret.toString();
+        return ret.toString()+"\n"+retP.toString();
     }
     
 }
