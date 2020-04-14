@@ -1,0 +1,7 @@
+Table Name,Column Name,Column Type,Key,Indexed
+test,int,java.lang.Integer,False,True
+test,bool,java.lang.Boolean,False,True
+test,date,java.util.Date,False,True
+test,dbl,java.lang.Double,True,True
+test,poly,java.awt.Polygon,False,True
+test,str,java.lang.String,False,True
