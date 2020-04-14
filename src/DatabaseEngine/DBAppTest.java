@@ -1,6 +1,7 @@
 package DatabaseEngine; //change to team name before submitting
 
 import java.awt.*;
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -15,19 +16,158 @@ public class DBAppTest {
             , "java.util.Date", "java.lang.Double", "java.awt.Polygon"}; //all possible data types
 
     public static void main(String[] args) throws DBAppException, ParseException { //run to generate tables and insert tuples into them
-        tables = new ArrayList<>();
-        columns = new HashMap<>();
-        tableVals = new HashMap<>();
-        clusteringKeys = new Hashtable<>();
+//        tables = new ArrayList<>();
+//        columns = new HashMap<>();
+//        tableVals = new HashMap<>();
+//        clusteringKeys = new Hashtable<>();
+//        
+//    	DB = new DBApp(); //initialize the engine
 
-        DB = new DBApp();
-        DB.init();
+        File dir = new File("config//DBApp.properties");
+        dir.delete(); //delete properties file
 
-        createTable(5,true); //create a table with 5 columns
+        dir = new File("data"); //delete pages, tables, and metadata.
+
+        for(File file: dir.listFiles())
+            if (!file.isDirectory())
+                file.delete();
+
+        dir = new File("data//overflow_Pages"); //delete all overflow pages
+
+        for(File file: dir.listFiles())
+            if (!file.isDirectory())
+                file.delete();
+
+        dir = new File("data//BPlus//B+_Nodes"); //delete all BPlus tree nodes
+
+        for(File file: dir.listFiles())
+            if (!file.isDirectory())
+                file.delete();
+
+        dir = new File("data//BPlus//Trees"); //delete BPlus trees
+
+        for(File file: dir.listFiles())
+            if (!file.isDirectory())
+                file.delete();
+        
+         
+
+//        createTable(5,true); //create a table with 5 columns
 //        createTable(5,true);
 //        DB.init();
-        Insert(tables.get(0),10); //insert 20000 records into it
+//        Insert(tables.get(0),10); //insert 20000 records into it
 //        Insert(tables.get(1),10);
+        
+          
+		DB = new DBApp(); // initialize the engine
+		DB.init();
+
+		Hashtable<String, String> col = new Hashtable<>();
+
+		col.put("bool", "java.lang.Boolean");
+		col.put("int", "java.lang.Integer");
+		col.put("str", "java.lang.String");
+		col.put("date", "java.util.Date");
+		col.put("dbl", "java.lang.Double");
+		col.put("poly", "java.awt.Polygon");
+
+		DB.createTable("test", "dbl", col);
+
+		DB.createBTreeIndex("test", "bool");
+		DB.createBTreeIndex("test", "int");
+		DB.createBTreeIndex("test", "str");
+		DB.createBTreeIndex("test", "date");
+		DB.createBTreeIndex("test", "dbl");
+		DB.createRTreeIndex("test", "poly");
+
+		Hashtable<String, Object> newHash = new Hashtable<String, Object>();
+
+		for (int i = 0; i < 200; i++)
+		{
+			Hashtable<String, Object> h = new Hashtable<>();
+			h.put("bool", randomBool());
+			h.put("int", RandomInt(0, 10000000));
+			h.put("str", randomString(20));
+			h.put("date", RandomDate());
+			h.put("dbl", randomDouble(0, 100));
+			h.put("poly", randomPolygon(5));
+			
+			DB.insertIntoTable("test", h);
+		}
+
+		newHash.put("bool", false);
+		newHash.put("int", 133337);
+		newHash.put("str", "mimi");
+		newHash.put("date", new SimpleDateFormat("YYYY-MM-DD").parse("2029-11-08"));
+		newHash.put("dbl", 4.20);
+		int[] x = {1,2,1,2};
+		int[] y = {1,2,2,1};
+		Polygon pol = new Polygon(x, y, 4);
+		newHash.put("poly", pol);
+
+		DB.insertIntoTable("test", newHash);
+		DB.insertIntoTable("test", newHash);
+		DB.insertIntoTable("test", newHash);
+		DB.insertIntoTable("test", newHash);
+		DB.insertIntoTable("test", newHash);
+		DB.insertIntoTable("test", newHash);
+		DB.insertIntoTable("test", newHash);
+		DB.insertIntoTable("test", newHash);
+		DB.insertIntoTable("test", newHash);
+		DB.insertIntoTable("test", newHash);
+		
+		Table t = Utilities.deserializeTable("test");
+		
+		for(int n : t.getPages())
+		{
+			System.out.println("Page " + n + " : ");
+			
+			Page p = Utilities.deserializePage(n);
+			
+			for (Vector v : p.getPageElements())
+				System.out.println(v);
+			System.out.println("-------------------------------------------------");
+			
+			Utilities.serializePage(p);
+		}
+
+		Utilities.serializeTable(t);
+
+		Hashtable<String, Object> hash = new Hashtable<String, Object>();
+
+		hash.put("bool", true);
+		hash.put("int", 222222222);
+		hash.put("str", "bibo");
+		hash.put("date", new Date());
+		//hash.put("dbl", 6.66);
+		int[] xp = {1,5,1,5};
+		int[] yp = {1,5,5,1};
+		pol = new Polygon(xp, yp, 4);
+		hash.put("poly", pol);
+
+    	  
+    	  
+    	DB.updateTable("test","4.20", hash);
+
+		System.out.println("-----------------------------------------------------------------------------");
+
+		t = Utilities.deserializeTable("test");
+		
+		for(int n : t.getPages())
+		{
+			System.out.println("Page " + n + " : ");
+			
+			Page p = Utilities.deserializePage(n);
+			
+			for (Vector v : p.getPageElements())
+				System.out.println(v);
+			System.out.println("-------------------------------------------------");
+			
+			Utilities.serializePage(p);
+		}
+
+		Utilities.serializeTable(t);
+    	  
 
 //        deleteFromTable(tables.get(0),500); //delete 500 records
 //        deleteFromTable(tables.get(1),500);
