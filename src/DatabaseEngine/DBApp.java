@@ -273,6 +273,9 @@ public class DBApp {
 	//updates using binary search
 	public void updateBS(String strTableName, String strClusteringKey, String[] cluster, Hashtable<String, Object> htblColNameValue) throws DBAppException
 	{
+		
+		System.out.println("Entering BS");
+		
 		//figure out the index of the clustering column
 		int clusterIdx = Utilities.returnIndex(strTableName, cluster[0]);
 
@@ -338,6 +341,9 @@ public class DBApp {
 	
 	public void updateIndex(String strTableName, String strClusteringKey, String[] cluster,  Hashtable<String, Object> htblColNameValue) throws DBAppException
 	{
+		
+		System.out.println("Entering indexing");
+		
 		//figure out the index of the clustering column
 		int clusterIdx = Utilities.returnIndex(strTableName, cluster[0]);
 
@@ -405,12 +411,13 @@ public class DBApp {
 		
 		for(int id : pageIDs)
 		{
+			//System.out.println("Page " + id);
 			Page page = Utilities.deserializePage(id);
 			Vector<Vector> tuples = page.getPageElements();
 			
 			Utilities.indexSearchUpdate(strTableName, tuples, collectedOffset.get(id), htblColNameValue, ind, id);
 			
-			Utilities.deserializePage(id);
+			Utilities.serializePage(page);
 		}
 			
 			

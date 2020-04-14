@@ -1,6 +1,7 @@
 package DatabaseEngine; //change to team name before submitting
 
 import java.awt.*;
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -14,51 +15,193 @@ public class DBAppTest {
     static String[] types = {"java.lang.Integer", "java.lang.String", "java.lang.Boolean"
             , "java.util.Date", "java.lang.Double", "java.awt.Polygon"}; //all possible data types
 
-    public static void main(String[] args) throws DBAppException { //run to generate tables and insert tuples into them
-        DB = new DBApp(); //initialize the engine
-        DB.init();
+    public static void main(String[] args) throws DBAppException, ParseException { //run to generate tables and insert tuples into them
+//        tables = new ArrayList<>();
+//        columns = new HashMap<>();
+//        tableVals = new HashMap<>();
+//        clusteringKeys = new Hashtable<>();
+//        
+//    	DB = new DBApp(); //initialize the engine
 
-        Hashtable table = new Hashtable<String, String>();
-        table.put("bjdto","java.lang.Boolean");
-        table.put("jhjcwhptk","java.lang.Integer");
-        table.put("jycbwmng","java.lang.Boolean");
-        table.put("siwobwybz","java.lang.Integer");
-        table.put("vxtnu","java.lang.Integer");
+        File dir = new File("config//DBApp.properties");
+        dir.delete(); //delete properties file
 
-        DB.createTable("dfyniugqqhf","vxtnu",table);
-        DB.createBTreeIndex("dfyniugqqhf","bjdto");
-        DB.createBTreeIndex("dfyniugqqhf","jhjcwhptk");
-        DB.createBTreeIndex("dfyniugqqhf","jycbwmng");
-        DB.createBTreeIndex("dfyniugqqhf","siwobwybz");
-        DB.createBTreeIndex("dfyniugqqhf","vxtnu");
+        dir = new File("data"); //delete pages, tables, and metadata.
 
+        for(File file: dir.listFiles())
+            if (!file.isDirectory())
+                file.delete();
 
-        Hashtable<String, Object> newHash = new Hashtable<>();
+        dir = new File("data//overflow_Pages"); //delete all overflow pages
 
-        newHash.put("bjdto", false);
-        newHash.put("jhjcwhptk", 133337);
-        newHash.put("jycbwmng", true);
-        newHash.put("siwobwybz", 333);
-        newHash.put("vxtnu", 29023134);
+        for(File file: dir.listFiles())
+            if (!file.isDirectory())
+                file.delete();
 
-        DB.insertIntoTable("dfyniugqqhf", newHash);
-        DB.insertIntoTable("dfyniugqqhf", newHash);
-        DB.insertIntoTable("dfyniugqqhf", newHash);
-        DB.insertIntoTable("dfyniugqqhf", newHash);
-        DB.insertIntoTable("dfyniugqqhf", newHash);
-        DB.insertIntoTable("dfyniugqqhf", newHash);
-        DB.insertIntoTable("dfyniugqqhf", newHash);
-        DB.insertIntoTable("dfyniugqqhf", newHash);
-        DB.insertIntoTable("dfyniugqqhf", newHash);
-        DB.insertIntoTable("dfyniugqqhf", newHash);
+        dir = new File("data//BPlus//B+_Nodes"); //delete all BPlus tree nodes
 
+        for(File file: dir.listFiles())
+            if (!file.isDirectory())
+                file.delete();
 
-        Page p1 = Utilities.deserializePage(1);
+        dir = new File("data//BPlus//Trees"); //delete BPlus trees
 
-        for(Vector v : p1.getPageElements())
-            System.out.println(v);
+        for(File file: dir.listFiles())
+            if (!file.isDirectory())
+                file.delete();
+        
+         
 
-        Utilities.serializePage(p1);
+//        createTable(5,true); //create a table with 5 columns
+//        createTable(5,true);
+//        DB.init();
+//        Insert(tables.get(0),10); //insert 20000 records into it
+//        Insert(tables.get(1),10);
+        
+          
+		DB = new DBApp(); // initialize the engine
+		DB.init();
+
+		Hashtable<String, String> col = new Hashtable<>();
+
+		col.put("bool", "java.lang.Boolean");
+		col.put("int", "java.lang.Integer");
+		col.put("str", "java.lang.String");
+		col.put("date", "java.util.Date");
+		col.put("dbl", "java.lang.Double");
+		col.put("poly", "java.awt.Polygon");
+
+		DB.createTable("test", "dbl", col);
+
+		DB.createBTreeIndex("test", "bool");
+		DB.createBTreeIndex("test", "int");
+		DB.createBTreeIndex("test", "str");
+		DB.createBTreeIndex("test", "date");
+		DB.createBTreeIndex("test", "dbl");
+		DB.createRTreeIndex("test", "poly");
+
+		Hashtable<String, Object> newHash = new Hashtable<String, Object>();
+
+		for (int i = 0; i < 200; i++)
+		{
+			Hashtable<String, Object> h = new Hashtable<>();
+			h.put("bool", randomBool());
+			h.put("int", RandomInt(0, 10000000));
+			h.put("str", randomString(20));
+			h.put("date", RandomDate());
+			h.put("dbl", randomDouble(0, 100));
+			h.put("poly", randomPolygon(5));
+			
+			DB.insertIntoTable("test", h);
+		}
+
+		newHash.put("bool", false);
+		newHash.put("int", 133337);
+		newHash.put("str", "mimi");
+		newHash.put("date", new SimpleDateFormat("YYYY-MM-DD").parse("2029-11-08"));
+		newHash.put("dbl", 4.20);
+		int[] x = {1,2,1,2};
+		int[] y = {1,2,2,1};
+		Polygon pol = new Polygon(x, y, 4);
+		newHash.put("poly", pol);
+
+		DB.insertIntoTable("test", newHash);
+		DB.insertIntoTable("test", newHash);
+		DB.insertIntoTable("test", newHash);
+		DB.insertIntoTable("test", newHash);
+		DB.insertIntoTable("test", newHash);
+		DB.insertIntoTable("test", newHash);
+		DB.insertIntoTable("test", newHash);
+		DB.insertIntoTable("test", newHash);
+		DB.insertIntoTable("test", newHash);
+		DB.insertIntoTable("test", newHash);
+		
+		Table t = Utilities.deserializeTable("test");
+		
+		for(int n : t.getPages())
+		{
+			System.out.println("Page " + n + " : ");
+			
+			Page p = Utilities.deserializePage(n);
+			
+			for (Vector v : p.getPageElements())
+				System.out.println(v);
+			System.out.println("-------------------------------------------------");
+			
+			Utilities.serializePage(p);
+		}
+
+		Utilities.serializeTable(t);
+
+		Hashtable<String, Object> hash = new Hashtable<String, Object>();
+
+		hash.put("bool", true);
+		hash.put("int", 222222222);
+		hash.put("str", "bibo");
+		hash.put("date", new Date());
+		//hash.put("dbl", 6.66);
+		int[] xp = {1,5,1,5};
+		int[] yp = {1,5,5,1};
+		pol = new Polygon(xp, yp, 4);
+		hash.put("poly", pol);
+
+    	  
+    	  
+    	DB.updateTable("test","4.20", hash);
+
+		System.out.println("-----------------------------------------------------------------------------");
+
+		t = Utilities.deserializeTable("test");
+		
+		for(int n : t.getPages())
+		{
+			System.out.println("Page " + n + " : ");
+			
+			Page p = Utilities.deserializePage(n);
+			
+			for (Vector v : p.getPageElements())
+				System.out.println(v);
+			System.out.println("-------------------------------------------------");
+			
+			Utilities.serializePage(p);
+		}
+
+		Utilities.serializeTable(t);
+    	  
+
+//        deleteFromTable(tables.get(0),500); //delete 500 records
+//        deleteFromTable(tables.get(1),500);
+//        updateTable(tables.get(0), 500); //update 500 records
+//        updateTable(tables.get(1), 500);
+
+//        SQLTerm[] t = new SQLTerm[3];
+//        t[0] = new SQLTerm();
+//        t[1] = new SQLTerm();
+//        t[2] = new SQLTerm();
+//
+//        t[0]._strTableName = "obevdjbiaoqgod";
+//        t[0]._strColumnName = "uyjyhuxf";
+//        t[0]._strOperator = ">";
+//        t[0]._objValue = 10;
+//
+//        t[1]._strTableName = "obevdjbiaoqgod";
+//        t[1]._strColumnName = "kskr";
+//        t[1]._strOperator = "=";
+//        t[1]._objValue = false;
+//
+//        t[2]._strTableName = "obevdjbiaoqgod";
+//        t[2]._strColumnName = "nvhmexdhcb";
+//        t[2]._strOperator = "<";
+//        t[2]._objValue = "m";
+//
+//        String[] operators = {"AND","AND"};
+//
+//        Iterator res = DB.selectFromTable(t, operators);
+//
+//        while (res.hasNext()){
+//            Vector cur = (Vector) res.next();
+//            System.out.println(cur.get(2) + " " + cur.get(0) + " " + cur.get(3));
+//        }
     }
 
     public static String randomString(int length) { //a string of random characters from a-z of the desired length
