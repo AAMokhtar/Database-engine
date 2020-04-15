@@ -138,12 +138,12 @@ public class myPolygon extends Polygon implements Comparable<myPolygon>{
 //		int[] x = {1,3,1,3};
 //		int[] y = {1,3,3,1};
 //		myPolygon p = new myPolygon(new Polygon(x,y,4));
-//      myPolygon p = myPolygon.parsePolygon("(1,1),(2,2),(1,2),(2,1)");
+//        myPolygon p = myPolygon.parsePolygon("(1,1),(2,2),(1,2),(2,1)");
 //		int[] x1 = {1,2,1,2};
 //		int[] y1 = {1,2,2,1};
 //		myPolygon p1 = new myPolygon(new Polygon(x1,y1,4));
 //		System.out.println(p.getBounds().getWidth() + " " + p.getBounds().getHeight());
 //		System.out.println(p1.compareTo(p));
-		
+//		
 //	}
 }

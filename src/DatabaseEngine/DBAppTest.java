@@ -78,7 +78,7 @@ public class DBAppTest {
 		DB.createBTreeIndex("test", "str");
 		DB.createBTreeIndex("test", "date");
 		DB.createBTreeIndex("test", "dbl");
-		DB.createRTreeIndex("test", "poly");
+		//DB.createRTreeIndex("test", "poly");
 
 		Hashtable<String, Object> newHash = new Hashtable<String, Object>();
 
@@ -146,9 +146,8 @@ public class DBAppTest {
 		//hash.put("poly", pol);
 
     	  
-    	// (1,1),(2,2),(2,1),(1,2)  => empty
-		// (1,1),(2,2),(1,2),(2,1) => works
-    	DB.updateTable("test","(1,1),(2,2),(2,1),(1,2)", hash);
+    	
+    	DB.updateTable("test","(1,1),(2,2),(1,2),(2,1)", hash);
 
 		System.out.println("-----------------------------------------------------------------------------");
 

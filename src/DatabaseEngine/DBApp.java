@@ -274,7 +274,7 @@ public class DBApp {
 	public void updateBS(String strTableName, String strClusteringKey, String[] cluster, Hashtable<String, Object> htblColNameValue) throws DBAppException
 	{
 		
-		System.out.println("Entering BS");
+		//System.out.println("Entering BS");
 		
 		//figure out the index of the clustering column
 		int clusterIdx = Utilities.returnIndex(strTableName, cluster[0]);
@@ -342,7 +342,7 @@ public class DBApp {
 	public void updateIndex(String strTableName, String strClusteringKey, String[] cluster,  Hashtable<String, Object> htblColNameValue) throws DBAppException
 	{
 		
-		System.out.println("Entering indexing");
+		//System.out.println("Entering indexing");
 		
 		//figure out the index of the clustering column
 		int clusterIdx = Utilities.returnIndex(strTableName, cluster[0]);
@@ -387,7 +387,7 @@ public class DBApp {
 				myPolygon clusterKey = myPolygon.parsePolygon(strClusteringKey);
 				RTree clusterTree = (RTree)ind.get(cluster[0]);
 				records = clusterTree.search(clusterKey, "=");
-				System.out.println(records);
+				//System.out.println(records);
 			}
 		else if (clusterType.equals("java.lang.Boolean")) 
 		{
