@@ -724,29 +724,24 @@ public class Utilities {
 		}
 
 	}
-
-
-	//binary searches through the vector of records to find the clustering key value
-	//if clustering key value is found in the record, it is updated with the values in the HT
-	public static void binarySearchUpdate(Vector<Vector> records, int low, int high, int clusterIdx, Comparable clusterKey, 
+	
+	public static void slideToTheLeft(Vector<Vector> records, int curr, int clusterIdx, Comparable clusterKey, 
 			String table, Hashtable<String,Object> newVal, Hashtable<String, index> indices, int pageID) throws DBAppException
 	{
-
-		if(low<=high)
+		if(curr==-1)
+			return;
+		
+		Comparable clusterValue = (Comparable)records.get(curr).get(clusterIdx);
+		if(clusterValue.compareTo(clusterKey)==0)
 		{
-			int mid = (high-low)/2 + low;
-			// mid = (high - low)/2  + (2low)/2
-			// mid = (high - low + 2low)/2
-			// mid = (high + low) / 2
-			//MUCH EASIER!!!
-
-			Comparable clusterValue = (Comparable)records.get(mid).get(clusterIdx);
-			if(clusterValue.compareTo(clusterKey)==0)
+			
+			if(!(clusterKey instanceof myPolygon) || 
+				(clusterKey instanceof myPolygon && polygonsEqual((myPolygon)clusterValue, (myPolygon)clusterKey)))
 			{
 				//update this record
 
 				//for each key value pair in the HT which contains the values to be updated
-
+				
 				Set<String> keys = newVal.keySet();
 
 				for(String key : keys)
@@ -765,34 +760,169 @@ public class Utilities {
 						if(ind != null) //there exists an index for the column
 						{
 							RTree rtree = (RTree)ind;
-							BPointer x = new BPointer(pageID, mid);
-							rtree.delete((myPolygon)records.get(mid).get(i),x, records.get(mid).get(i).getClass().getName(),false); //delete the old data
+							BPointer x = new BPointer(pageID, curr);
+							rtree.delete((myPolygon)records.get(curr).get(i),x, records.get(curr).get(i).getClass().getName(),false); //delete the old data
 							rtree.insert(m,x,false); //insert the new data to be input in the next instruction
 						}
 						
-						records.get(mid).set(i, m);
+						records.get(curr).set(i, m);
 					}
 					else
 					{
 						if(ind != null)
 						{
 							BPlusTree btree = (BPlusTree)ind;
-							BPointer p = new BPointer(pageID, mid);
+							BPointer p = new BPointer(pageID, curr);
 							//PSA: all objects dealt with inside tables are Comparables
-							btree.delete((Comparable)records.get(mid).get(i), p, records.get(mid).get(i).getClass().getName(),false); //delete the old data
+							btree.delete((Comparable)records.get(curr).get(i), p, records.get(curr).get(i).getClass().getName(),false); //delete the old data
 							btree.insert((Comparable)newVal.get(key), p, false); //insert the new data to be input in the next instruction
 						}
 						
-						records.get(mid).set(i, newVal.get(key)); //ignore the warning, updateChecker already checked the types in the HT matches with metadata
+						records.get(curr).set(i, newVal.get(key)); //ignore the warning, updateChecker already checked the types in the HT matches with metadata
 					}
 						//TODO: is the TouchDate the last index?
-					records.get(mid).set(records.get(mid).size()-1, LocalDateTime.now()); //updates the TouchDate to current time
+					records.get(curr).set(records.get(curr).size()-1, LocalDateTime.now()); //updates the TouchDate to current time
 				}
+			}
 			
-				//check the first and second half if they carry any record with the same clustering key value
+			slideToTheLeft(records, curr-1, clusterIdx, clusterKey, table, newVal, indices, pageID); 
+		}
+	}
+	
+	public static void slideToTheRight(Vector<Vector> records, int curr, int clusterIdx, Comparable clusterKey, 
+			String table, Hashtable<String,Object> newVal, Hashtable<String, index> indices, int pageID) throws DBAppException
+	{
+		if(curr==records.size())
+			return;
+		
+		Comparable clusterValue = (Comparable)records.get(curr).get(clusterIdx);
+		if(clusterValue.compareTo(clusterKey)==0)
+		{
+			
+			if(!(clusterKey instanceof myPolygon) || 
+				(clusterKey instanceof myPolygon && polygonsEqual((myPolygon)clusterValue, (myPolygon)clusterKey)))
+			{
+				//update this record
 
-				binarySearchUpdate(records, low, mid-1, clusterIdx, clusterKey, table, newVal, indices, pageID); //first half
-				binarySearchUpdate(records, mid+1, high, clusterIdx, clusterKey, table, newVal, indices, pageID); //second half
+				//for each key value pair in the HT which contains the values to be updated
+				
+				Set<String> keys = newVal.keySet();
+
+				for(String key : keys)
+				{
+					int i = returnIndex(table, key);
+					
+					
+					index ind = indices.get(key); //get index for the current column
+					
+					//if what we are updating is a polygon, we create a new myPolygon for it to be added to the record
+					if(newVal.get(key) instanceof Polygon)
+					{
+						Polygon p = (Polygon)newVal.get(key);
+						myPolygon m = new myPolygon(p);
+						
+						if(ind != null) //there exists an index for the column
+						{
+							RTree rtree = (RTree)ind;
+							BPointer x = new BPointer(pageID, curr);
+							rtree.delete((myPolygon)records.get(curr).get(i),x, records.get(curr).get(i).getClass().getName(),false); //delete the old data
+							rtree.insert(m,x,false); //insert the new data to be input in the next instruction
+						}
+						
+						records.get(curr).set(i, m);
+					}
+					else
+					{
+						if(ind != null)
+						{
+							BPlusTree btree = (BPlusTree)ind;
+							BPointer p = new BPointer(pageID, curr);
+							//PSA: all objects dealt with inside tables are Comparables
+							btree.delete((Comparable)records.get(curr).get(i), p, records.get(curr).get(i).getClass().getName(),false); //delete the old data
+							btree.insert((Comparable)newVal.get(key), p, false); //insert the new data to be input in the next instruction
+						}
+						
+						records.get(curr).set(i, newVal.get(key)); //ignore the warning, updateChecker already checked the types in the HT matches with metadata
+					}
+						//TODO: is the TouchDate the last index?
+					records.get(curr).set(records.get(curr).size()-1, LocalDateTime.now()); //updates the TouchDate to current time
+				}
+			}
+			
+			slideToTheRight(records, curr+1, clusterIdx, clusterKey, table, newVal, indices, pageID); 
+		}
+	}
+	//binary searches through the vector of records to find the clustering key value
+	//if clustering key value is found in the record, it is updated with the values in the HT
+	public static void binarySearchUpdate(Vector<Vector> records, int low, int high, int clusterIdx, Comparable clusterKey, 
+			String table, Hashtable<String,Object> newVal, Hashtable<String, index> indices, int pageID) throws DBAppException
+	{
+
+		if(low<=high)
+		{
+			int mid = (high-low)/2 + low;
+			// mid = (high - low)/2  + (2low)/2
+			// mid = (high - low + 2low)/2
+			// mid = (high + low) / 2
+			//MUCH EASIER!!!
+
+			Comparable clusterValue = (Comparable)records.get(mid).get(clusterIdx);
+			if(clusterValue.compareTo(clusterKey)==0)
+			{
+				
+				if(!(clusterKey instanceof myPolygon) || 
+					(clusterKey instanceof myPolygon && polygonsEqual((myPolygon)clusterValue, (myPolygon)clusterKey)))
+				{
+					//update this record
+	
+					//for each key value pair in the HT which contains the values to be updated
+					
+					Set<String> keys = newVal.keySet();
+	
+					for(String key : keys)
+					{
+						int i = returnIndex(table, key);
+						
+						
+						index ind = indices.get(key); //get index for the current column
+						
+						//if what we are updating is a polygon, we create a new myPolygon for it to be added to the record
+						if(newVal.get(key) instanceof Polygon)
+						{
+							Polygon p = (Polygon)newVal.get(key);
+							myPolygon m = new myPolygon(p);
+							
+							if(ind != null) //there exists an index for the column
+							{
+								RTree rtree = (RTree)ind;
+								BPointer x = new BPointer(pageID, mid);
+								rtree.delete((myPolygon)records.get(mid).get(i),x, records.get(mid).get(i).getClass().getName(),false); //delete the old data
+								rtree.insert(m,x,false); //insert the new data to be input in the next instruction
+							}
+							
+							records.get(mid).set(i, m);
+						}
+						else
+						{
+							if(ind != null)
+							{
+								BPlusTree btree = (BPlusTree)ind;
+								BPointer p = new BPointer(pageID, mid);
+								//PSA: all objects dealt with inside tables are Comparables
+								btree.delete((Comparable)records.get(mid).get(i), p, records.get(mid).get(i).getClass().getName(),false); //delete the old data
+								btree.insert((Comparable)newVal.get(key), p, false); //insert the new data to be input in the next instruction
+							}
+							
+							records.get(mid).set(i, newVal.get(key)); //ignore the warning, updateChecker already checked the types in the HT matches with metadata
+						}
+							//TODO: is the TouchDate the last index?
+						records.get(mid).set(records.get(mid).size()-1, LocalDateTime.now()); //updates the TouchDate to current time
+					}
+				}
+				//linear search left and right
+
+				slideToTheLeft(records, mid-1, clusterIdx, clusterKey, table, newVal, indices, pageID); //check left neighbors
+				slideToTheRight(records, mid+1, clusterIdx, clusterKey, table, newVal, indices, pageID); //check right neighbors
 			}
 			else if(clusterValue.compareTo(clusterKey)>0)
 				binarySearchUpdate(records, low, mid-1, clusterIdx, clusterKey, table, newVal, indices, pageID); //check the first half

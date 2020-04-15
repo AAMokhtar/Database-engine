@@ -387,6 +387,7 @@ public class DBApp {
 				myPolygon clusterKey = myPolygon.parsePolygon(strClusteringKey);
 				RTree clusterTree = (RTree)ind.get(cluster[0]);
 				records = clusterTree.search(clusterKey, "=");
+				System.out.println(records);
 			}
 		else if (clusterType.equals("java.lang.Boolean")) 
 		{
