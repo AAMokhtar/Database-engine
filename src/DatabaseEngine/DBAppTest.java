@@ -71,7 +71,7 @@ public class DBAppTest {
 		col.put("dbl", "java.lang.Double");
 		col.put("poly", "java.awt.Polygon");
 
-		DB.createTable("test", "dbl", col);
+		DB.createTable("test", "bool", col);
 
 		DB.createBTreeIndex("test", "bool");
 		DB.createBTreeIndex("test", "int");
@@ -135,7 +135,7 @@ public class DBAppTest {
 
 		Hashtable<String, Object> hash = new Hashtable<String, Object>();
 
-		hash.put("bool", true);
+//		hash.put("bool", true);
 		hash.put("int", 222222222);
 		hash.put("str", "bibo");
 		hash.put("date", new Date());
@@ -147,7 +147,7 @@ public class DBAppTest {
 
     	  
     	  
-    	DB.updateTable("test","4.20", hash);
+    	DB.updateTable("test","false", hash);
 
 		System.out.println("-----------------------------------------------------------------------------");
 

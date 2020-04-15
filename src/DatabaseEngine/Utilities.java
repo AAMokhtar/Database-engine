@@ -830,7 +830,7 @@ public class Utilities {
 					{
 						RTree rtree = (RTree)ind;
 						BPointer x = new BPointer(pageID, offset);
-						rtree.delete((myPolygon)records.get(offset).get(i),x, records.get(offset).get(i).getClass().getName()); //delete the old data
+						rtree.delete((myPolygon)records.get(offset).get(i),x, records.get(offset).get(i).getClass().getName(),false); //delete the old data
 						rtree.insert(m,x,false); //insert the new data to be input in the next instruction
 					}
 					
@@ -845,7 +845,7 @@ public class Utilities {
 						BPlusTree btree = (BPlusTree)ind;
 						BPointer p = new BPointer(pageID, offset);
 						//PSA: all objects dealt with inside tables are Comparables
-						btree.delete((Comparable)records.get(offset).get(i), p, records.get(offset).get(i).getClass().getName()); //delete the old data
+						btree.delete((Comparable)records.get(offset).get(i), p, records.get(offset).get(i).getClass().getName(),false); //delete the old data
 						btree.insert((Comparable)newVal.get(key), p, false); //insert the new data to be input in the next instruction
 					}
 					

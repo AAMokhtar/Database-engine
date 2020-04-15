@@ -59,14 +59,14 @@ public void addPointer(Pointer e) {
     public void destroy(){ //deletes the page and fixes the pointers to the previous and next pages
         File thisFile = new File("data//overflow_Pages//" + "overflow_" + name+"_"+ID + ".class");
 
-        if(!thisFile.delete()) System.out.println("Failed to delete file!");
+        if(!thisFile.delete()) System.out.println("Failed to delete overflow page!");
 
         if (ID == 0){ //if we are deleting the first page
             if(next != null){ //make the next page the first
                 overflowPage nextPage = Utilities.deserializeOverflow(next);
 
                 File nextFile = new File("data//overflow_Pages//" + "overflow_" + next + ".class");
-                if(!nextFile.delete()) System.out.println("Failed to delete file!");
+                if(!nextFile.delete()) System.out.println("Failed to delete overflow page!");
 
                 nextPage.setPrev(null);
                 nextPage.setID(0);
@@ -143,6 +143,8 @@ public void addPointer(Pointer e) {
     //insert a value at the end of the overflow pages
     public static void insert(String treeName_value, Pointer recordPointer){
 
+        treeName_value = treeName_value.replaceAll("[^a-zA-Z0-9()_./+]","");
+
         //get the maximum number of tuples per page:
         int N = 0;
         try {
@@ -156,7 +158,6 @@ public void addPointer(Pointer e) {
 
         //the first overflow page does not exist
         String path = "data//overflow_Pages//" + "overflow_" + treeName_value + "_0.class";
-        path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
 
         if (!new File(path).isFile()){
             overflowPage firstPage = new overflowPage(treeName_value);
