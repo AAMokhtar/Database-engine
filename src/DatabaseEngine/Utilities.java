@@ -1722,14 +1722,19 @@ public class Utilities {
 	//check equality IN TERMS OF POINTS
 	public static boolean polygonsEqual(Polygon A, Polygon B) {
 		if(A.npoints == B.npoints) {
-			for (int i = 0; i < A.npoints; i++) {
-				if (A.xpoints[i]!=B.xpoints[i]) {
-					return false;
+			int i;
+
+			for (i = 0; i < A.npoints; i++) {
+				if (A.xpoints[0] == B.xpoints[i] && A.ypoints[0] == B.ypoints[i]) {
+					break;
 				}
 			}
 
-			for (int i = 0; i < A.npoints; i++) {
-				if (A.ypoints[i]!=B.ypoints[i]) {
+			if (i == A.npoints) return false;
+
+			for (int j = 1; j < A.npoints; j++) {
+				if (A.xpoints[j] != B.xpoints[(i + j)%A.npoints] ||
+						A.ypoints[j] != B.ypoints[(i + j)%A.npoints]) {
 					return false;
 				}
 			}

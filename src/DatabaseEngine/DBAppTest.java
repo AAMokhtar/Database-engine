@@ -78,7 +78,7 @@ public class DBAppTest {
 		DB.createBTreeIndex("test", "str");
 		DB.createBTreeIndex("test", "date");
 		DB.createBTreeIndex("test", "dbl");
-		//DB.createRTreeIndex("test", "poly");
+		DB.createRTreeIndex("test", "poly");
 
 		Hashtable<String, Object> newHash = new Hashtable<String, Object>();
 
@@ -100,8 +100,8 @@ public class DBAppTest {
 		newHash.put("str", "mimi");
 		newHash.put("date", new SimpleDateFormat("YYYY-MM-DD").parse("2029-11-08"));
 		newHash.put("dbl", 4.20);
-		int[] x = {1,2,1,2};
-		int[] y = {1,2,2,1};
+		int[] x = {2,1,2,1};
+		int[] y = {1,1,2,2};
 		Polygon pol = new Polygon(x, y, 4);
 		newHash.put("poly", pol);
 

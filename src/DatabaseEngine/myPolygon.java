@@ -41,7 +41,8 @@ public class myPolygon extends Polygon implements Comparable<myPolygon>{
 //  			if(i<this.shape.npoints-1)
 //  				str +=",";
 //  		}
-
+//
+//  		return str;
   		return this.getBounds().width*this.getBounds().height + "";
   	}
   
