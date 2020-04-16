@@ -58,41 +58,272 @@ public class DBApp {
 		table.put("nationality","java.lang.String");
 		table.put("birthdate","java.util.Date");
 		table.put("gpa","java.lang.Double");
-		table.put("shape", "java.awt.Polygon");
 		DBApp d = new DBApp();
 		d.init();
 		try {
-			d.createTable("Test2","shape", table);
+			d.createTable("Test4","gpa", table);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
-		int[] x={1,7,1,7};
-		int[] y={1,1,7,7};
-		java.awt.Polygon poly= new java.awt.Polygon(x,y,4);
-		Hashtable<String, Object> tuple = new Hashtable<String, Object>();
+
+		/*Hashtable<String, Object> tuple = new Hashtable<String, Object>();
+		tuple.clear();
 		tuple.put("ID",6);
 		tuple.put("name","Hassan");
 		tuple.put("isAdult",true);
 		tuple.put("nationality","Estonia");
 		tuple.put("birthdate",new Date(2000,06,02));
-		tuple.put("gpa",1.0);
-		tuple.put("shape",poly);
+		tuple.put("gpa",982.0);
 		
-
 		try {
-			//d.insertIntoTable("Test2", tuple);
-			d.deleteFromTable("Test2", tuple);
-
+			d.insertIntoTable("Test4", tuple);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
-
-		/*try {
-		  	d.createRTreeIndex("Test2", "shape");
-			} catch (DBAppException e) {
+		
+		tuple.clear();
+		tuple.put("ID",6);
+		tuple.put("name","Hassan");
+		tuple.put("isAdult",true);
+		tuple.put("nationality","Estonia");
+		tuple.put("birthdate",new Date(2000,06,02));
+		tuple.put("gpa",981.0);
+		
+		try {
+			d.insertIntoTable("Test4", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("ID",6);
+		tuple.put("name","Hassan");
+		tuple.put("isAdult",true);
+		tuple.put("nationality","Estonia");
+		tuple.put("birthdate",new Date(2000,06,02));
+		tuple.put("gpa",188.0);
+		
+		try {
+			d.insertIntoTable("Test4", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("ID",6);
+		tuple.put("name","Hassan");
+		tuple.put("isAdult",true);
+		tuple.put("nationality","Estonia");
+		tuple.put("birthdate",new Date(2000,06,02));
+		tuple.put("gpa",88.0);
+		
+		try {
+			d.insertIntoTable("Test4", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("ID",6);
+		tuple.put("name","Hassan");
+		tuple.put("isAdult",true);
+		tuple.put("nationality","Estonia");
+		tuple.put("birthdate",new Date(2000,06,02));
+		tuple.put("gpa",61.0);
+		
+		try {
+			d.insertIntoTable("Test4", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("ID",6);
+		tuple.put("name","Hassan");
+		tuple.put("isAdult",true);
+		tuple.put("nationality","Estonia");
+		tuple.put("birthdate",new Date(2000,06,02));
+		tuple.put("gpa",71.0);
+		
+		try {
+			d.insertIntoTable("Test4", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("ID",6);
+		tuple.put("name","Hassan");
+		tuple.put("isAdult",true);
+		tuple.put("nationality","Estonia");
+		tuple.put("birthdate",new Date(2000,06,02));
+		tuple.put("gpa",41.0);
+		
+		try {
+			d.insertIntoTable("Test4", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("ID",6);
+		tuple.put("name","Hassan");
+		tuple.put("isAdult",true);
+		tuple.put("nationality","Estonia");
+		tuple.put("birthdate",new Date(2000,06,02));
+		tuple.put("gpa",3476.0);
+		
+		try {
+			d.insertIntoTable("Test4", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("ID",6);
+		tuple.put("name","Hassan");
+		tuple.put("isAdult",true);
+		tuple.put("nationality","Estonia");
+		tuple.put("birthdate",new Date(2000,06,02));
+		tuple.put("gpa",111.0);
+		
+		try {
+			d.insertIntoTable("Test4", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("ID",6);
+		tuple.put("name","Hassan");
+		tuple.put("isAdult",true);
+		tuple.put("nationality","Estonia");
+		tuple.put("birthdate",new Date(2000,06,02));
+		tuple.put("gpa",-98.0);
+		
+		try {
+			d.insertIntoTable("Test4", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("ID",6);
+		tuple.put("name","Hassan");
+		tuple.put("isAdult",true);
+		tuple.put("nationality","Estonia");
+		tuple.put("birthdate",new Date(2000,06,02));
+		tuple.put("gpa",-9.0);
+		
+		try {
+			d.insertIntoTable("Test4", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("ID",6);
+		tuple.put("name","Hassan");
+		tuple.put("isAdult",true);
+		tuple.put("nationality","Estonia");
+		tuple.put("birthdate",new Date(2000,06,02));
+		tuple.put("gpa",45.0);
+		
+		try {
+			d.insertIntoTable("Test4", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("ID",6);
+		tuple.put("name","Hassan");
+		tuple.put("isAdult",true);
+		tuple.put("nationality","Estonia");
+		tuple.put("birthdate",new Date(2000,06,02));
+		tuple.put("gpa",5.0);
+		
+		try {
+			d.insertIntoTable("Test4", tuple);
+		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}*/
-		Table obj=Utilities.deserializeTable("Test2");
+		/*Hashtable<String, Object> tuple = new Hashtable<String, Object>();
+		tuple.clear();
+		tuple.put("ID",6);
+		tuple.put("name","Shaykea");
+		tuple.put("isAdult",true);
+		tuple.put("nationality","Estonia");
+		tuple.put("birthdate",new Date(2000,06,02));
+		tuple.put("gpa",-15.0);
+		
+		try {
+			d.insertIntoTable("Test4", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("ID",6);
+		tuple.put("name","Shaykea");
+		tuple.put("isAdult",true);
+		tuple.put("nationality","Estonia");
+		tuple.put("birthdate",new Date(2000,06,02));
+		tuple.put("gpa",-14.0);
+		
+		try {
+			d.insertIntoTable("Test4", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("ID",6);
+		tuple.put("name","Shaykea");
+		tuple.put("isAdult",true);
+		tuple.put("nationality","Estonia");
+		tuple.put("birthdate",new Date(2000,06,02));
+		tuple.put("gpa",-13.0);
+		
+		try {
+			d.insertIntoTable("Test4", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("ID",6);
+		tuple.put("name","Shaykea");
+		tuple.put("isAdult",true);
+		tuple.put("nationality","Estonia");
+		tuple.put("birthdate",new Date(2000,06,02));
+		tuple.put("gpa",-12.0);
+		
+		try {
+			d.insertIntoTable("Test4", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}*/
+		/*try {
+			d.createBTreeIndex("Test4", "gpa");
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}*/
+		Hashtable<String, Object> tuple = new Hashtable<String, Object>();
+		tuple.clear();
+		tuple.put("ID",6);
+		///tuple.put("name","Shaykea");
+		tuple.put("isAdult",true);
+		tuple.put("nationality","Estonia");
+		tuple.put("birthdate",new Date(2000,06,02));
+		tuple.put("gpa",982.0);
+		
+		try {
+			d.deleteFromTable("Test4", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		Table obj=Utilities.deserializeTable("Test4");
 
 
 		for (int i = 0; i < obj.getPages().size(); i++) {
@@ -668,6 +899,12 @@ public class DBApp {
 				String[] temp=metaData.get(i);
 				if(temp[1].equals(strColName))
 				{
+					String type=temp[2];
+					//check that column is not of type polygon
+					if(type.equals("java.awt.Polygon"))
+					{
+						throw new DBAppException("Cannot create B+ tree index on type polygon");
+					}
 					if(temp[4].equals("True"))
 					{
 						throw new DBAppException("B+ tree index already exists for this column");
@@ -687,17 +924,17 @@ public class DBApp {
 			else
 			{
 				//System.out.println("Column exists");
+				//all is well. I can now create the appropriate B+ tree 
+				//determining column type to create appropriate BTree
+				//System.out.println("Tree should be of type " + type);
+				//creating appropriate Btree
+				//System.out.println("creating Btree");
 				String type=metaDataForIndexedColumn[2];
 				//check that column is not of type polygon
 				if(type.equals("java.awt.Polygon"))
 				{
 					throw new DBAppException("Cannot create B+ tree index on type polygon");
 				}
-				//all is well. I can now create the appropriate B+ tree 
-				//determining column type to create appropriate BTree
-				//System.out.println("Tree should be of type " + type);
-				//creating appropriate Btree
-				//System.out.println("creating Btree");
 				BPlusTree tree=null;
 				if(type.equals("java.lang.Integer"))
 				{
@@ -796,6 +1033,12 @@ public class DBApp {
 				String[] temp=metaData.get(i);
 				if(temp[1].equals(strColName))
 				{
+					String type=temp[2];
+					//check that column is not of type polygon
+					if(!type.equals("java.awt.Polygon"))
+					{
+						throw new DBAppException("Cannot create R tree index on type " + type);
+					}
 					if(temp[4].equals("True"))
 					{
 						throw new DBAppException("R tree index already exists for this column");
@@ -815,12 +1058,6 @@ public class DBApp {
 			else
 			{
 				//System.out.println("Column exists");
-				String type=metaDataForIndexedColumn[2];
-				//check that column is not of type polygon
-				if(!type.equals("java.awt.Polygon"))
-				{
-					throw new DBAppException("Cannot create R tree index on type " + type);
-				}
 				//all is well. I can now create the appropriate B+ tree
 				//determining column type to create appropriate BTree
 				//System.out.println("Tree should be of type " + type);
