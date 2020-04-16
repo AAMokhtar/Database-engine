@@ -52,278 +52,280 @@ public class DBApp {
 		public static void main(String args[]) {
 		//CREATE TABLE TEST PASSED!
 		Hashtable table = new Hashtable<String, String>();
-		table.put("ID","java.lang.Integer");
 		table.put("name","java.lang.String");
-		table.put("isAdult","java.lang.Boolean");
-		table.put("nationality","java.lang.String");
-		table.put("birthdate","java.util.Date");
-		table.put("gpa","java.lang.Double");
 		DBApp d = new DBApp();
 		d.init();
 		try {
-			d.createTable("Test4","gpa", table);
+			d.createTable("TestName2","name", table);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
-
-		/*Hashtable<String, Object> tuple = new Hashtable<String, Object>();
-		tuple.clear();
-		tuple.put("ID",6);
-		tuple.put("name","Hassan");
-		tuple.put("isAdult",true);
-		tuple.put("nationality","Estonia");
-		tuple.put("birthdate",new Date(2000,06,02));
-		tuple.put("gpa",982.0);
+		Hashtable tuple = new Hashtable<String, Object>();
 		
+		tuple.clear();
+		tuple.put("name", "Layla");
 		try {
-			d.insertIntoTable("Test4", tuple);
+			d.insertIntoTable("TestName2", tuple);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
 		
 		tuple.clear();
-		tuple.put("ID",6);
-		tuple.put("name","Hassan");
-		tuple.put("isAdult",true);
-		tuple.put("nationality","Estonia");
-		tuple.put("birthdate",new Date(2000,06,02));
-		tuple.put("gpa",981.0);
-		
+		tuple.put("name", "Hassan");
 		try {
-			d.insertIntoTable("Test4", tuple);
+			d.insertIntoTable("TestName2", tuple);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
 		
 		tuple.clear();
-		tuple.put("ID",6);
-		tuple.put("name","Hassan");
-		tuple.put("isAdult",true);
-		tuple.put("nationality","Estonia");
-		tuple.put("birthdate",new Date(2000,06,02));
-		tuple.put("gpa",188.0);
-		
+		tuple.put("name", "Farid");
 		try {
-			d.insertIntoTable("Test4", tuple);
+			d.insertIntoTable("TestName2", tuple);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
 		
 		tuple.clear();
-		tuple.put("ID",6);
-		tuple.put("name","Hassan");
-		tuple.put("isAdult",true);
-		tuple.put("nationality","Estonia");
-		tuple.put("birthdate",new Date(2000,06,02));
-		tuple.put("gpa",88.0);
-		
+		tuple.put("name", "Fawzeya");
 		try {
-			d.insertIntoTable("Test4", tuple);
+			d.insertIntoTable("TestName2", tuple);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
 		
 		tuple.clear();
-		tuple.put("ID",6);
-		tuple.put("name","Hassan");
-		tuple.put("isAdult",true);
-		tuple.put("nationality","Estonia");
-		tuple.put("birthdate",new Date(2000,06,02));
-		tuple.put("gpa",61.0);
-		
+		tuple.put("name", "Sara");
 		try {
-			d.insertIntoTable("Test4", tuple);
+			d.insertIntoTable("TestName2", tuple);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
 		
 		tuple.clear();
-		tuple.put("ID",6);
-		tuple.put("name","Hassan");
-		tuple.put("isAdult",true);
-		tuple.put("nationality","Estonia");
-		tuple.put("birthdate",new Date(2000,06,02));
-		tuple.put("gpa",71.0);
-		
+		tuple.put("name", "Saeed");
 		try {
-			d.insertIntoTable("Test4", tuple);
+			d.insertIntoTable("TestName2", tuple);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
 		
 		tuple.clear();
-		tuple.put("ID",6);
-		tuple.put("name","Hassan");
-		tuple.put("isAdult",true);
-		tuple.put("nationality","Estonia");
-		tuple.put("birthdate",new Date(2000,06,02));
-		tuple.put("gpa",41.0);
-		
+		tuple.put("name", "Tarek");
 		try {
-			d.insertIntoTable("Test4", tuple);
+			d.insertIntoTable("TestName2", tuple);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
 		
 		tuple.clear();
-		tuple.put("ID",6);
-		tuple.put("name","Hassan");
-		tuple.put("isAdult",true);
-		tuple.put("nationality","Estonia");
-		tuple.put("birthdate",new Date(2000,06,02));
-		tuple.put("gpa",3476.0);
-		
+		tuple.put("name", "Mariam");
 		try {
-			d.insertIntoTable("Test4", tuple);
+			d.insertIntoTable("TestName2", tuple);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
 		
 		tuple.clear();
-		tuple.put("ID",6);
-		tuple.put("name","Hassan");
-		tuple.put("isAdult",true);
-		tuple.put("nationality","Estonia");
-		tuple.put("birthdate",new Date(2000,06,02));
-		tuple.put("gpa",111.0);
-		
+		tuple.put("name", "Nadine");
 		try {
-			d.insertIntoTable("Test4", tuple);
+			d.insertIntoTable("TestName2", tuple);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
 		
 		tuple.clear();
-		tuple.put("ID",6);
-		tuple.put("name","Hassan");
-		tuple.put("isAdult",true);
-		tuple.put("nationality","Estonia");
-		tuple.put("birthdate",new Date(2000,06,02));
-		tuple.put("gpa",-98.0);
-		
+		tuple.put("name", "Rasheed");
 		try {
-			d.insertIntoTable("Test4", tuple);
+			d.insertIntoTable("TestName2", tuple);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
 		
 		tuple.clear();
-		tuple.put("ID",6);
-		tuple.put("name","Hassan");
-		tuple.put("isAdult",true);
-		tuple.put("nationality","Estonia");
-		tuple.put("birthdate",new Date(2000,06,02));
-		tuple.put("gpa",-9.0);
-		
+		tuple.put("name", "Karim");
 		try {
-			d.insertIntoTable("Test4", tuple);
+			d.insertIntoTable("TestName2", tuple);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
 		
 		tuple.clear();
-		tuple.put("ID",6);
-		tuple.put("name","Hassan");
-		tuple.put("isAdult",true);
-		tuple.put("nationality","Estonia");
-		tuple.put("birthdate",new Date(2000,06,02));
-		tuple.put("gpa",45.0);
-		
+		tuple.put("name", "Jamal");
 		try {
-			d.insertIntoTable("Test4", tuple);
+			d.insertIntoTable("TestName2", tuple);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
 		
 		tuple.clear();
-		tuple.put("ID",6);
-		tuple.put("name","Hassan");
-		tuple.put("isAdult",true);
-		tuple.put("nationality","Estonia");
-		tuple.put("birthdate",new Date(2000,06,02));
-		tuple.put("gpa",5.0);
-		
+		tuple.put("name", "Hussein");
 		try {
-			d.insertIntoTable("Test4", tuple);
-		} catch (DBAppException e) {
-			System.out.println(e.getMessage());
-		}*/
-		/*Hashtable<String, Object> tuple = new Hashtable<String, Object>();
-		tuple.clear();
-		tuple.put("ID",6);
-		tuple.put("name","Shaykea");
-		tuple.put("isAdult",true);
-		tuple.put("nationality","Estonia");
-		tuple.put("birthdate",new Date(2000,06,02));
-		tuple.put("gpa",-15.0);
-		
-		try {
-			d.insertIntoTable("Test4", tuple);
+			d.insertIntoTable("TestName2", tuple);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
 		
 		tuple.clear();
-		tuple.put("ID",6);
-		tuple.put("name","Shaykea");
-		tuple.put("isAdult",true);
-		tuple.put("nationality","Estonia");
-		tuple.put("birthdate",new Date(2000,06,02));
-		tuple.put("gpa",-14.0);
-		
+		tuple.put("name", "Malak");
 		try {
-			d.insertIntoTable("Test4", tuple);
+			d.insertIntoTable("TestName2", tuple);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
 		
 		tuple.clear();
-		tuple.put("ID",6);
-		tuple.put("name","Shaykea");
-		tuple.put("isAdult",true);
-		tuple.put("nationality","Estonia");
-		tuple.put("birthdate",new Date(2000,06,02));
-		tuple.put("gpa",-13.0);
-		
+		tuple.put("name", "Mohamed");
 		try {
-			d.insertIntoTable("Test4", tuple);
+			d.insertIntoTable("TestName2", tuple);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
 		
 		tuple.clear();
-		tuple.put("ID",6);
-		tuple.put("name","Shaykea");
-		tuple.put("isAdult",true);
-		tuple.put("nationality","Estonia");
-		tuple.put("birthdate",new Date(2000,06,02));
-		tuple.put("gpa",-12.0);
-		
+		tuple.put("name", "Mayar");
 		try {
-			d.insertIntoTable("Test4", tuple);
-		} catch (DBAppException e) {
-			System.out.println(e.getMessage());
-		}*/
-		/*try {
-			d.createBTreeIndex("Test4", "gpa");
-		} catch (DBAppException e) {
-			System.out.println(e.getMessage());
-		}*/
-		Hashtable<String, Object> tuple = new Hashtable<String, Object>();
-		tuple.clear();
-		tuple.put("ID",6);
-		///tuple.put("name","Shaykea");
-		tuple.put("isAdult",true);
-		tuple.put("nationality","Estonia");
-		tuple.put("birthdate",new Date(2000,06,02));
-		tuple.put("gpa",982.0);
-		
-		try {
-			d.deleteFromTable("Test4", tuple);
+			d.insertIntoTable("TestName2", tuple);
 		} catch (DBAppException e) {
 			System.out.println(e.getMessage());
 		}
-		Table obj=Utilities.deserializeTable("Test4");
+		tuple.clear();
+		tuple.put("name", "Jamal");
+		try {
+			d.deleteFromTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Jameel");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Mayar");
+		try {
+			d.deleteFromTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Mayor");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Sara");
+		try {
+			d.deleteFromTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Sarag");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Layla");
+		try {
+			d.deleteFromTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Leila");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		try {
+			d.createBTreeIndex("TestName2", "name");
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Jameel");
+		try {
+			d.deleteFromTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Jamal");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Mayor");
+		try {
+			d.deleteFromTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Mayar");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Sarag");
+		try {
+			d.deleteFromTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Sara");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Leila");
+		try {
+			d.deleteFromTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Layla");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		try {
+			d.createBTreeIndex("TestName2", "name");
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Tarek");
+		try {
+			d.deleteFromTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Farid");
+		try {
+			d.deleteFromTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		Table obj=Utilities.deserializeTable("TestName2");
 
 
 		for (int i = 0; i < obj.getPages().size(); i++) {
