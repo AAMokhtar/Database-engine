@@ -50,7 +50,7 @@ public class Table implements Serializable{
 			}
 
 			else {
-				System.out.println("Table already exists and an exception was thrown.");
+				throw new DBAppException("Illegal operation: Duplicate column names.");
 			}
 
 	}
@@ -537,10 +537,7 @@ public class Table implements Serializable{
 
 	//FOR TESTING PURPOSES
 	public static void main(String args[])  {
-
-		Hashtable<String, String> t = new Hashtable<String, String>();
-		t.put("1","One");
-		t.put("2", "Two");
-		System.out.println(t);
+		
+	
 	}
 }
