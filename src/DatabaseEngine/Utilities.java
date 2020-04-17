@@ -45,6 +45,18 @@ public class Utilities {
 		return type;
 	}
 	
+   public static boolean checkKey(String key, Hashtable<String,String> table) {
+		
+		Set<String> e = table.keySet();
+		for(String i : e) {
+			if(i.equals(key)) {
+			return true;
+			}
+		}
+			
+		return false;
+	} 
+	
 	
 
 
@@ -390,7 +402,6 @@ public class Utilities {
 					String[] data = line.split(",");
 					if(data[0].equals(tablename)) {
 						throw new DBAppException("Table already exists. Please use another name.");
-
 					}
 
 				}

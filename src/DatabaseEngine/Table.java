@@ -25,7 +25,12 @@ public class Table implements Serializable{
 
 		//step 0: check if table already exists
 		
-
+		if(!Utilities.checkKey(strClusteringKeyColumn, htblColNameType)) {
+			throw new DBAppException("The selected clustering column does not exist in your list of columns.");
+		}
+		
+		
+	   else {
 			if(Utilities.isTableUnique(strTableName)) {
 
 
@@ -50,8 +55,9 @@ public class Table implements Serializable{
 			}
 
 			else {
-				throw new DBAppException("Illegal operation: Duplicate column names.");
+				throw new DBAppException("Table already exists. Please use another name.");
 			}
+	   }
 
 	}
 
