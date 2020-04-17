@@ -49,61 +49,294 @@ public class DBApp {
 //				System.out.println(e.getMessage());
 //			e.printStackTrace();	}
 //	}
-//		public static void main(String args[]) {
-//		//CREATE TABLE TEST PASSED!
-//		Hashtable table = new Hashtable<String, String>();
-//		table.put("ID","java.lang.Integer");
-//		table.put("name","java.lang.String");
-//		table.put("isAdult","java.lang.Boolean");
-//		table.put("nationality","java.lang.String");
-//		table.put("birthdate","java.util.Date");
-//		table.put("gpa","java.lang.Double");
-//		table.put("shape", "java.awt.Polygon");
-//		DBApp d = new DBApp();
-//		d.init();
-//		try {
-//			d.createTable("Test2","shape", table);
-//		} catch (DBAppException e) {
-//			System.out.println(e.getMessage());
-//		}
-//		int[] x={1,7,1,7};
-//		int[] y={1,1,7,7};
-//		java.awt.Polygon poly= new java.awt.Polygon(x,y,4);
-//		Hashtable<String, Object> tuple = new Hashtable<String, Object>();
-//		tuple.put("ID",6);
-//		tuple.put("name","Hassan");
-//		tuple.put("isAdult",true);
-//		tuple.put("nationality","Estonia");
-//		tuple.put("birthdate",new Date(2000,06,02));
-//		tuple.put("gpa",1.0);
-//		tuple.put("shape",poly);
+		public static void main(String args[]) {
+		//CREATE TABLE TEST PASSED!
+		Hashtable table = new Hashtable<String, String>();
+		table.put("name","java.lang.String");
+		DBApp d = new DBApp();
+		d.init();
+		try {
+			d.createTable("TestName2","name", table);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		Hashtable tuple = new Hashtable<String, Object>();
 		
-//
-//		try {
-//			//d.insertIntoTable("Test2", tuple);
-//			d.deleteFromTable("Test2", tuple);
-//
-//		} catch (DBAppException e) {
-//			System.out.println(e.getMessage());
-//		}
-//
-//		/*try {
-//		  	d.createRTreeIndex("Test2", "shape");
-//			} catch (DBAppException e) {
-//			System.out.println(e.getMessage());
-//		}*/
-//		Table obj=Utilities.deserializeTable("Test2");
-//
-//
-//		for (int i = 0; i < obj.getPages().size(); i++) {
-//			Page p=Utilities.deserializePage(obj.getPages().get(i));
-//			System.out.println("id: " + p.getID());
-//			System.out.println(p);
-//			Utilities.serializePage(p);
-//		}
-//
-//		Utilities.serializeTable(obj);
-//	}
+		tuple.clear();
+		tuple.put("name", "Layla");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("name", "Hassan");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("name", "Farid");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("name", "Fawzeya");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("name", "Sara");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("name", "Saeed");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("name", "Tarek");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("name", "Mariam");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("name", "Nadine");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("name", "Rasheed");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("name", "Karim");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("name", "Jamal");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("name", "Hussein");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("name", "Malak");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("name", "Mohamed");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		tuple.clear();
+		tuple.put("name", "Mayar");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Jamal");
+		try {
+			d.deleteFromTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Jameel");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Mayar");
+		try {
+			d.deleteFromTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Mayor");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Sara");
+		try {
+			d.deleteFromTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Sarag");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Layla");
+		try {
+			d.deleteFromTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Leila");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		try {
+			d.createBTreeIndex("TestName2", "name");
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Jameel");
+		try {
+			d.deleteFromTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Jamal");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Mayor");
+		try {
+			d.deleteFromTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Mayar");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Sarag");
+		try {
+			d.deleteFromTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Sara");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Leila");
+		try {
+			d.deleteFromTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Layla");
+		try {
+			d.insertIntoTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		try {
+			d.createBTreeIndex("TestName2", "name");
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Tarek");
+		try {
+			d.deleteFromTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		tuple.clear();
+		tuple.put("name", "Farid");
+		try {
+			d.deleteFromTable("TestName2", tuple);
+		} catch (DBAppException e) {
+			System.out.println(e.getMessage());
+		}
+		Table obj=Utilities.deserializeTable("TestName2");
+
+
+		for (int i = 0; i < obj.getPages().size(); i++) {
+			Page p=Utilities.deserializePage(obj.getPages().get(i));
+			System.out.println("id: " + p.getID());
+			System.out.println(p);
+			Utilities.serializePage(p);
+		}
+
+		Utilities.serializeTable(obj);
+	}
 	
 	public void insertIntoTable(String strTableName, Hashtable<String, Object> htblColNameValue) throws DBAppException {
 		//Step 0: Load table object
@@ -668,6 +901,12 @@ public class DBApp {
 				String[] temp=metaData.get(i);
 				if(temp[1].equals(strColName))
 				{
+					String type=temp[2];
+					//check that column is not of type polygon
+					if(type.equals("java.awt.Polygon"))
+					{
+						throw new DBAppException("Cannot create B+ tree index on type polygon");
+					}
 					if(temp[4].equals("True"))
 					{
 						throw new DBAppException("B+ tree index already exists for this column");
@@ -687,17 +926,17 @@ public class DBApp {
 			else
 			{
 				//System.out.println("Column exists");
+				//all is well. I can now create the appropriate B+ tree 
+				//determining column type to create appropriate BTree
+				//System.out.println("Tree should be of type " + type);
+				//creating appropriate Btree
+				//System.out.println("creating Btree");
 				String type=metaDataForIndexedColumn[2];
 				//check that column is not of type polygon
 				if(type.equals("java.awt.Polygon"))
 				{
 					throw new DBAppException("Cannot create B+ tree index on type polygon");
 				}
-				//all is well. I can now create the appropriate B+ tree 
-				//determining column type to create appropriate BTree
-				//System.out.println("Tree should be of type " + type);
-				//creating appropriate Btree
-				//System.out.println("creating Btree");
 				BPlusTree tree=null;
 				if(type.equals("java.lang.Integer"))
 				{
@@ -796,6 +1035,12 @@ public class DBApp {
 				String[] temp=metaData.get(i);
 				if(temp[1].equals(strColName))
 				{
+					String type=temp[2];
+					//check that column is not of type polygon
+					if(!type.equals("java.awt.Polygon"))
+					{
+						throw new DBAppException("Cannot create R tree index on type " + type);
+					}
 					if(temp[4].equals("True"))
 					{
 						throw new DBAppException("R tree index already exists for this column");
@@ -815,12 +1060,6 @@ public class DBApp {
 			else
 			{
 				//System.out.println("Column exists");
-				String type=metaDataForIndexedColumn[2];
-				//check that column is not of type polygon
-				if(!type.equals("java.awt.Polygon"))
-				{
-					throw new DBAppException("Cannot create R tree index on type " + type);
-				}
 				//all is well. I can now create the appropriate B+ tree
 				//determining column type to create appropriate BTree
 				//System.out.println("Tree should be of type " + type);

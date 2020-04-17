@@ -1082,7 +1082,6 @@ public class Utilities {
 
 			while (lo <= hi) {
 				mid = (hi + lo) / 2;
-
 				if (list.get(mid).compareTo(value) > 0) { //value <
 					hi = mid - 1;
 				}
