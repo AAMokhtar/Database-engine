@@ -11,7 +11,7 @@ public class GeneralTest {
 	public static void main (String[] args) throws DBAppException {
 		DBApp tester = new DBApp();
 		
-		//tester.init();
+		tester.init();
 		
 		Hashtable<String, String> testTable = new Hashtable<String,String>();
 
@@ -60,8 +60,8 @@ public class GeneralTest {
 		
 		//insertions
 		
-		tester.createTable("ccitizen","id",testTable);
-		tester.createBTreeIndex("ccitizen", "height");
+		//tester.createTable("cccitizen","id",testTable);
+		tester.createBTreeIndex("cccitizen", "birthday");
 	}
 	
 	
