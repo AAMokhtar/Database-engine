@@ -739,7 +739,10 @@ public class DBApp {
 		}
 	BSet<BPointer> pointers =	Utilities.selectPointers(indices, arrSQLTerms, strarrOperators);
 	Iterator<Vector<Object>> rows = Utilities.getPointerRecords(pointers);
-
+	if(pointers.size()==0) {
+		throw new DBAppException("No matching records were found");
+	}
+	else
 	if(indices.containsKey(strTableName)) {
 	
 		ArrayList<String[]> metaData = Utilities.readMetaDataForSpecificTable(strTableName);

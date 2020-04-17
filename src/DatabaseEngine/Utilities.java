@@ -74,7 +74,7 @@ public class Utilities {
 				write.append(",");
 				write.append("Column Type");
 				write.append(",");
-				write.append("Key");
+				write.append("ClusteringKey");
 				write.append(",");
 				write.append("Indexed");
 				write.append("\n");
@@ -116,7 +116,7 @@ public class Utilities {
 			write.append(",");
 			write.append("Column Type");
 			write.append(",");
-			write.append("Key");
+			write.append("ClusteringKey");
 			write.append(",");
 			write.append("Indexed");
 			write.append("\n");
