@@ -60,7 +60,8 @@ public class GeneralTest {
 		
 		//insertions
 		
-				
+		tester.createTable("ccitizen","id",testTable);
+		tester.createBTreeIndex("ccitizen", "height");
 	}
 	
 	
