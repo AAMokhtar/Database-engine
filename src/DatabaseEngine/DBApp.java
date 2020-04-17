@@ -520,7 +520,7 @@ public class DBApp {
 			clusterKey = Integer.parseInt(strClusteringKey);
 		else if (clusterType.equals("java.lang.Double"))
 			clusterKey = Double.parseDouble(strClusteringKey);
-		//TODO: ask if it should be thrown as DBApp exception and if we use default format for date
+		
 		else if (clusterType.equals("java.util.Date"))
 			try {
 				clusterKey = new SimpleDateFormat("YYYY-MM-DD").parse(strClusteringKey);
@@ -541,12 +541,13 @@ public class DBApp {
 			return;
 		}
 
-		//TODO: use binary search for pages?
+		
 
 		Table t = Utilities.deserializeTable(strTableName);
 
 		Vector<Integer> pagesID = t.getPages();
-
+		
+		boolean flag = false; //flag that checks if at least one page is visited
 
 		for (int i = 0; i < pagesID.size(); i++) {
 			Page page = Utilities.deserializePage(pagesID.get(i));
@@ -560,8 +561,9 @@ public class DBApp {
 			if (((Comparable) records.firstElement().get(clusterIdx)).compareTo(clusterKey) <= 0 &&
 					((Comparable) records.lastElement().get(clusterIdx)).compareTo(clusterKey) >= 0) //ignore this stupid warning, Ali should check clustering entered implements comparable
 			{
+				flag = true;
 				Hashtable<String, index> ind = this.indices.get(strTableName);
-				Utilities.binarySearchUpdate(records, 0, records.size() - 1, clusterIdx, clusterKey, strTableName, htblColNameValue, ind, page.getID());
+				Utilities.binarySearchUpdate(records, 0, records.size() - 1, clusterIdx, clusterKey, strTableName, htblColNameValue, ind, page.getID(), false);
 
 			}
 
@@ -569,6 +571,9 @@ public class DBApp {
 		}
 
 		Utilities.serializeTable(t);
+		
+		if(!flag)
+			throw new DBAppException("No record with clustering key " + strClusteringKey + " exists to update");
 
 	}
 	
@@ -635,8 +640,10 @@ public class DBApp {
 			return;
 		}
 		
-		//TODO: do I need to use Table?
-		
+		if(records.size()==0)
+		{
+			throw new DBAppException("No record with clustering key " + strClusteringKey + " exists to update");
+		}
 		
 		Hashtable<Integer, Vector<Integer>> collectedOffset = Utilities.collectOffsets(records);
 		
@@ -661,8 +668,7 @@ public class DBApp {
 	}
 	
 	
-	//TODO: are many attributes updated or just one at a time?
-	//If only one at a time, simplify updateChecker (inc. Hashtable implementation)
+	
 	public void updateTable(String strTableName, String strClusteringKey,
 							Hashtable<String, Object> htblColNameValue) throws DBAppException 
 	{
@@ -673,7 +679,6 @@ public class DBApp {
 		//either table does not exist, column name does not exist or type mismatch for data values
 		if (!valid) return;
 
-		// TODO: search for the record with index and update the data values
 
 		// figure out the column name, type of clustering key and indexing boolean,
 		// respectively

@@ -738,11 +738,11 @@ public class Utilities {
 
 	}
 	
-	public static void slideToTheLeft(Vector<Vector> records, int curr, int clusterIdx, Comparable clusterKey, 
-			String table, Hashtable<String,Object> newVal, Hashtable<String, index> indices, int pageID) throws DBAppException
+	public static boolean slideToTheLeft(Vector<Vector> records, int curr, int clusterIdx, Comparable clusterKey, 
+			String table, Hashtable<String,Object> newVal, Hashtable<String, index> indices, int pageID, boolean found) throws DBAppException
 	{
 		if(curr==-1)
-			return;
+			return found;
 		
 		Comparable clusterValue = (Comparable)records.get(curr).get(clusterIdx);
 		if(clusterValue.compareTo(clusterKey)==0)
@@ -754,6 +754,7 @@ public class Utilities {
 				//update this record
 
 				//for each key value pair in the HT which contains the values to be updated
+				found = true;
 				
 				Set<String> keys = newVal.keySet();
 
@@ -798,15 +799,21 @@ public class Utilities {
 				}
 			}
 			
-			slideToTheLeft(records, curr-1, clusterIdx, clusterKey, table, newVal, indices, pageID); 
+			boolean found2 = slideToTheLeft(records, curr-1, clusterIdx, clusterKey, table, newVal, indices, pageID, found); 
+			return found || found2;
+			
+			
 		}
+		else
+			return found;
+		
 	}
 	
-	public static void slideToTheRight(Vector<Vector> records, int curr, int clusterIdx, Comparable clusterKey, 
-			String table, Hashtable<String,Object> newVal, Hashtable<String, index> indices, int pageID) throws DBAppException
+	public static boolean slideToTheRight(Vector<Vector> records, int curr, int clusterIdx, Comparable clusterKey, 
+			String table, Hashtable<String,Object> newVal, Hashtable<String, index> indices, int pageID, boolean found) throws DBAppException
 	{
 		if(curr==records.size())
-			return;
+			return found;
 		
 		Comparable clusterValue = (Comparable)records.get(curr).get(clusterIdx);
 		if(clusterValue.compareTo(clusterKey)==0)
@@ -819,6 +826,7 @@ public class Utilities {
 
 				//for each key value pair in the HT which contains the values to be updated
 				
+				found = true;
 				Set<String> keys = newVal.keySet();
 
 				for(String key : keys)
@@ -862,13 +870,16 @@ public class Utilities {
 				}
 			}
 			
-			slideToTheRight(records, curr+1, clusterIdx, clusterKey, table, newVal, indices, pageID); 
+			boolean found2 = slideToTheRight(records, curr+1, clusterIdx, clusterKey, table, newVal, indices, pageID, found); 
+			return found || found2;
 		}
+		else
+			return found;
 	}
 	//binary searches through the vector of records to find the clustering key value
 	//if clustering key value is found in the record, it is updated with the values in the HT
 	public static void binarySearchUpdate(Vector<Vector> records, int low, int high, int clusterIdx, Comparable clusterKey, 
-			String table, Hashtable<String,Object> newVal, Hashtable<String, index> indices, int pageID) throws DBAppException
+			String table, Hashtable<String,Object> newVal, Hashtable<String, index> indices, int pageID, boolean found) throws DBAppException
 	{
 
 		if(low<=high)
@@ -889,6 +900,8 @@ public class Utilities {
 					//update this record
 	
 					//for each key value pair in the HT which contains the values to be updated
+					
+					found  = true;
 					
 					Set<String> keys = newVal.keySet();
 	
@@ -933,16 +946,18 @@ public class Utilities {
 					}
 				}
 				//linear search left and right
-
-				slideToTheLeft(records, mid-1, clusterIdx, clusterKey, table, newVal, indices, pageID); //check left neighbors
-				slideToTheRight(records, mid+1, clusterIdx, clusterKey, table, newVal, indices, pageID); //check right neighbors
+				boolean found2 = slideToTheLeft(records, mid-1, clusterIdx, clusterKey, table, newVal, indices, pageID, false); //check left neighbors
+				boolean found3 = slideToTheRight(records, mid+1, clusterIdx, clusterKey, table, newVal, indices, pageID, false); //check right neighbors
+				if(!found && !found2 && !found3)
+					throw new DBAppException("No record is updated");
 			}
 			else if(clusterValue.compareTo(clusterKey)>0)
-				binarySearchUpdate(records, low, mid-1, clusterIdx, clusterKey, table, newVal, indices, pageID); //check the first half
+				binarySearchUpdate(records, low, mid-1, clusterIdx, clusterKey, table, newVal, indices, pageID, found); //check the first half
 			else
-				binarySearchUpdate(records, mid+1, high, clusterIdx, clusterKey, table, newVal, indices, pageID); //check the second half
+				binarySearchUpdate(records, mid+1, high, clusterIdx, clusterKey, table, newVal, indices, pageID, found); //check the second half
 		}
-		else return;
+		else if(!found)
+			throw new DBAppException("No record to update");
 	}
 	
 	

@@ -78,7 +78,7 @@ public class DBAppTest {
 		DB.createBTreeIndex("test", "str");
 		DB.createBTreeIndex("test", "date");
 		DB.createBTreeIndex("test", "dbl");
-		DB.createRTreeIndex("test", "poly");
+		//DB.createRTreeIndex("test", "poly");
 
 		Hashtable<String, Object> newHash = new Hashtable<String, Object>();
 
