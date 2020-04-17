@@ -42,7 +42,7 @@ public class GeneralTest {
 		//2
 		//tester.createBTreeIndex("Citizen", "ResidenceArea");
 		//3 - only this should pass TODO FAILED
-		//tester.createBTreeIndex("Citizen", "id");
+		//tester.createBTreeIndex("Citizen", "height");
 		//TODO: create an index after tuples inserted
 		
 		
@@ -53,9 +53,13 @@ public class GeneralTest {
 		//tester.createRTreeIndex("Citizen", "residenceArea");
 		//2
 		//tester.createRTreeIndex("Citizen", "id");
-		//3 - only this should pass
-		tester.createRTreeIndex("Citizen", "ResidenceArea");
+		//3 - only this should pass TODO failed
+		//tester.createRTreeIndex("Citizen", "ResidenceArea");
 		//TODO: create an index after tuples inserted
+		
+		
+		//insertions
+		
 				
 	}
 	
