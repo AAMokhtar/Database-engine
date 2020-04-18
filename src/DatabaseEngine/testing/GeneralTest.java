@@ -1,6 +1,6 @@
 package DatabaseEngine.testing;
 import java.awt.Polygon;
-import java.sql.Date;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Set;
 
@@ -324,11 +324,11 @@ public class GeneralTest {
 		//5 - must pass
 //		int[] ba = {7,22,33,44};
 //		int[] baa = {8,55,66,77};
-//		deletecit1.clear();
-//		deletecit1.put("shape_id", new Integer(9));
-//		deletecit1.put("name", "999999");
-//		deletecit1.put("height", new Double(9.99));
-//		//tester.updateTable("Shape","(7,8)(22,55)(33,66),(44,77)", deletecit1);
+		deletecit1.clear();
+		deletecit1.put("shape_id", new Integer(9));
+		deletecit1.put("name", "999999");
+		deletecit1.put("height", new Double(9.99));
+		tester.updateTable("Shape","(7,8),(22,55),(33,66),(44,77)", deletecit1);
 //		
 	
 
