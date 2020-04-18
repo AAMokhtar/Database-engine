@@ -78,7 +78,7 @@ public class DBAppTest {
 		DB.createBTreeIndex("test", "str");
 		DB.createBTreeIndex("test", "date");
 		DB.createBTreeIndex("test", "dbl");
-		//DB.createRTreeIndex("test", "poly");
+		DB.createRTreeIndex("test", "poly");
 
 		Hashtable<String, Object> newHash = new Hashtable<String, Object>();
 
@@ -143,7 +143,7 @@ public class DBAppTest {
 		int[] xp = {1,5,1,5};
 		int[] yp = {1,5,5,1};
 		pol = new Polygon(xp, yp, 4);
-		//hash.put("poly", pol);
+		hash.put("poly", pol);
 
     	  
     	

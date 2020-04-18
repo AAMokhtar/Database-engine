@@ -626,7 +626,10 @@ public class Utilities {
 				if(ar[0].equals(tableName))
 				{
 					if(!found) found = true;
-					col.put(ar[1], ar[2]); //puts column name and its type
+					if(Boolean.parseBoolean(ar[3])) //if the current column is the clustering column
+						col.put(ar[1], "batee5");
+					else
+						col.put(ar[1], ar[2]); //puts column name and its type
 
 				}
 				//if another table name showed up and we already found all the entries of the table, stop executing
@@ -654,6 +657,10 @@ public class Utilities {
 				//if metadata contains column name of input HT
 				if(col.containsKey(colName))
 				{
+					
+					if(col.get(colName).equals("batee5"))
+						throw new DBAppException("Input hashtable to update should NOT contain the clustering key");
+					
 					//if input data is not an instance of the class associated with the column
 					//TODO: remove or just throw error?
 					if(!Class.forName(col.get(colName)).isInstance(value.get(colName)))
