@@ -45,10 +45,10 @@ public class GeneralTest {
 		
 		
 		//createtable - createindexes re-do
-		tester.createTable("Shape", "Shape", testTable2);
-		tester.createTable("Citizen","id",testTable);
-		tester.createRTreeIndex("Citizen", "ResidenceArea");
-		tester.createBTreeIndex("Shape","height");
+//		tester.createTable("Shape", "Shape", testTable2);
+//		tester.createTable("Citizen","id",testTable);
+//		tester.createRTreeIndex("Citizen", "ResidenceArea");
+//		tester.createBTreeIndex("Shape","height");
 		
 		
 		//create table tests
@@ -72,7 +72,7 @@ public class GeneralTest {
 		//tester.createBTreeIndex("Citizen", "ResidenceArea");
 		//3 - only this should pass 
 		//tester.createBTreeIndex("Citizen", "height");
-		//TODO: create an index after tuples inserted
+		//done: create an index after tuples inserted
 		
 		
 		//create R index test
@@ -93,6 +93,7 @@ public class GeneralTest {
 		Hashtable<String,Object> insert = new Hashtable<String,Object>();
 		int[] x = {1,2,3,4};
 		int[] y = {4,5,6,7};
+		
         insert.put("id", new Integer(2));
         insert.put("name", "Basant");
         insert.put("height", new Double(175.01));
@@ -245,22 +246,22 @@ public class GeneralTest {
         
         //insert tests
         //0 - pass + sorted + correct tables
-        tester.insertIntoTable("Citizen",insert2);
-        tester.insertIntoTable("Citizen",insert);
-        tester.insertIntoTable("Citizen",insert1);
-        tester.insertIntoTable("Shape",insertshape2);
-        tester.insertIntoTable("Shape",insertshape1);
-        tester.insertIntoTable("Citizen",insert3);
-        tester.insertIntoTable("Citizen",insert3);
-        tester.insertIntoTable("Citizen",insert4);
-        tester.insertIntoTable("Citizen",insert5);
-        tester.insertIntoTable("Citizen",insert5);
-        tester.insertIntoTable("Shape",insertshape2);
-        tester.insertIntoTable("Shape",insertshape1);
-        tester.insertIntoTable("Shape",insertshape2);
-        tester.insertIntoTable("Shape",insertshape1);
-        tester.insertIntoTable("Shape",insertshape2);
-        tester.insertIntoTable("Shape",insertshape1);
+//        tester.insertIntoTable("Citizen",insert2);
+//        tester.insertIntoTable("Citizen",insert);
+//        tester.insertIntoTable("Citizen",insert1);
+//        tester.insertIntoTable("Shape",insertshape2);
+//        tester.insertIntoTable("Shape",insertshape1);
+//        tester.insertIntoTable("Citizen",insert3);
+//        tester.insertIntoTable("Citizen",insert3);
+//        tester.insertIntoTable("Citizen",insert4);
+//        tester.insertIntoTable("Citizen",insert5);
+//        tester.insertIntoTable("Citizen",insert5);
+//        tester.insertIntoTable("Shape",insertshape2);
+//        tester.insertIntoTable("Shape",insertshape1);
+//        tester.insertIntoTable("Shape",insertshape2);
+//        tester.insertIntoTable("Shape",insertshape1);
+ //       tester.insertIntoTable("Shape",insertshape2);
+//        tester.insertIntoTable("Shape",insertshape1);
 //        1 - must fail
 //        tester.insertIntoTable("Citizen", violate1);
 //        2 - must fail
@@ -269,11 +270,8 @@ public class GeneralTest {
         
         
 
-        //TODO delete polygon
         //TODO delete birthday
-        //TODO update polygon 
-        //TODO update id (2->9)?
-        
+            
         Hashtable<String, Object> deletecit1  = new Hashtable<String, Object>();
         //update tests
         //0 - must fail
@@ -325,10 +323,10 @@ public class GeneralTest {
 //		int[] ba = {7,22,33,44};
 //		int[] baa = {8,55,66,77};
 		deletecit1.clear();
-		deletecit1.put("shape_id", new Integer(9));
-		deletecit1.put("name", "999999");
+		//deletecit1.put("shape_id", new Integer(9));
+		deletecit1.put("name", "Rectangle");
 		deletecit1.put("height", new Double(9.99));
-		tester.updateTable("Shape","(7,8),(22,55),(33,66),(44,77)", deletecit1);
+		//tester.updateTable("Shape","(1,4),(2,5),(3,6),(4,7)", deletecit1);
 //		
 	
 
@@ -368,13 +366,27 @@ public class GeneralTest {
 		
 		//5 - delete from another table - TODO
 		del.clear();
-		del.put("shape_id", new Integer(2));
+		//del.put("shape_id", new Integer(2));
 		del.put("name", "Circle");
-		del.put("height", new Double(2.01));
-		tester.deleteFromTable("Shape", del);
+		//del.put("height", new Double(2.01));
+		//tester.createRTreeIndex("Shape","Shape");
+		//tester.deleteFromTable("Shape", del);
 		
 		
+		//6 - insert then make an index on isMarried, then delete? check!
 		
+		//tester.insertIntoTable("Citizen", insert4);
+		//tester.insertIntoTable("Citizen", insert5);
+		//tester.createBTreeIndex("Citizen","isMarried");
+		
+		//del.clear();
+		//del.put("isMarried", new Boolean(false));
+		//tester.deleteFromTable("Citizen",del);
+		
+		//7 empty other table
+//		del.clear();
+//		del.put("height", new Double(9.99));
+//		tester.deleteFromTable("Shape", del);
 		
 		
 		
@@ -383,6 +395,54 @@ public class GeneralTest {
 		printPages("Citizen");
 		System.out.println("SHAPE");
 		printPages("Shape");
+		
+		
+		
+		
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		///MEGA TESTS!
+		
+//	DELETE ALL THEN INSERT ALL
+//      tester.insertIntoTable("Citizen",insert2);
+//      tester.insertIntoTable("Shape",insertshape6);
+//      tester.insertIntoTable("Citizen",insert);
+//      tester.insertIntoTable("Shape",insertshape4);
+//      tester.insertIntoTable("Citizen",insert1);
+//      tester.insertIntoTable("Shape",insertshape2);
+//      tester.insertIntoTable("Shape",insertshape1);
+//      tester.insertIntoTable("Citizen",insert3);
+//      tester.insertIntoTable("Shape",insertshape3);
+//      tester.insertIntoTable("Citizen",insert4);
+//      tester.insertIntoTable("Shape",insertshape5);
+//      tester.insertIntoTable("Citizen",insert5);
+//      tester.insertIntoTable("Citizen",insert2);
+//      tester.insertIntoTable("Shape",insertshape6);
+//      tester.insertIntoTable("Citizen",insert);
+//      tester.insertIntoTable("Shape",insertshape4);
+//      tester.insertIntoTable("Citizen",insert1);
+//      tester.insertIntoTable("Shape",insertshape2);
+//      tester.insertIntoTable("Shape",insertshape1);
+//      tester.insertIntoTable("Citizen",insert3);
+//      tester.insertIntoTable("Shape",insertshape3);
+//      tester.insertIntoTable("Citizen",insert4);
+//      tester.insertIntoTable("Shape",insertshape5);
+//      tester.insertIntoTable("Citizen",insert5);
+		
+//update all of citizen table
+		//update all married to be true
+		Hashtable<String,Object> up = new Hashtable<String,Object>();
+		up.put("isMarried", new Boolean(false));
+		tester.updateTable("Citizen", "2", up);
+		
+		
+		//then shape with false
+		//then ctiizen with date
+		
+		
+
+
+		//TODO: delete and update based on date
+	
 		
 		
 		
