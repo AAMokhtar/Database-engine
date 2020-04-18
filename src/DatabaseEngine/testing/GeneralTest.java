@@ -371,7 +371,7 @@ public class GeneralTest {
 		del.put("shape_id", new Integer(2));
 		del.put("name", "Circle");
 		del.put("height", new Double(2.01));
-		tester.deleteFromTable("Shape", del);
+		//tester.deleteFromTable("Shape", del);
 		
 		
 		
