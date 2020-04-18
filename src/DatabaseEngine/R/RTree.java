@@ -86,8 +86,10 @@ public class RTree implements index<myPolygon>, Serializable {
 
                 if (curNode != null && index != -1){ // find all records = value
 
-                    if (Utilities.polygonsEqual(polygon, curNode.getValues().get(index)))
-                        ret.add(curNode.getPointers().get(index)); //add pointer to output
+                    if (Utilities.polygonsEqual(polygon, curNode.getValues().get(index))) {
+                        BPointer temP = curNode.getPointers().get(index);
+                        ret.add(new BPointer(temP.getPage(),temP.getOffset())); //add pointer to output
+                    }
 
                     String path = "data//overflow_Pages//" + "overflow_" + name +"_"+ polygon + "_0.class";
                     path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
@@ -134,8 +136,10 @@ public class RTree implements index<myPolygon>, Serializable {
                         continue;
                     }
 
-                    else if (!Utilities.polygonsEqual(curNode.getValues().get(index),polygon))
-                        ret.add(curNode.getPointers().get(index)); // add to output
+                    else if (!Utilities.polygonsEqual(curNode.getValues().get(index),polygon)) {
+                        BPointer temP = curNode.getPointers().get(index);
+                        ret.add(new BPointer(temP.getPage(),temP.getOffset())); //add pointer to output
+                    }
 
                         String path = "data//overflow_Pages//" + "overflow_" + name +"_"+ curNode.getValues().get(index) + "_0.class";
                         path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
@@ -181,7 +185,8 @@ public class RTree implements index<myPolygon>, Serializable {
 
                     }
                     else {
-                        ret.add(curNode.getPointers().get(index)); //add pointer to output
+                        BPointer temP = curNode.getPointers().get(index);
+                        ret.add(new BPointer(temP.getPage(),temP.getOffset())); //add pointer to output
 
                         String path = "data//overflow_Pages//" + "overflow_" + name +"_"+ curNode.getValues().get(index) + "_0.class";
                         path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
@@ -220,7 +225,8 @@ public class RTree implements index<myPolygon>, Serializable {
 
                     }
                     else {
-                        ret.add(curNode.getPointers().get(index)); //add pointer to output
+                        BPointer temP = curNode.getPointers().get(index);
+                        ret.add(new BPointer(temP.getPage(),temP.getOffset())); //add pointer to output
 
                         String path = "data//overflow_Pages//" + "overflow_" + name +"_"+ curNode.getValues().get(index) + "_0.class";
                         path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
@@ -264,7 +270,8 @@ public class RTree implements index<myPolygon>, Serializable {
                     }
 
                     else {
-                        ret.add(curNode.getPointers().get(index)); //add pointer to output
+                        BPointer temP = curNode.getPointers().get(index);
+                        ret.add(new BPointer(temP.getPage(),temP.getOffset())); //add pointer to output
 
                         String path = "data//overflow_Pages//" + "overflow_" + name +"_"+ curNode.getValues().get(index) + "_0.class";
                         path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
@@ -307,7 +314,8 @@ public class RTree implements index<myPolygon>, Serializable {
                         break;
                     }
                     else {
-                        ret.add(curNode.getPointers().get(index)); //add to output
+                        BPointer temP = curNode.getPointers().get(index);
+                        ret.add(new BPointer(temP.getPage(),temP.getOffset())); //add pointer to output
 
                         String path = "data//overflow_Pages//" + "overflow_" + name +"_"+ curNode.getValues().get(index) + "_0.class";
                         path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay

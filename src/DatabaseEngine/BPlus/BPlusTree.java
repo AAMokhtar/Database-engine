@@ -80,7 +80,8 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                 index = Utilities.selectiveBinarySearch(curNode.getValues(), value, "="); //find the index of value
 
                 if (curNode != null && index != -1){ // find all records = value
-                       ret.add(curNode.getPointers().get(index)); //add pointer to output
+                    BPointer temP = curNode.getPointers().get(index);
+                    ret.add(new BPointer(temP.getPage(),temP.getOffset())); //add pointer to output
 
                     String path = "data//overflow_Pages//" + "overflow_" + name +"_"+ value + "_0.class";
                     path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
@@ -119,7 +120,8 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                     }
 
                     else if (!curNode.getValues().get(index).equals(value)){
-                        ret.add(curNode.getPointers().get(index)); // add to output
+                        BPointer temP = curNode.getPointers().get(index);
+                        ret.add(new BPointer(temP.getPage(),temP.getOffset())); //add pointer to output
 
                         String path = "data//overflow_Pages//" + "overflow_" + name +"_"+ curNode.getValues().get(index) + "_0.class";
                         path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
@@ -158,7 +160,8 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 
                     }
                     else {
-                        ret.add(curNode.getPointers().get(index)); //add pointer to output
+                        BPointer temP = curNode.getPointers().get(index);
+                        ret.add(new BPointer(temP.getPage(),temP.getOffset())); //add pointer to output
 
                         String path = "data//overflow_Pages//" + "overflow_" + name +"_"+ curNode.getValues().get(index) + "_0.class";
                         path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
@@ -197,7 +200,8 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
 
                     }
                     else {
-                        ret.add(curNode.getPointers().get(index)); //add pointer to output
+                        BPointer temP = curNode.getPointers().get(index);
+                        ret.add(new BPointer(temP.getPage(),temP.getOffset())); //add pointer to output
 
                         String path = "data//overflow_Pages//" + "overflow_" + name +"_"+ curNode.getValues().get(index) + "_0.class";
                         path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
@@ -241,7 +245,8 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                     }
 
                     else {
-                        ret.add(curNode.getPointers().get(index)); //add pointer to output
+                        BPointer temP = curNode.getPointers().get(index);
+                        ret.add(new BPointer(temP.getPage(),temP.getOffset())); //add pointer to output
 
                         String path = "data//overflow_Pages//" + "overflow_" + name +"_"+ curNode.getValues().get(index) + "_0.class";
                         path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
@@ -284,7 +289,8 @@ public class BPlusTree<T extends Comparable<T>> implements index<T>, Serializabl
                         break;
                     }
                     else {
-                        ret.add(curNode.getPointers().get(index)); //add to output
+                        BPointer temP = curNode.getPointers().get(index);
+                        ret.add(new BPointer(temP.getPage(),temP.getOffset())); //add pointer to output
 
                         String path = "data//overflow_Pages//" + "overflow_" + name +"_"+ curNode.getValues().get(index) + "_0.class";
                         path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
