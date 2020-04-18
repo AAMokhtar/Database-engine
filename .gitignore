@@ -2,3 +2,4 @@
 /out/
 /data/
 config/DBApp.properties
+*.gitKeep
