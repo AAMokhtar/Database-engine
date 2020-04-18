@@ -45,10 +45,10 @@ public class GeneralTest {
 		
 		
 		//createtable - createindexes re-do
-		//tester.createTable("Shape", "Shape", testTable2);
-//		tester.createTable("Citizen","id",testTable);
-//		tester.createRTreeIndex("Citizen", "ResidenceArea");
-	//	tester.createBTreeIndex("Shape","height");
+		tester.createTable("Shape", "Shape", testTable2);
+		tester.createTable("Citizen","id",testTable);
+		tester.createRTreeIndex("Citizen", "ResidenceArea");
+		tester.createBTreeIndex("Shape","height");
 		
 		
 		//create table tests
@@ -245,26 +245,26 @@ public class GeneralTest {
         
         //insert tests
         //0 - pass + sorted + correct tables
-        //tester.insertIntoTable("Citizen",insert2);
-        //tester.insertIntoTable("Citizen",insert);
-        //tester.insertIntoTable("Citizen",insert1);
-        //tester.insertIntoTable("Shape",insertshape2);
-        //tester.insertIntoTable("Shape",insertshape1);
-        //tester.insertIntoTable("Citizen",insert3);
-//        tester.insertIntoTable("Citizen",insert3);
-//        tester.insertIntoTable("Citizen",insert4);
-//        tester.insertIntoTable("Citizen",insert5);
-//        tester.insertIntoTable("Citizen",insert5);
-//        tester.insertIntoTable("Shape",insertshape2);
-//        tester.insertIntoTable("Shape",insertshape1);
-//        tester.insertIntoTable("Shape",insertshape2);
-//        tester.insertIntoTable("Shape",insertshape1);
-//        tester.insertIntoTable("Shape",insertshape2);
-//        tester.insertIntoTable("Shape",insertshape1);
-        //1 - must fail
-        //tester.insertIntoTable("Citizen", violate1);
-        //2 - must fail
-        //tester.insertIntoTable("Citizen", violate2);
+        tester.insertIntoTable("Citizen",insert2);
+        tester.insertIntoTable("Citizen",insert);
+        tester.insertIntoTable("Citizen",insert1);
+        tester.insertIntoTable("Shape",insertshape2);
+        tester.insertIntoTable("Shape",insertshape1);
+        tester.insertIntoTable("Citizen",insert3);
+        tester.insertIntoTable("Citizen",insert3);
+        tester.insertIntoTable("Citizen",insert4);
+        tester.insertIntoTable("Citizen",insert5);
+        tester.insertIntoTable("Citizen",insert5);
+        tester.insertIntoTable("Shape",insertshape2);
+        tester.insertIntoTable("Shape",insertshape1);
+        tester.insertIntoTable("Shape",insertshape2);
+        tester.insertIntoTable("Shape",insertshape1);
+        tester.insertIntoTable("Shape",insertshape2);
+        tester.insertIntoTable("Shape",insertshape1);
+//        1 - must fail
+//        tester.insertIntoTable("Citizen", violate1);
+//        2 - must fail
+//        tester.insertIntoTable("Citizen", violate2);
         
         
         
@@ -371,7 +371,7 @@ public class GeneralTest {
 		del.put("shape_id", new Integer(2));
 		del.put("name", "Circle");
 		del.put("height", new Double(2.01));
-		//tester.deleteFromTable("Shape", del);
+		tester.deleteFromTable("Shape", del);
 		
 		
 		
