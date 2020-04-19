@@ -45,11 +45,11 @@ public class GeneralTest {
 		
 		
 		//createtable - createindexes re-do
-		tester.createTable("Shape", "Shape", testTable2);
-		tester.createTable("Citizen","id",testTable);
-		tester.createRTreeIndex("Citizen", "ResidenceArea");
-		tester.createBTreeIndex("Shape","height");
-		
+//		tester.createTable("Shape", "Shape", testTable2);
+//		tester.createTable("Citizen","id",testTable);
+//		tester.createRTreeIndex("Citizen", "ResidenceArea");
+//		tester.createBTreeIndex("Shape","height");
+
 		
 		//create table tests
 		//0 - only this should pass
@@ -378,7 +378,7 @@ public class GeneralTest {
 		
 		//tester.insertIntoTable("Citizen", insert4);
 		//tester.insertIntoTable("Citizen", insert5);
-		tester.createBTreeIndex("Citizen","isMarried");
+		//tester.createBTreeIndex("Citizen","isMarried");
 		
 		//del.clear();
 		//del.put("isMarried", new Boolean(false));
@@ -400,7 +400,7 @@ public class GeneralTest {
 //	DELETE ALL THEN INSERT ALL
 //      tester.insertIntoTable("Citizen",insert2);
 //      tester.insertIntoTable("Shape",insertshape6);
-//      tester.insertIntoTable("Citizen",insert);
+ //     tester.insertIntoTable("Citizen",insert);
 //      tester.insertIntoTable("Shape",insertshape4);
 //      tester.insertIntoTable("Citizen",insert1);
 //      tester.insertIntoTable("Shape",insertshape2);
@@ -419,39 +419,64 @@ public class GeneralTest {
 //      tester.insertIntoTable("Shape",insertshape1);
 //      tester.insertIntoTable("Citizen",insert3);
 //      tester.insertIntoTable("Shape",insertshape3);
-//      tester.insertIntoTable("Citizen",insert4);
-//      tester.insertIntoTable("Shape",insertshape5);
-//      tester.insertIntoTable("Citizen",insert5);
-//      tester.insertIntoTable("Citizen",insert2);
-//      tester.insertIntoTable("Shape",insertshape6);
-//      tester.insertIntoTable("Citizen",insert);
-//      tester.insertIntoTable("Shape",insertshape4);
-//      tester.insertIntoTable("Citizen",insert1);
-//      tester.insertIntoTable("Shape",insertshape2);
-//      tester.insertIntoTable("Shape",insertshape1);
-//      tester.insertIntoTable("Citizen",insert3);
-//      tester.insertIntoTable("Shape",insertshape3);
-//      tester.insertIntoTable("Citizen",insert4);
-//      tester.insertIntoTable("Shape",insertshape5);
-//      tester.insertIntoTable("Citizen",insert5);
-//      tester.insertIntoTable("Citizen",insert2);
-//      tester.insertIntoTable("Shape",insertshape6);
-//      tester.insertIntoTable("Citizen",insert);
-//      tester.insertIntoTable("Shape",insertshape4);
-//      tester.insertIntoTable("Citizen",insert1);
-//      tester.insertIntoTable("Shape",insertshape2);
-//      tester.insertIntoTable("Shape",insertshape1);
-//      tester.insertIntoTable("Citizen",insert3);
-//      tester.insertIntoTable("Shape",insertshape3);
-//      tester.insertIntoTable("Citizen",insert4);
-//      tester.insertIntoTable("Shape",insertshape5);
-//      tester.insertIntoTable("Citizen",insert5);
+      
 		
+		//REFERENCE
+//		testTable.put("id", "java.lang.Integer");
+//		testTable.put("name", "java.lang.String");
+//		testTable.put("height", "java.lang.Double");
+//		testTable.put("isMarried", "java.lang.Boolean");
+//		testTable.put("birthday", "java.util.Date");
+//		testTable.put("ResidenceArea", "java.awt.Polygon");
+//		
+//		testTable2.put("shape_id", "java.lang.Integer");
+//		testTable2.put("name", "java.lang.String");
+//		testTable2.put("height", "java.lang.Double");
+//		testTable2.put("isQuadrilateral", "java.lang.Boolean");
+//		testTable2.put("IDKReally", "java.util.Date");
+//		testTable2.put("Shape", "java.awt.Polygon");
+//		tester.createBTreeIndex("Citizen", "id");
+//		tester.createBTreeIndex("Citizen", "name");
+//		tester.createBTreeIndex("Citizen", "isMarried");
+//		tester.createBTreeIndex("Citizen", "birthday");
+//		tester.createRTreeIndex("Shape", "Shape");
+
+
+
+      
+//      tester.insertIntoTable("Citizen",insert4);
+//    tester.insertIntoTable("Citizen",insert5);
+//    tester.insertIntoTable("Citizen",insert);
+//    tester.insertIntoTable("Citizen",insert2);
+//    tester.insertIntoTable("Citizen",insert1);
+//    tester.insertIntoTable("Citizen",insert3);
+//      tester.insertIntoTable("Shape",insertshape5);
+//      tester.insertIntoTable("Shape",insertshape6);
+//      tester.insertIntoTable("Shape",insertshape4);
+//      tester.insertIntoTable("Shape",insertshape2);
+//      tester.insertIntoTable("Shape",insertshape1);
+//      tester.insertIntoTable("Shape",insertshape3);
+//      tester.insertIntoTable("Citizen",insert4);
+//      tester.insertIntoTable("Shape",insertshape5);
+//      tester.insertIntoTable("Citizen",insert5);
+//      tester.insertIntoTable("Citizen",insert2);
+//      tester.insertIntoTable("Shape",insertshape6);
+//      tester.insertIntoTable("Citizen",insert);
+//      tester.insertIntoTable("Shape",insertshape4);
+//      tester.insertIntoTable("Citizen",insert1);
+//      tester.insertIntoTable("Shape",insertshape2);
+//      tester.insertIntoTable("Shape",insertshape1);
+//      tester.insertIntoTable("Citizen",insert3);
+//      tester.insertIntoTable("Shape",insertshape3);
+//      tester.insertIntoTable("Citizen",insert4);
+//      tester.insertIntoTable("Shape",insertshape5);
+//      tester.insertIntoTable("Citizen",insert5);
+//		
 //update all of citizen table
 		
 		//update all married to be true, and back to false
 		Hashtable<String,Object> up = new Hashtable<String,Object>();
-//		up.put("isMarried", new Boolean(true));
+		up.put("isMarried", new Boolean(true));
 //		tester.updateTable("Citizen", "2", up);
 		
 		
@@ -475,11 +500,15 @@ public class GeneralTest {
 		tester.deleteFromTable("Citizen", up);
 		//tester.updateTable("")
 		
+		//update based on date, and delete all
+		//tester.
 		
-				
-				//TODO: insert 6 more rows in each table
+//		for (int i = 0; i<100;i++) {
+//			tester.insertIntoTable("Citizen",insert2);
+//		}
+		
 				//TODO: do heuristic delete, update, insert
-				//TODO: index a full table
+				//TODO: another delete all
 				//TODO: update on one repeated value - delete on it - table should be empty (isMarried in citizens)
 				//TODO: create a 3rd table, insert in it, update, then delete (dup)
 				//TODO: ALWAYS CHECK B+ NODES!
@@ -491,8 +520,6 @@ public class GeneralTest {
 		printPages("Citizen");
 		System.out.println("SHAPE");
 		printPages("Shape");
-
-		overflowPage.printPages("Citizen_isMarried_false");
 		
 		
 		
