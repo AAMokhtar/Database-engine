@@ -561,10 +561,10 @@ public class GeneralTest {
 		
 		
 		//tester.createTable("table3","date", testTabl);
-		tester.insertIntoTable("table3", up);
-		tester.insertIntoTable("table3", up);
-		tester.insertIntoTable("table3", up);
-		tester.insertIntoTable("table3", up);
+//		tester.insertIntoTable("table3", up);
+//		tester.insertIntoTable("table3", up);
+//		tester.insertIntoTable("table3", up);
+//		tester.insertIntoTable("table3", up);
 		
 		up.clear();
 		up.put("double", new Double(999.9));
@@ -577,7 +577,7 @@ public class GeneralTest {
 		
 		//up.clear();
 		//up.put("polygon", new Polygon(ttt,uuu,3));
-		tester.deleteFromTable("table3", up);
+		//tester.deleteFromTable("table3", up);
 		
 		//then delete based on date DONE.
 		//done: delete - update - insert
