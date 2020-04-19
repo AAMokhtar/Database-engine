@@ -181,6 +181,7 @@ public class GeneralTest {
 		Hashtable<String,Object> insertshape1 = new Hashtable<String,Object>();
 		int[] tt = {1,2,3,4};
 		int[] uu = {4,5,6,7};
+		
 		insertshape1.put("shape_id", new Integer(1));
 		insertshape1.put("name", "Square");
 		insertshape1.put("height", new Double(132.01));
@@ -389,13 +390,7 @@ public class GeneralTest {
 //		tester.deleteFromTable("Shape", del);
 		
 		
-		
-		
-		System.out.println("CITIZEN");
-		printPages("Citizen");
-		System.out.println("SHAPE");
-		printPages("Shape");
-		
+	
 		
 		
 		
@@ -429,22 +424,49 @@ public class GeneralTest {
 //      tester.insertIntoTable("Citizen",insert5);
 		
 //update all of citizen table
-		//update all married to be true
+		
+		//update all married to be true, and back to false
 		Hashtable<String,Object> up = new Hashtable<String,Object>();
-		up.put("isMarried", new Boolean(false));
+		up.put("isMarried", new Boolean(true));
 		tester.updateTable("Citizen", "2", up);
 		
 		
-		//then shape with false
-		//then ctiizen with date
+		//update shape with false
+		//REFERENCE
+//		insertshape1.put("shape_id", new Integer(1));
+//		insertshape1.put("name", "Square");
+//		insertshape1.put("height", new Double(132.01));
+//		insertshape1.put("isQuadrilateral", new Boolean(true));
+//		insertshape1.put("IDKReally",new Date(1999,5,27));
+//        insertshape1.put("Shape",new Polygon(tt,uu,4));
+		
+		//test begins here
+		up.clear();
+		up.put("isQuadrilateral", new Boolean(true));
+		//tester.updateTable("Shape", "(1,4),(2,5),(3,6),(4,7)", up);
+		
+		//update then delete based on date
+		up.clear();
+		up.put("birthday", new Date(1999,5,27));
+		//tester.deleteFromTable("Citizen", up);
+		//tester.updateTable("")
 		
 		
-
-
-		//TODO: delete and update based on date
-	
+				
+				//TODO: insert 6 more rows in each table
+				//TODO: do heuristic delete, update, insert
+				//TODO: index a full table
+				//TODO: update on one repeated value - delete on it - table should be empty (isMarried in citizens)
+				//TODO: create a 3rd table, insert in it, update, then delete (dup)
+				//TODO: ALWAYS CHECK B+ NODES!
+				//TODO:delete - update - insert
+				//TODO:update - delete (updated) - insert 
+				
 		
-		
+		System.out.println("CITIZEN");
+		printPages("Citizen");
+		System.out.println("SHAPE");
+		printPages("Shape");
 		
 		
 		

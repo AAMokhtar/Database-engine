@@ -1929,4 +1929,48 @@ public class Utilities {
 		//save all pverflow pages
 		for (overflowPage p : pages) Utilities.serializeOverflow(p);
 	}
+	
+	
+	public static String printPages(String treeName_value){
+
+        StringBuilder ret = new StringBuilder();
+        //first page path
+        String path = "data//overflow_Pages//" + "overflow_" + treeName_value + "_0.class";
+        path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+        File curFile = new File(path);
+
+        //first page exists
+        if (curFile.isFile()){
+
+            overflowPage curPage =  Utilities.deserializeOverflow(treeName_value + "_0");
+
+            while (true) {
+
+                //print page
+                Queue<Pointer> q = curPage.getPointers();
+
+                ret.append("OVERFLOW ID: ").append(curPage.getID()).append("\n[");
+                while (!q.isEmpty()){
+                    BPointer p = (BPointer) q.poll();
+                    ret.append("(").append(p.getPage())
+                            .append(", ").append(p.getOffset());
+
+                    if (q.isEmpty())
+                        ret.append(")]");
+                    else
+                        ret.append("), ");
+                }
+
+
+
+                //last page
+                if (curPage.getNext() == null) break;
+
+                //get next page
+                ret.append("\n");
+                curPage = Utilities.deserializeOverflow(curPage.getNext());
+            }
+        }
+        return ret.toString();
+    }
 }
