@@ -1,5 +1,7 @@
 package DatabaseEngine.testing;
 import java.awt.Polygon;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Set;
@@ -545,7 +547,7 @@ public class GeneralTest {
 		
 		up.clear();
 		up.put("double", new Double(3.0));
-		up.put("date", new Date(1234,12,3));
+		up.put("date", new Date(-666,11,3));
 		up.put("polygon", new Polygon());
 		up.put("boolean", new Boolean(false));
 		
@@ -558,12 +560,11 @@ public class GeneralTest {
 		
 		
 		
-		
-		//tester.createTable("table3","date", testTabl);
-		//tester.insertIntoTable("table3", up);
-		//tester.insertIntoTable("table3", up);
-		//tester.insertIntoTable("table3", up);
-		//tester.insertIntoTable("table3", up);
+		tester.createTable("table3","date", testTabl);
+		tester.insertIntoTable("table3", up);
+		tester.insertIntoTable("table3", up);
+		tester.insertIntoTable("table3", up);
+		tester.insertIntoTable("table3", up);
 		
 		up.clear();
 		up.put("double", new Double(999.9));

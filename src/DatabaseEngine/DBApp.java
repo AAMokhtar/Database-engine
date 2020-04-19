@@ -523,7 +523,7 @@ public class DBApp {
 		
 		else if (clusterType.equals("java.util.Date"))
 			try {
-				clusterKey = new SimpleDateFormat("YYYY-MM-DD").parse(strClusteringKey);
+				clusterKey = new SimpleDateFormat("yyyy-MM-dd").parse(strClusteringKey);
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -606,7 +606,7 @@ public class DBApp {
 		}
 		else if (clusterType.equals("java.util.Date"))
 			try {
-				Date clusterKey = new SimpleDateFormat("YYYY-MM-DD").parse(strClusteringKey);
+				Date clusterKey = new SimpleDateFormat("yyyy-MM-dd").parse(strClusteringKey);
 				BPlusTree<Date> clusterTree = (BPlusTree<Date>)ind.get(cluster[0]);
 				records = clusterTree.search(clusterKey, "=");
 			} catch (ParseException e) {
