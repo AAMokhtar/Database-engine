@@ -66,12 +66,18 @@ public void addPointer(Pointer e) {
         if (ID == 0){ //if we are deleting the first page
             if(next != null){ //make the next page the first
                 overflowPage nextPage = Utilities.deserializeOverflow(next);
+                overflowPage nextnextPage = Utilities.deserializeOverflow(nextPage.next);
 
                 File nextFile = new File("data//overflow_Pages//" + "overflow_" + next + ".class");
                 if(!nextFile.delete()) System.out.println("Failed to delete overflow page!");
 
                 nextPage.setPrev(null);
                 nextPage.setID(0);
+
+                if (nextnextPage != null) {
+                    nextnextPage.setPrev(nextPage.getName() + "_0");
+                    Utilities.serializeOverflow(nextnextPage);
+                }
                 Utilities.serializeOverflow(nextPage);
             }
         }
