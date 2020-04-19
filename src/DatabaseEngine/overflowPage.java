@@ -1,5 +1,7 @@
 package DatabaseEngine;
 
+import DatabaseEngine.BPlus.BPointer;
+
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -64,12 +66,18 @@ public void addPointer(Pointer e) {
         if (ID == 0){ //if we are deleting the first page
             if(next != null){ //make the next page the first
                 overflowPage nextPage = Utilities.deserializeOverflow(next);
+                overflowPage nextnextPage = Utilities.deserializeOverflow(nextPage.next);
 
                 File nextFile = new File("data//overflow_Pages//" + "overflow_" + next + ".class");
                 if(!nextFile.delete()) System.out.println("Failed to delete overflow page!");
 
                 nextPage.setPrev(null);
                 nextPage.setID(0);
+
+                if (nextnextPage != null) {
+                    nextnextPage.setPrev(nextPage.getName() + "_0");
+                    Utilities.serializeOverflow(nextnextPage);
+                }
                 Utilities.serializeOverflow(nextPage);
             }
         }
@@ -220,4 +228,48 @@ public void addPointer(Pointer e) {
         }
 
     }
+
+    public static String printPages(String treeName_value){
+
+        StringBuilder ret = new StringBuilder();
+        //first page path
+        String path = "data//overflow_Pages//" + "overflow_" + treeName_value + "_0.class";
+        path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
+        File curFile = new File(path);
+
+        //first page exists
+        if (curFile.isFile()){
+
+            overflowPage curPage =  Utilities.deserializeOverflow(treeName_value + "_0");
+
+            while (true) {
+
+                //print page
+                Queue<Pointer> q = curPage.getPointers();
+
+                ret.append("OVERFLOW ID: ").append(curPage.getID()).append("\n[");
+                while (!q.isEmpty()){
+                    BPointer p = (BPointer) q.poll();
+                    ret.append("(").append(p.getPage())
+                            .append(", ").append(p.getOffset());
+
+                    if (q.isEmpty())
+                        ret.append(")]");
+                    else
+                        ret.append("), ");
+                }
+
+
+
+                //last page
+                if (curPage.getNext() == null) break;
+
+                //get next page
+                ret.append("\n");
+                curPage = Utilities.deserializeOverflow(curPage.getNext());
+            }
+        }
+        return ret.toString();
+    }
+
 }

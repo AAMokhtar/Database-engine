@@ -45,10 +45,10 @@ public class GeneralTest {
 		
 		
 		//createtable - createindexes re-do
-//		tester.createTable("Shape", "Shape", testTable2);
-//		tester.createTable("Citizen","id",testTable);
-//		tester.createRTreeIndex("Citizen", "ResidenceArea");
-//		tester.createBTreeIndex("Shape","height");
+		tester.createTable("Shape", "Shape", testTable2);
+		tester.createTable("Citizen","id",testTable);
+		tester.createRTreeIndex("Citizen", "ResidenceArea");
+		tester.createBTreeIndex("Shape","height");
 		
 		
 		//create table tests
@@ -378,7 +378,7 @@ public class GeneralTest {
 		
 		//tester.insertIntoTable("Citizen", insert4);
 		//tester.insertIntoTable("Citizen", insert5);
-		//tester.createBTreeIndex("Citizen","isMarried");
+		tester.createBTreeIndex("Citizen","isMarried");
 		
 		//del.clear();
 		//del.put("isMarried", new Boolean(false));
@@ -451,8 +451,8 @@ public class GeneralTest {
 		
 		//update all married to be true, and back to false
 		Hashtable<String,Object> up = new Hashtable<String,Object>();
-		up.put("isMarried", new Boolean(true));
-		tester.updateTable("Citizen", "2", up);
+//		up.put("isMarried", new Boolean(true));
+//		tester.updateTable("Citizen", "2", up);
 		
 		
 		//update shape with false
@@ -491,6 +491,8 @@ public class GeneralTest {
 		printPages("Citizen");
 		System.out.println("SHAPE");
 		printPages("Shape");
+
+		overflowPage.printPages("Citizen_isMarried_false");
 		
 		
 		
