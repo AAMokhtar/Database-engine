@@ -574,6 +574,9 @@ public class GeneralTest {
 		up.clear();
 		
 		up.put("date", new Date(-666,11,3));
+		
+		//up.clear();
+		//up.put("polygon", new Polygon(ttt,uuu,3));
 		tester.deleteFromTable("table3", up);
 		
 		//then delete based on date DONE.
