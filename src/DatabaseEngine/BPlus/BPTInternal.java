@@ -1,8 +1,8 @@
 package DatabaseEngine.BPlus;
 
-import DatabaseEngine.Utilities;
-
 import java.util.ArrayList;
+
+import DatabaseEngine.Utilities;
 
 public class BPTInternal<T extends Comparable<T>> extends BPTNode<T> { // non leaf nodes
     private ArrayList<String> pointers; //pointers to children nodes

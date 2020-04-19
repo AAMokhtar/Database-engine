@@ -560,7 +560,7 @@ public class GeneralTest {
 		
 		
 		
-		tester.createTable("table3","date", testTabl);
+		//tester.createTable("table3","date", testTabl);
 		tester.insertIntoTable("table3", up);
 		tester.insertIntoTable("table3", up);
 		tester.insertIntoTable("table3", up);
@@ -569,10 +569,30 @@ public class GeneralTest {
 		up.clear();
 		up.put("double", new Double(999.9));
 		
-		tester.updateTable("table3", "1234-12-03", up);
-		//then delete based on date 
-		//TODO:delete - update - insert
-		//TODO:update - delete (updated) - insert 
+		//tester.updateTable("table3", "1234-12-03", up);
+		
+		up.clear();
+		
+		up.put("date", new Date(-666,11,3));
+		tester.deleteFromTable("table3", up);
+		
+		//then delete based on date DONE.
+		//done: delete - update - insert
+		
+		
+		//update - delete (updated) - insert 
+	
+		up.clear();
+		up.put("name","Ayah");
+		
+		//tester.updateTable("Citizen","3",up);
+		//tester.insertIntoTable("Citizen", insert);
+		
+		up.clear();
+		up.put("name", "Juniper");
+		//tester.updateTable("Citizen", "4", up);
+		//tester.deleteFromTable("Citizen", up);
+		//tester.insertIntoTable("Citizen", insert5);
 		
 		System.out.println("CITIZEN");
 		printPages("Citizen");

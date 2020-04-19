@@ -1,9 +1,10 @@
 package DatabaseEngine.testing;
 
 
-import DatabaseEngine.*;
 import org.junit.*;
 import org.junit.runners.MethodSorters;
+
+import DatabaseEngine.*;
 
 import java.awt.*;
 import java.io.File;

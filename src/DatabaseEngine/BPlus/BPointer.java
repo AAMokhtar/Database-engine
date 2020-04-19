@@ -1,9 +1,9 @@
 package DatabaseEngine.BPlus;
 
-import DatabaseEngine.Pointer;
-
 import java.io.Serializable;
 import java.util.Objects;
+
+import DatabaseEngine.Pointer;
 
 public class BPointer implements Comparable<BPointer>, Serializable, Pointer{
     private int page; //puge num
