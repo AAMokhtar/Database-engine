@@ -84,7 +84,7 @@ public class GeneralTest {
 		//tester.createRTreeIndex("Citizen", "id");
 		//3 - only this should pass 
 		//tester.createRTreeIndex("Citizen", "ResidenceArea");
-		//TODO: create an index after tuples inserted
+		//done: create an index after tuples inserted
 		
 		
 		//CITIZEN
@@ -204,6 +204,7 @@ public class GeneralTest {
         Hashtable<String,Object> insertshape3 = new Hashtable<String,Object>();
 		int[] tttt = {7,6,3,4};
 		int[] uuuu = {8,7,6,7};
+		
 		insertshape3.put("shape_id", new Integer(3));
 		insertshape3.put("name", "Triangle");
 		insertshape3.put("height", new Double(24.1));
@@ -400,7 +401,7 @@ public class GeneralTest {
 //	DELETE ALL THEN INSERT ALL
 //      tester.insertIntoTable("Citizen",insert2);
 //      tester.insertIntoTable("Shape",insertshape6);
- //     tester.insertIntoTable("Citizen",insert);
+//      tester.insertIntoTable("Citizen",insert);
 //      tester.insertIntoTable("Shape",insertshape4);
 //      tester.insertIntoTable("Citizen",insert1);
 //      tester.insertIntoTable("Shape",insertshape2);
@@ -497,29 +498,87 @@ public class GeneralTest {
 		//update then delete based on date
 		up.clear();
 		up.put("birthday", new Date(1999,5,27));
-		tester.deleteFromTable("Citizen", up);
+		//tester.deleteFromTable("Citizen", up);
 		//tester.updateTable("")
 		
 		//update based on date, and delete all
 		//tester.
 		
-//		for (int i = 0; i<100;i++) {
+//		up.clear();
+//		up.put("isQuadrilateral", new Boolean(true));
+//		tester.deleteFromTable("Shape", up);
+//		
+//		for (int i = 0; i<50;i++) {
 //			tester.insertIntoTable("Citizen",insert2);
+//			tester.insertIntoTable("Citizen",insert3);
+//			tester.insertIntoTable("Shape", insertshape3);
+//			tester.insertIntoTable("Shape", insertshape4);
 //		}
 		
-				//TODO: do heuristic delete, update, insert
-				//TODO: another delete all
-				//TODO: update on one repeated value - delete on it - table should be empty (isMarried in citizens)
-				//TODO: create a 3rd table, insert in it, update, then delete (dup)
-				//TODO: ALWAYS CHECK B+ NODES!
-				//TODO:delete - update - insert
-				//TODO:update - delete (updated) - insert 
+		up.clear();
+		up.put("name", "Basant");
+		//tester.updateTable("Citizen","3",up);
+		up.clear();
+		up.put("name", "Pentagon");
+		//tester.updateTable("Shape", "(7,8),(6,7),(3,6),(4,7)", up);
+		//tester.deleteFromTable("Shape",up);
+		
+		
+		
+		//next: update them done
+		// another delete all done
+		//update on one repeated value - delete on it - table should be empty (isMarried in citizens) done
+		//ALWAYS CHECK B+ NODES! done 
+		
+		
+				//create a 3rd table, insert in it, update, then delete (dup)
+			
 				
+		Hashtable<String,String> testTabl = new Hashtable<String,String>();
+		
+		testTabl.put("double", "java.lang.Double");
+		testTabl.put("boolean", "java.lang.Boolean");
+		testTabl.put("date", "java.util.Date");
+		testTabl.put("polygon", "java.awt.Polygon");
+		
+		
+		
+		up.clear();
+		up.put("double", new Double(3.0));
+		up.put("date", new Date(1234,12,3));
+		up.put("polygon", new Polygon());
+		up.put("boolean", new Boolean(false));
+		
+		//tester.insertIntoTable("table3", up);
+//		tester.insertIntoTable("Shape", insertshape3);
+//		tester.insertIntoTable("Shape", insertshape3);
+//		tester.insertIntoTable("Shape", insertshape3);
+//		tester.insertIntoTable("Shape", insertshape3);
+		
+		
+		
+		
+		
+		//tester.createTable("table3","date", testTabl);
+		//tester.insertIntoTable("table3", up);
+		//tester.insertIntoTable("table3", up);
+		//tester.insertIntoTable("table3", up);
+		//tester.insertIntoTable("table3", up);
+		
+		up.clear();
+		up.put("double", new Double(999.9));
+		
+		tester.updateTable("table3", "1234-12-03", up);
+		//then delete based on date 
+		//TODO:delete - update - insert
+		//TODO:update - delete (updated) - insert 
 		
 		System.out.println("CITIZEN");
 		printPages("Citizen");
 		System.out.println("SHAPE");
 		printPages("Shape");
+		System.out.println("TABLE3");
+		printPages("table3");
 		
 		
 		
