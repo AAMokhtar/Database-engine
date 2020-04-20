@@ -232,7 +232,7 @@ public class RTree implements index<myPolygon>, Serializable {
                         path = path.replaceAll("[^a-zA-Z0-9()_./+]",""); //windows is gay
 
                         if (new File(path).isFile()){
-                            overflowPage curPage = Utilities.deserializeOverflow(name +"_"+curNode.getValues().get(index++) + "_0"); //get the first page
+                            overflowPage curPage = Utilities.deserializeOverflow(name +"_"+curNode.getValues().get(index) + "_0"); //get the first page
 
                             while (curPage != null){ //loop over all overflow pages
 
