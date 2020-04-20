@@ -1,5 +1,6 @@
 package DatabaseEngine.R;
 
+import DatabaseEngine.Page;
 import DatabaseEngine.Utilities;
 import DatabaseEngine.myPolygon;
 import DatabaseEngine.overflowPage;
@@ -95,7 +96,15 @@ public class RExternal extends RNode { //leaf
 					overflowPage curPage = Utilities.deserializeOverflow(name + "_"+value + "_0"); //get the first page
 
 	            	getPointers().add(key,(BPointer)curPage.poll());
-            		getValues().add(key, value);
+
+                    Page recordPage = Utilities.deserializePage(getPointers().get(key).getPage());
+                    String[] table_column = name.split("_");
+                    int columnIndex = Utilities.getColumnFromMetadata(table_column[1]
+                            ,Utilities.readMetaDataForSpecificTable(table_column[0]))
+                            .getValue();
+
+            		getValues().add(key, (myPolygon) recordPage.getPageElements().
+                            get(getPointers().get(key).getOffset()).get(columnIndex));
             		incSize();
             		if(curPage.size()!=0)
             		Utilities.serializeOverflow(curPage);   
