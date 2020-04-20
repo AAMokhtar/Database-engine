@@ -1432,7 +1432,7 @@ public class Utilities {
 		BSet<BPointer> queryResult = new BSet<>(); //output
 		
 		if (colType.getName().equals("java.awt.Polygon")){ //use R tree
-			queryResult =  ((RTree) tree).search((myPolygon) cur._objValue, cur._strOperator);
+			queryResult =  ((RTree) tree).search(new myPolygon((Polygon) cur._objValue), cur._strOperator);
 		}
 
 		else { //use B+ trees
@@ -1466,6 +1466,9 @@ public class Utilities {
 
 	public static BSet<BPointer> recordQuery(SQLTerm cur, boolean key, Table cur_table, int colnum, Class colType) throws DBAppException {
 		BSet<BPointer> queryResult = new BSet<>(); //initialize query result
+		if (colType.getName().equals("java.awt.Polygon")){
+			cur._objValue = new myPolygon((Polygon) cur._objValue);
+		}
 
 		//clustering key (binary search):
 		if (key){
